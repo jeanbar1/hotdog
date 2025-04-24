@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Confirmar Compra</h2>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Itens do Carrinho</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço Unitário</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens_carrinho %}
+                    <tr>
+                        <td>{{ item.produto.nome }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
+                        <!-- Cálculo do subtotal diretamente no template -->
+                        <td>R$ {{ item.produto.preco|floatformat:2 }} x {{ item.quantidade }} = R$ {{ item.produto.preco|floatformat:2 }} * {{ item.quantidade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Resumo do Pedido</h5>
+                    <p class="card-text">Total: R$ {{ total|floatformat:2 }}</p>
+                    
+                    {% if enderecos %}
+                    <h6>Endereço de Entrega</h6>
+                    <select class="form-select mb-3">
+                        {% for endereco in enderecos %}
+                        <option value="{{ endereco.id }}">{{ endereco }}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">
+                            Confirmar Compra
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+    

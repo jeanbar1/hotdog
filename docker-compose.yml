@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "cd cardapio &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - DATABASE_URL=sqlite:///db.sqlite3
+      - ALLOWED_HOSTS=*
+      - DEBUG=1
+    ports:
+      - "8000:8000"

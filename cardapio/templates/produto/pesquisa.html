@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pesquisar Produtos{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold mb-3">Pesquisar Produtos</h1>
+            
+            <!-- Formulário de Pesquisa -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form method="get" action="{% url 'pesquisar_produto' %}" class="row g-3">
+                        <div class="col-md-5">
+                            <label for="pesquisa" class="form-label">Termo de Pesquisa</label>
+                            <input type="text" id="pesquisa" name="pesquisa" class="form-control" 
+                                   placeholder="Nome ou descrição do produto" value="{{ request.GET.pesquisa|default:'' }}">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <select id="categoria" name="categoria" class="form-select">
+                                <option value="">Todas categorias</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}" {% if request.GET.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ categoria.nome }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label for="preco_min" class="form-label">Preço Mínimo</label>
+                            <input type="number" id="preco_min" name="preco_min" class="form-control" 
+                                   placeholder="R$ 0,00" step="0.01" min="0" value="{{ request.GET.preco_min|default:'' }}">
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label for="preco_max" class="form-label">Preço Máximo</label>
+                            <input type="number" id="preco_max" name="preco_max" class="form-control" 
+                                   placeholder="R$ 999,99" step="0.01" min="0" value="{{ request.GET.preco_max|default:'' }}">
+                        </div>
+                        
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Filtrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Ordenação -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">
+                    {{ produtos.paginator.count }} produto(s) encontrado(s)
+                </span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Ordenar por: 
+                        {% if request.GET.sort == 'preco_asc' %}Menor preço
+                        {% elif request.GET.sort == 'preco_desc' %}Maior preço
+                        {% else %}Relevância{% endif %}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}sort=">Relevância</a></li>
+                        <li><a class="dropdown-item" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}sort=preco_asc">Menor preço</a></li>
+                        <li><a class="dropdown-item" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}sort=preco_desc">Maior preço</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados da Pesquisa -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for produto in produtos %}
+        <div class="col">
+            <div class="card h-100 shadow-sm product-card">
+                <!-- Imagem do Produto -->
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}" 
+                     style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <!-- Nome e Categorias -->
+                    <h5 class="card-title">{{ produto.nome }}</h5>
+                    <div class="mb-2">
+                        {% for categoria in produto.categorias.all %}
+                        <span class="badge bg-secondary me-1">{{ categoria.nome }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Descrição -->
+                    <p class="card-text text-muted">
+                        {{ produto.descricao|truncatechars:100 }}
+                    </p>
+                    
+                    <!-- Preço -->
+                    <h5 class="text-primary mb-3">
+                        R$ {{ produto.preco|floatformat:2 }}
+                    </h5>
+                </div>
+                
+                <div class="card-footer bg-white border-top-0">
+                    <div class="d-flex justify-content-between">
+                        <!-- Botão de Detalhes -->
+                        <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i> Detalhes
+                        </a>
+                        
+                        <!-- Botão de Adicionar ao Carrinho -->
+                        {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'adicionar_ao_carrinho' produto.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantidade" value="1">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-cart-plus me-1"></i> Adicionar
+                            </button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-cart-plus me-1"></i> Adicionar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h3>Nenhum produto encontrado</h3>
+                    <p class="text-muted">Tente ajustar seus critérios de pesquisa</p>
+                    <a href="{% url 'pesquisar_produto' %}" class="btn btn-primary mt-3">
+                        Limpar filtros
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    {% if produtos.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if produtos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   aria-label="Primeira">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ produtos.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in produtos.paginator.page_range %}
+                {% if produtos.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > produtos.number|add:'-3' and num < produtos.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if produtos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ produtos.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   aria-label="Próxima">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ produtos.paginator.num_pages }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   aria-label="Última">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- SweetAlert2 para notificações -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Notificação quando um produto é adicionado ao carrinho
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'carrinho_success' in message.tags %}
+            Swal.fire({
+                icon: 'success',
+                title: '{{ message }}',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    // Validação do preço mínimo/máximo
+    const precoMin = document.getElementById('preco_min');
+    const precoMax = document.getElementById('preco_max');
+    
+    if (precoMin && precoMax) {
+        precoMin.addEventListener('change', function() {
+            if (precoMax.value && parseFloat(this.value) > parseFloat(precoMax.value)) {
+                this.value = '';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Valor inválido',
+                    text: 'O preço mínimo não pode ser maior que o preço máximo',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+        
+        precoMax.addEventListener('change', function() {
+            if (precoMin.value && parseFloat(this.value) < parseFloat(precoMin.value)) {
+                this.value = '';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Valor inválido',
+                    text: 'O preço máximo não pode ser menor que o preço mínimo',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    }
+});
+</script>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .badge {
+        font-size: 0.8rem;
+        font-weight: normal;
+    }
+    .dropdown-toggle::after {
+        margin-left: 0.5em;
+    }
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+</style>
+{% endblock %}

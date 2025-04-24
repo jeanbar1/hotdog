@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">{{ titulo }}</h2>
+        </div>
+        
+        <div class="card-body">
+            <form method="post" id="pedido-form">
+                {% csrf_token %}
+                
+                <!-- Informações Básicas do Pedido -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            {{ form.cliente }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            {{ form.status }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            {{ form.observacoes }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Itens do Pedido -->
+                <h5 class="mb-3">Itens do Pedido</h5>
+                {{ formset.management_form }}
+                
+                <div class="table-responsive mb-4">
+                    <table class="table" id="itens-table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Remover</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for form in formset %}
+                            <tr class="item-row">
+                                <td>{{ form.produto }}</td>
+                                <td>{{ form.quantidade }}</td>
+                                <td class="text-center">
+                                    {% if form.DELETE %}
+                                        {{ form.DELETE }}
+                                    {% endif %}
+                                </td>
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button type="button" id="add-item" class="btn btn-secondary mb-4">
+                    Adicionar Item
+                </button>
+                
+                <!-- Botões de Ação -->
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'listar_pedidos' %}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Pedido
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona novo item ao formset
+    document.getElementById('add-item').addEventListener('click', function() {
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        const formIdx = parseInt(totalForms.value);
+        const table = document.getElementById('itens-table').getElementsByTagName('tbody')[0];
+        
+        // Clone da última linha
+        const newRow = table.rows[table.rows.length - 1].cloneNode(true);
+        
+        // Atualiza os IDs dos elementos
+        newRow.querySelectorAll('input, select').forEach(function(el) {
+            const name = el.name.replace(/-\d+-/, `-${formIdx}-`);
+            const id = el.id.replace(/_\d+_/, `_${formIdx}_`);
+            el.name = name;
+            el.id = id;
+            el.value = '';
+        });
+        
+        // Adiciona a nova linha
+        table.appendChild(newRow);
+        
+        // Atualiza o contador de forms
+        totalForms.value = formIdx + 1;
+    });
+});
+</script>
+{% endblock %}

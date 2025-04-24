@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home | Meu Cardápio{% endblock %}
+
+{% block content %}
+  <!-- Hero Banner -->
+  <section class="hero-banner mb-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-4 fw-bold mb-3">Bem-vindo ao Nosso Cardápio!</h1>
+          <p class="lead mb-4">Explore as melhores opções e faça seu pedido de forma rápida e prática.</p>
+          <div class="d-flex gap-3">
+            <a href="{% url 'listar_produtos' %}" class="btn btn-primary btn-lg">Ver Cardápio</a>
+            {% if user.is_authenticated %}
+              <a href="{% url 'carrinho' %}" class="btn btn-outline-primary btn-lg">Meu Carrinho</a>
+            {% else %}
+              <a href="{% url 'login' %}?next={% url 'listar_produtos' %}" class="btn btn-outline-primary btn-lg">Entrar</a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <img src="{% static 'images/hero.jpg' %}" alt="Pratos deliciosos" class="img-fluid rounded shadow">
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Seção de Categorias -->
+<section class="menu-category mb-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Categorias</h2>
+      <a href="{% url 'listCategoria' %}" class="btn btn-outline-dark btn-sm rounded-pill shadow-sm">
+        Ver Todas
+      </a>
+    </div>
+    <div class="row g-3">
+      {% for categoria in categorias %}
+        <div class="col-6 col-md-3 col-lg-2">
+          <a href="{% url 'pesquisar_produto' %}?categoria={{ categoria.id }}" class="text-decoration-none">
+            <div class="card h-100 hover-effect border-0 shadow-sm">
+              {% if categoria.imagem %}
+                <img src="{{ categoria.imagem.url }}" class="card-img-top rounded-top" alt="{{ categoria.nome }}">
+              {% endif %}
+              <div class="card-body text-center">
+                <h5 class="card-title text-dark mb-0">{{ categoria.nome }}</h5>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info">Nenhuma categoria cadastrada.</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+  <!-- Seção de Produtos em Destaque -->
+  <section class="featured-products mb-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Destaques</h2>
+        <a href="{% url 'listar_produtos' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+      </div>
+      <div class="row g-4">
+        {% for produto in produtos_destaque %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="menu-item card h-100 hover-effect">
+              <a href="{% url 'detalhes_produto' produto.id %}">
+                <div class="position-relative">
+                  {% if produto.imagem %}
+                  <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                  {% else %}
+                  <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                    <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                  </div>
+                  {% endif %}
+                  {% if produto.desconto %}
+                  <span class="badge bg-danger position-absolute top-0 end-0 m-2">-{{ produto.desconto }}%</span>
+                  {% endif %}
+                </div>
+              </a>
+              <div class="card-body">
+                <h3 class="item-name card-title">
+                  <a href="{% url 'detalhes_produto' produto.id %}" class="text-decoration-none text-dark">
+                    {{ produto.nome }}
+                  </a>
+                </h3>
+                <p class="item-description card-text text-muted small">{{ produto.descricao|truncatechars:80 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    {% if produto.desconto %}
+                    <span class="text-danger fw-bold">R$ {{ produto.preco_com_desconto|floatformat:2 }}</span>
+                    <small class="text-decoration-line-through text-muted ms-2">R$ {{ produto.preco|floatformat:2 }}</small>
+                    {% else %}
+                    <span class="text-primary fw-bold">R$ {{ produto.preco|floatformat:2 }}</span>
+                    {% endif %}
+                  </div>
+                  <button class="add-to-cart btn btn-sm btn-primary" 
+                          data-url="{% url 'adicionar_ao_carrinho' produto.id %}">
+                    <i class="bi bi-cart-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info">Sem produtos em destaque no momento.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção de Administração (apara para admin) -->
+  {% if user.is_staff %}
+  <section class="admin-section py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center mb-4">Área Administrativa</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <i class="bi bi-box-seam fs-1 text-primary mb-3"></i>
+              <h3 class="card-title">Produtos</h3>
+              <div class="d-grid gap-2">
+                <a href="{% url 'addProduto' %}" class="btn btn-outline-primary">Adicionar Produto</a>
+                <a href="{% url 'listar_produtos' %}" class="btn btn-outline-secondary">Gerenciar Produtos</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <i class="bi bi-tags fs-1 text-primary mb-3"></i>
+              <h3 class="card-title">Categorias</h3>
+              <div class="d-grid gap-2">
+                <a href="{% url 'addCategoria' %}" class="btn btn-outline-primary">Adicionar Categoria</a>
+                <a href="{% url 'listCategoria' %}" class="btn btn-outline-secondary">Gerenciar Categorias</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <i class="bi bi-receipt fs-1 text-primary mb-3"></i>
+              <h3 class="card-title">Pedidos</h3>
+              <div class="d-grid gap-2">
+                <a href="{% url 'create_pedido' %}" class="btn btn-outline-primary">Criar Pedido</a>
+                <a href="{% url 'listar_pedidos' %}" class="btn btn-outline-secondary">Ver Pedidos</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Adicionar ao carrinho
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+      const url = this.dataset.url;
+      
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({quantity: 1})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          // Atualizar contador do carrinho
+          const cartCount = document.getElementById('cart-count');
+          if(cartCount) {
+            cartCount.textContent = data.cart_total;
+          }
+          
+          // Mostrar notificação
+          Toastify({
+            text: "Produto adicionado ao carrinho!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#2ecc71",
+          }).showToast();
+        } else {
+          if(data.login_required) {
+            window.location.href = "{% url 'login' %}?next={{ request.path }}";
+          } else {
+            alert(data.message);
+          }
+        }
+      });
+    });
+  });
+});
+</script>
+{% endblock %}

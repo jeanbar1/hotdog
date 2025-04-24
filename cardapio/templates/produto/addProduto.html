@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Mensagens de erro do formulário -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Campo Nome -->
+                        <div class="mb-3">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label">
+                                Nome do Produto*
+                            </label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nome.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campo Descrição -->
+                        <div class="mb-3">
+                            <label for="{{ form.descricao.id_for_label }}" class="form-label">
+                                Descrição
+                            </label>
+                            {{ form.descricao }}
+                            {% if form.descricao.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.descricao.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campo Categorias -->
+                        <div class="mb-3">
+                            <label class="form-label">Categorias*</label>
+                            <div class="border rounded p-2">
+                                {% for categoria in form.categorias %}
+                                <div class="form-check">
+                                    {{ categoria }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if form.categorias.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.categorias.errors|first }}
+                            </div>
+                            {% endif %}
+                            <div class="mt-2">
+                                <a href="{% url 'addCategoria' %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-plus"></i> Criar nova categoria
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo Preço -->
+                        <div class="mb-3">
+                            <label for="{{ form.preco.id_for_label }}" class="form-label">
+                                Preço (R$)*
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.preco }}
+                            </div>
+                            {% if form.preco.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.preco.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campo Imagem -->
+                        <div class="mb-4">
+                            <label for="{{ form.imagem.id_for_label }}" class="form-label">
+                                Imagem do Produto
+                            </label>
+                            {{ form.imagem }}
+                            {% if form.imagem.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.imagem.errors|first }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Tamanho recomendado: 800x600px. Formatos: JPG, PNG.
+                            </div>
+                        </div>
+                        
+                        <!-- Botões de ação -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'listar_produtos' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Produto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Adiciona máscara para o campo de preço -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Máscara para o campo de preço
+    $('#id_preco').mask('#.##0,00', {reverse: true});
+    
+    // Validação do formulário
+    $('form').submit(function() {
+        let isValid = true;
+        
+        // Valida campos obrigatórios
+        $('#id_nome, #id_preco').each(function() {
+            if (!$(this).val()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            }
+        });
+        
+        // Valida se pelo menos uma categoria foi selecionada
+        if ($('input[name="categorias"]:checked').length === 0) {
+            $('#id_categorias_0').closest('.border').addClass('border-danger');
+            isValid = false;
+        }
+        
+        return isValid;
+    });
+    
+    // Remove a classe de erro quando o usuário começa a digitar
+    $('input, textarea').on('input', function() {
+        $(this).removeClass('is-invalid');
+    });
+});
+</script>
+{% endblock %}

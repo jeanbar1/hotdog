@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center mb-0">{{ titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="registration-form">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_username" class="form-label">Nome de usuário*</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_email" class="form-label">Email*</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Campo de Telefone Adicionado -->
+                        <div class="mb-3">
+                            <label for="id_telefone" class="form-label">Telefone</label>
+                            <div class="input-group">
+                                {{ form.telefone }}
+                            </div>
+                            {% if form.telefone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.telefone.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password1" class="form-label">Senha*</label>
+                                <div class="input-group">
+                                    {{ form.password1 }}
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password1.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password2" class="form-label">Confirmar Senha*</label>
+                                <div class="input-group">
+                                    {{ form.password2 }}
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password2.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_imagem" class="form-label">Foto de Perfil</label>
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="position-relative mb-3">
+                                    <img id="image-preview" src="{% static 'img/user-2935527__340.png' %}" 
+                                         alt="Pré-visualização" 
+                                         class="img-thumbnail rounded-circle border-primary" 
+                                         style="width: 150px; height: 150px; object-fit: cover; border-width: 3px;">
+                                    <label for="id_imagem" class="btn btn-primary rounded-circle position-absolute bottom-0 end-0" 
+                                           style="width: 40px; height: 40px; cursor: pointer;"
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Alterar foto">
+                                        <i class="fas fa-camera"></i>
+                                    </label>
+                                    <input type="file" class="d-none" name="imagem" id="id_imagem" accept="image/*">
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('id_imagem').click()">
+                                        <i class="fas fa-upload me-1"></i> Selecionar Imagem
+                                    </button>
+                                    <button type="button" id="remove-image-btn" class="btn btn-sm btn-outline-danger ms-2" style="display: none;">
+                                        <i class="fas fa-trash-alt me-1"></i> Remover
+                                    </button>
+                                    <div class="form-text mt-2">Formatos suportados: JPG, PNG (Max. 2MB)</div>
+                                </div>
+                            </div>
+                            {% if form.imagem.errors %}
+                            <div class="invalid-feedback d-block text-center">
+                                {{ form.imagem.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+                                <i class="fas fa-user-plus me-2"></i> Cadastrar
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        Já tem uma conta? <a href="{% url 'login' %}" class="text-decoration-none">Faça login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos DOM
+    const imageInput = document.getElementById('id_imagem');
+    const imagePreview = document.getElementById('image-preview');
+    const removeImageBtn = document.getElementById('remove-image-btn');
+    const defaultImageSrc = "{% static 'img/user-2935527__340.png' %}";
+    const form = document.getElementById('registration-form');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Preview da imagem
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                
+                // Verifica o tamanho do arquivo (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('A imagem não pode ser maior que 2MB');
+                    this.value = '';
+                    return;
+                }
+                
+                // Verifica o tipo do arquivo
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Por favor, selecione uma imagem no formato JPG, PNG ou GIF');
+                    this.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    removeImageBtn.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Remover imagem selecionada
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function() {
+            imageInput.value = '';
+            imagePreview.src = defaultImageSrc;
+            this.style.display = 'none';
+        });
+    }
+    
+    // Toggle para mostrar/esconder senha - CORRIGIDO
+    const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+    togglePasswordButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Encontra o input de senha correspondente
+            const input = this.closest('.input-group').querySelector('input');
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    });
+    
+    // Feedback durante o envio do formulário
+    if (form) {
+        form.addEventListener('submit', function() {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cadastrando...';
+        });
+    }
+    
+    // Inicializa tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Máscara para telefone
+    const telefoneInput = document.getElementById('id_telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.substring(0, 11);
+            
+            // Formatação: (99) 99999-9999
+            if (value.length > 2) {
+                value = `(${value.substring(0, 2)}) ${value.substring(2)}`;
+            }
+            if (value.length > 10) {
+                value = `${value.substring(0, 10)}-${value.substring(10)}`;
+            }
+            e.target.value = value;
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .toggle-password {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    #image-preview {
+        transition: all 0.3s ease;
+    }
+    #image-preview:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    /* Estilo para os campos de senha com toggle */
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+</style>
+{% endblock %}

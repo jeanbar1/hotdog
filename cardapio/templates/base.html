@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Meu Cardápio{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Estilos globais -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  {% block extra_css %}{% endblock %}
+  
+  <!-- Estilos inline personalizados -->
+  <style>
+    .bg-primary {
+      background-color: #e74c3c !important;
+    }
+    
+    .btn-primary {
+      background-color: #e74c3c;
+      border-color: #e74c3c;
+    }
+    
+    .btn-primary:hover {
+      background-color: #c0392b;
+      border-color: #c0392b;
+    }
+    
+    .alert-danger {
+      background-color: #d63031;
+      color: white;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover {
+      color: rgba(255, 255, 255, 0.75);
+    }
+    
+    /* Estilos para o plano de fundo */
+    body {
+      background-image: url('{% static "img/cachorro-quente1_748306-87.avif" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* Overlay escuro para melhorar legibilidade */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4); /* Ajuste a opacidade conforme necessário */
+      z-index: -1;
+    }
+
+    /* Conteúdo principal com transparência */
+    main.container {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Rodapé com transparência */
+    footer.footer {
+      background-color: rgba(231, 76, 60, 0.9) !important; /* Vermelho com transparência */
+      color: white;
+    }
+
+    /* Ajustes para os cards/alerts */
+    .card, .alert {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Navbar com transparência */
+    .navbar {
+      background-color: rgba(231, 76, 60, 0.9) !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <!-- ====== Navbar ====== -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a href="{% url 'home' %}" class="navbar-brand">Logo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'listar_produtos' %}">Cardápio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'carrinho' %}">Carrinho (<span id="cart-count">0</span>)</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'create_usuario' %}">Criar conta</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ====== Conteúdo principal ====== -->
+  <main class="container my-4 flex-grow-1">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+    {% block content %}
+    <!-- Aqui o conteúdo específico de cada página -->
+    {% endblock %}
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer class="footer mt-auto py-3">
+    <div class="container text-center">
+      <p class="mb-0">&copy; {% now "Y" %} Minha Empresa. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts globais -->
+  <script src="{% static 'js/menu.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
