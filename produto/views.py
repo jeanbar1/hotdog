@@ -10,7 +10,7 @@ from .models import *
 from .forms import *
 
 
-@login_required
+@login_required(login_url='login')
 def detalhes_produto(request, id):
     """
     Mostra os detalhes de um produto.

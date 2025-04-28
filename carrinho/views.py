@@ -14,7 +14,7 @@ from .models import Carrinho, ItemCarrinho
 
 
 
-@login_required
+@login_required(login_url='login')
 def carrinho(request, id=None):
     if id and not request.user.is_superuser:
         messages.error(request, 'Você não tem permissão para acessar este carrinho.')
