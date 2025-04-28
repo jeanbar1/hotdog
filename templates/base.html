@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Meu Cardápio{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Estilos globais -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  {% block extra_css %}{% endblock %}
+
+  <!-- Estilos inline personalizados -->
+  <style>
+    .bg-primary {
+      background-color: #e74c3c !important;
+    }
+    
+    .btn-primary {
+      background-color: #e74c3c;
+      border-color: #e74c3c;
+    }
+    
+    .btn-primary:hover {
+      background-color: #c0392b;
+      border-color: #c0392b;
+    }
+    
+    .alert-danger {
+      background-color: #d63031;
+      color: white;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover {
+      color: rgba(255, 255, 255, 0.75);
+    }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <!-- ====== Navbar ====== -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Logo</a>
+
+        <!-- Botão de Toggle para Mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Itens da Navbar (Menu) -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Cardápio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'carrinho' %}">Carrinho</a>
+            </li>
+          </ul>
+
+          <!-- Menu para Usuários -->
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'create_usuario' %}">Criar conta</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- ====== Conteúdo principal ====== -->
+  <main class="container my-4 flex-grow-1">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+    {% block content %}
+    <!-- Aqui o conteúdo específico de cada página -->
+    {% endblock %}
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer class="footer mt-auto py-3">
+    <div class="container text-center">
+      <p class="mb-0">&copy; {% now "Y" %} Minha Empresa. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts necessários para o funcionamento da Navbar -->
+  {% block extra_js %}
+  <!-- Bootstrap JS Bundle com Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts customizados -->
+  <script src="{% static 'js/menu.js' %}"></script>
+
+  <!-- Verifique se o toggle está funcionando -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var navbarToggler = document.querySelector('.navbar-toggler');
+      var navbarCollapse = document.getElementById('navbarNav');
+
+      navbarToggler.addEventListener('click', function () {
+        navbarCollapse.classList.toggle('collapse');
+      });
+    });
+  </script>
+  {% endblock %}
+</body>
+</html>

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Confirmar Compra</h2>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Itens do Carrinho</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Preço Unitário</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in itens_carrinho %}
+                            <tr>
+                                <td>
+                                    {{ item.produto.nome }}
+                                    {% if item.observacao %}
+                                    <div class="text-muted small mt-1">
+                                        <i class="fas fa-info-circle"></i> {{ item.observacao }}
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.quantidade }}</td>
+                                <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                <td>R$ 0,00</td> <!-- Subtotal vai ser calculado em JS -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">Resumo do Pedido</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span id="subtotal-resumo">R$ 0,00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Frete:</span>
+                        <span>Grátis</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total:</span>
+                        <span id="total-resumo">R$ 0,00</span>
+                    </div>
+
+                    {% if enderecos %}
+                    <div class="mt-4">
+                        <h6>Endereço de Entrega</h6>
+                        <select class="form-select mb-3" name="endereco_entrega" id="endereco-entrega">
+                            {% for endereco in enderecos %}
+                            <option value="{{ endereco.id }}">{{ endereco }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="{% url 'criar_pedido_do_carrinho' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="endereco" id="input-endereco">
+                        <button type="submit" class="btn btn-primary w-100 mt-3 py-2">
+                            <i class="fas fa-check-circle me-2"></i> Confirmar Compra
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript para calcular o subtotal e total -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let total = 0;
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const quantidade = parseInt(row.children[1].innerText);
+            const precoUnitario = parseFloat(row.children[2].innerText.replace('R$', '').replace(',', '.'));
+            const subtotal = quantidade * precoUnitario;
+            row.children[3].innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            total += subtotal;
+        });
+
+        document.getElementById("subtotal-resumo").innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        document.getElementById("total-resumo").innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    });
+
+    // Antes de enviar, preencher o endereço
+    document.querySelector("form").addEventListener("submit", function () {
+        const enderecoSelecionado = document.getElementById("endereco-entrega")?.value;
+        document.getElementById("input-endereco").value = enderecoSelecionado;
+    });
+</script>
+
+{% endblock %}

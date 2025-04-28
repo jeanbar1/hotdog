@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Adicionais Disponíveis</h2>
+    <a href="{% url 'criar_adicional' %}" class="btn btn-primary mb-3">
+        <i class="fas fa-plus"></i> Novo Adicional
+    </a>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço Extra</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for adicional in adicionais %}
+                <tr>
+                    <td>{{ adicional.nome }}</td>
+                    <td>R$ {{ adicional.preco_extra }}</td>
+                    <td>
+                        <span class="badge bg-{% if adicional.ativo %}success{% else %}danger{% endif %}">
+                            {% if adicional.ativo %}Ativo{% else %}Inativo{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_adicional' adicional.id %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'remover_adicional' adicional.id %}" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Nenhum adicional cadastrado</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

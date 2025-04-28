@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Gerenciar Adicionais para {{ produto.nome }}</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Adicionais Vinculados</h4>
+            {% if adicionais_vinculados %}
+            <div class="list-group mb-4">
+                {% for pa in adicionais_vinculados %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ pa.adicional.nome }} (+ R$ {{ pa.adicional.preco_extra }})
+                        <span class="badge bg-{% if pa.ativo %}success{% else %}secondary{% endif %} ms-2">
+                            {% if pa.ativo %}Ativo{% else %}Inativo{% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <a href="{% url 'toggle_adicional_prod1uto' pa.id %}" 
+                           class="btn btn-sm btn-{% if pa.ativo %}warning{% else %}success{% endif %}">
+                            {% if pa.ativo %}<i class="fas fa-toggle-off"></i>{% else %}<i class="fas fa-toggle-on"></i>{% endif %}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">Nenhum adicional vinculado a este produto</div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+            <h4>Adicionar Novo Adicional</h4>
+            {% if adicionais_disponiveis %}
+            <form method="post" action="{% url 'gerenciar_adicionais_produto' produto.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <select name="adicional_id" class="form-select">
+                        {% for adicional in adicionais_disponiveis %}
+                        <option value="{{ adicional.id }}">{{ adicional.nome }} (+ R$ {{ adicional.preco_extra }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Vincular Adicional</button>
+            </form>
+            {% else %}
+            <div class="alert alert-info">Todos os adicionais já estão vinculados a este produto</div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="{% url 'listar_produtos' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+{% endblock %}

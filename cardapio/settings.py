@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,8 +26,15 @@ SECRET_KEY = 'django-insecure-dc2dhg++don(+=s5#yg_x!8&&8knm%$sscpot)8*b%+of4k*=k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://b2bd-45-224-196-76.ngrok-free.app',
+    'https://*.ngrok-free.app',
+    'https://61ba-45-224-196-76.ngrok-free.app',
+    'https://*.ngrok.io',
+]
 
 # Application definition
 
@@ -37,7 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-   
+    'produto',
+    'pedido',
+    'usuario',
+    'carrinho',
+    'principal',
    ]
 
 MIDDLEWARE = [
@@ -55,7 +67,7 @@ ROOT_URLCONF = 'cardapio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,9 +128,51 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LANGUAGE_CODE = 'pt-br'
+
+TIME_ZONE = 'America/Sao_Paulo'
+
+USE_I18N = True
+
+USE_TZ = True
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'usuario.Usuario'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+APPEND_SLASH = True
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "ronygleyson2@gmail.com"
+EMAIL_HOST_PASSWORD = "usrbmgmwpeiocdgg"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+DEFAULT_FROM_EMAIL = 'ronygleyson2@gmail.com'
+EMAIL_SENDER_NAME = 'Luni'
+
+ERROR_404_TEMPLATE_NAME = "404.html"
+ERROR_403_TEMPLATE_NAME = "403.html"
+ERROR_400_TEMPLATE_NAME = "400.html"
+ERROR_500_TEMPLATE_NAME = "500.html"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB

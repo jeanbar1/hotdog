@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Carrinho de Compras{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-img {
+        max-width: 100px;
+        height: auto;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    
+    .quantity-input {
+        width: 70px;
+        text-align: center;
+    }
+    
+    .total-section {
+        background-color: rgba(248, 249, 250, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .empty-cart {
+        text-align: center;
+        padding: 50px 0;
+    }
+    
+    .empty-cart i {
+        font-size: 50px;
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+
+    /* Estilos para adicionais */
+    .adicionais-list {
+        margin-top: 8px;
+        padding-left: 20px;
+    }
+    
+    .adicional-item {
+        font-size: 0.85rem;
+        color: #6c757d;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .adicional-price {
+        color: #28a745;
+        font-weight: 500;
+    }
+    
+    /* Melhorias para dispositivos móveis */
+    @media (max-width: 768px) {
+        .product-img {
+            max-width: 60px;
+        }
+        
+        .table thead {
+            display: none;
+        }
+        
+        .table tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        .table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .table td:before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .table td:last-child {
+            border-bottom: none;
+        }
+        
+        .quantity-input {
+            width: 60px;
+        }
+        
+        .btn-responsive {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .adicionais-list {
+            padding-left: 15px;
+        }
+    }
+    
+    /* Efeitos de hover e transição */
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-primary, .btn-outline-secondary {
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Melhorias visuais */
+    .card {
+        border: none;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Seu Carrinho</h1>
+    
+    {% if itens_carrinho %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Preço</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in itens_carrinho %}
+                                <tr>
+                                    <td data-label="Produto">
+                                        <div class="d-flex align-items-center">
+                                            {% if item.produto.imagem %}
+                                            <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" class="product-img me-3">
+                                            {% else %}
+                                            <div class="product-img me-3 bg-light d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-image text-muted"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <h5 class="mb-0">{{ item.produto.nome }}</h5>
+                                                <small class="text-muted">{{ item.produto.descricao|truncatechars:50 }}</small>
+                                                
+                                                <!-- Corrigido: Usar .all() para iterar sobre adicionais -->
+                                                {% if item.adicionais.all %}
+                                                <ul class="adicionais-list">
+                                                    {% for adicional in item.adicionais.all %}
+                                                    <li class="adicional-item">
+                                                        <span>{{ adicional.nome }}</span>
+                                                        <span class="adicional-price">+ R$ {{ adicional.preco_extra|floatformat:2 }}</span>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% endif %}
+                                                
+                                                {% if item.observacao %}
+                                                <div class="mt-2">
+                                                    <small class="text-muted"><strong>Obs:</strong> {{ item.observacao }}</small>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td data-label="Preço">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                    <td data-label="Quantidade">
+                                        <form method="post" action="{% url 'atualizar_carrinho' %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
+                                            <input type="number" name="quantidade" 
+                                                   value="{{ item.quantidade }}" min="1" 
+                                                   class="form-control quantity-input" onchange="this.form.submit()">
+                                        </form>
+                                    </td>
+                                    <td data-label="Total">R$ {{ item.total_item|floatformat:2 }}</td>
+                                    <td data-label="">
+                                        <a href="{% url 'remover_do_carrinho' item.produto.id %}" class="btn btn-sm btn-outline-danger btn-responsive">
+                                            <i class="bi bi-trash"></i>
+                                            <span class="d-none d-md-inline">Remover</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body total-section">
+                    <h4 class="card-title mb-4">Resumo do Pedido</h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal ({{ itens_carrinho|length }} itens):</span>
+                        <span>R$ {{ total|floatformat:2 }}</span>
+                    </div>
+                    
+                    {% if total_adicionais > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Adicionais:</span>
+                        <span>R$ {{ total_adicionais|floatformat:2 }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold mb-4">
+                        <span>Total:</span>
+                        <span class="text-primary">R$ {{ total|floatformat:2 }}</span>
+                    </div>
+                    <a href="{% url 'confirmar_compra' %}" class="btn btn-primary btn-lg w-100 mb-2 py-2">
+                        <i class="bi bi-check-circle me-2"></i>Finalizar Compra
+                    </a>
+                    <a href="{% url 'listar_produtos' %}" class="btn btn-outline-secondary w-100 py-2">
+                        <i class="bi bi-arrow-left me-2"></i>Continuar Comprando
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <i class="bi bi-cart-x-fill"></i>
+        <h3 class="mb-3">Seu carrinho está vazio</h3>
+        <p class="text-muted mb-4">Adicione produtos ao seu carrinho para continuar</p>
+        <a href="{% url 'listar_produtos' %}" class="btn btn-primary btn-lg px-4">
+            <i class="bi bi-arrow-right me-2"></i>Ver Cardápio
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Atualiza o contador do carrinho no navbar
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartCount = {{ itens_carrinho|length|default:0 }};
+        document.getElementById('cart-count').textContent = cartCount;
+    });
+</script>
+{% endblock %}

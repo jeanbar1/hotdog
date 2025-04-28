@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cardápio | {{ config.NOME_LOJA }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+
+  .card-img-container {
+    position: relative;
+    height: 180px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Garante que nada ultrapasse os limites */
+  }
+
+  /* Estilo APENAS para produtos sem imagem */
+  .card-img-container:not(:has(img)) {
+    background-image: url("{% static 'images/produto.avif' %}");
+    background-size: cover; /* Cobrir todo o espaço */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Estilo para o ícone de fallback */
+  .card-img-container .no-image-icon {
+    color: rgba(255,255,255,0.7);
+    font-size: 3rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 1; /* Fica acima do background */
+  }
+
+  /* Estilo para imagens reais dos produtos */
+  .card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Preenche todo o espaço mantendo proporção */
+  }
+
+  @media (max-width: 768px) {
+    .card-img-container {
+      height: 150px;
+    }
+  }
+
+
+    .hero-container {
+        width: 100%;
+        height: 180px; /* Altura fixa */
+        background-color: #fc2f2d; /* Faixa vermelha */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-image {
+        height: 80%; /* Altura relativa ao container */
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .search-btn {
+        background-image: url("{% static 'images/lupa.webp' %}");
+        background-size: 20px;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 40px;
+    }
+    @media (max-width: 768px) {
+        .hero-container {
+            height: 150px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-0">
+  <!-- Banner da Empresa com Faixa Vermelha -->
+  <div class="hero-container animate__animated animate__fadeIn">
+    <img src="{% static 'images/chapa.jpeg' %}" alt="HOTDOG MING" class="hero-image">
+  </div>
+
+  <!-- Barra de Pesquisa Melhorada -->
+  <div class="search-container bg-light py-3">
+    <div class="container">
+      <form method="get" action="{% url 'pesquisar_produto' %}" class="row g-2">
+        <div class="col-md-8">
+          <div class="input-group">
+            <input type="text" name="pesquisa" class="form-control" placeholder="Pesquisar produtos..." value="{{ request.GET.pesquisa }}">
+            <button type="submit" class="btn btn-primary search-btn" title="Pesquisar">
+              <span class="visually-hidden">Pesquisar</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select name="categoria" class="form-select">
+            <option value="">Todas categorias</option>
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}" {% if request.GET.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+              {{ categoria.nome }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Restante do conteúdo permanece igual -->
+  <!-- Categorias em Scroll Horizontal -->
+  <div class="categories-scroll bg-light">
+    <div class="container">
+      <div class="d-flex">
+        <a href="#todos" class="category-item">
+          <span class="category-link active">Todos</span>
+        </a>
+        {% for categoria in categorias %}
+        <a href="#categoria-{{ categoria.id }}" class="category-item">
+          <span class="category-link">{{ categoria.nome }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+<!-- Seção de Todos os Produtos -->
+<section id="todos" class="product-section py-5">
+  <div class="container">
+      <h2 class="h4 fw-bold section-title">Todos os Produtos</h2>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+          {% for produto in produtos %}
+          <div class="col">
+              <div class="card h-100 product-card">
+                  <div class="card-img-container">
+                      {% if produto.imagem %}
+                      <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                      {% else %}
+                      <i class="fas fa-image fa-3x text-muted"></i>
+                      {% endif %}
+                  </div>
+                  <div class="card-body">
+                      <h5 class="card-title">{{ produto.nome }}</h5>
+                      <div class="mb-2">
+                          {% for categoria in produto.categorias.all %}
+                          <span class="badge bg-secondary me-1 mb-1">{{ categoria.nome }}</span>
+                          {% endfor %}
+                      </div>
+                      <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
+                      <div class="price-text">
+                          <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
+                      </div>
+                  </div>
+                  <div class="card-footer bg-white border-top-0">
+                      <div class="d-grid">
+                          <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-secondary btn-sm">
+                              <i class="fas fa-info-circle me-1"></i> Adicionar
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+              <div class="alert alert-info">Nenhum produto disponível no momento</div>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
+</section>
+
+<!-- Seções por Categoria -->
+{% for categoria in categorias %}
+<section id="categoria-{{ categoria.id }}" class="category-section py-5 bg-light">
+  <div class="container">
+      <h2 class="h4 fw-bold section-title">{{ categoria.nome }}</h2>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+          {% for produto in categoria.produtos.all %}
+          <div class="col">
+              <div class="card h-100 product-card">
+                  <div class="card-img-container">
+                      {% if produto.imagem %}
+                      <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                      {% else %}
+                      <i class="fas fa-image fa-3x text-muted"></i>
+                      {% endif %}
+                  </div>
+                  <div class="card-body">
+                      <h5 class="card-title">{{ produto.nome }}</h5>
+                      <div class="mb-2">
+                          {% for cat in produto.categorias.all %}
+                          <span class="badge bg-secondary me-1 mb-1">{{ cat.nome }}</span>
+                          {% endfor %}
+                      </div>
+                      <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
+                      <div class="price-text">
+                          <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
+                      </div>
+                  </div>
+                  <div class="card-footer bg-white border-top-0">
+                      <div class="d-grid">
+                          <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-secondary btn-sm">
+                              <i class="fas fa-info-circle me-1"></i> Adicionar
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+              <div class="alert alert-info">Nenhum produto nesta categoria</div>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
+</section>
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home1.js' %}"></script>
+{% endblock %}

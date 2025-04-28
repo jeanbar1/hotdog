@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center mb-0">{{ titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="profile-form">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_username" class="form-label">Nome de usuário*</label>
+                                <input type="text" class="form-control" id="id_username" 
+                                       name="username" value="{{ form.username.value|default:'' }}" required>
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_email" class="form-label">Email*</label>
+                                <input type="email" class="form-control" id="id_email" 
+                                       name="email" value="{{ form.email.value|default:'' }}" required>
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_nome" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="id_nome" 
+                                   name="nome" value="{{ form.nome.value|default:'' }}">
+                            {% if form.nome.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nome.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_telefone" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="id_telefone" 
+                                   name="telefone" value="{{ form.telefone.value|default:'' }}">
+                            {% if form.telefone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.telefone.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_imagem" class="form-label">Foto de Perfil</label>
+                            <div class="d-flex align-items-center">
+                                {% if current_image_url %}
+                                <div class="me-3">
+                                    <img id="image-preview" src="{{ current_image_url }}" alt="Imagem atual" class="img-thumbnail" style="max-height: 100px; max-width: 100px;">
+                                    <div class="form-text text-center mt-1">Imagem atual</div>
+                                </div>
+                                {% else %}
+                                <div class="me-3">
+                                    <img id="image-preview" src="{% static 'img/default-profile.png' %}" alt="Imagem padrão" class="img-thumbnail" style="max-height: 100px; max-width: 100px;">
+                                    <div class="form-text text-center mt-1">Sem imagem</div>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <input type="file" class="form-control" name="imagem" id="id_imagem" accept="image/*">
+                                    <div class="form-text">Clique para alterar a imagem</div>
+                                </div>
+                            </div>
+                            {% if form.imagem.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.imagem.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="id_change_password" name="change_password">
+                                <label class="form-check-label" for="id_change_password">
+                                    Alterar senha
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="password-fields" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_old_password" class="form-label">Senha Atual*</label>
+                                    <input type="password" class="form-control" name="old_password" id="id_old_password">
+                                    {% if form.old_password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.old_password.errors|first }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_password1" class="form-label">Nova Senha*</label>
+                                    <input type="password" class="form-control" name="password1" id="id_password1">
+                                    {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password1.errors|first }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_password2" class="form-label">Confirmar Nova Senha*</label>
+                                    <input type="password" class="form-control" name="password2" id="id_password2">
+                                    {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password2.errors|first }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" id="submit-btn">Salvar Alterações</button>
+                            <a href="{% url 'perfil_usuario' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Controle do campo de senha
+    const changePasswordCheckbox = document.getElementById('id_change_password');
+    const passwordFields = document.getElementById('password-fields');
+    const form = document.getElementById('profile-form');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    changePasswordCheckbox.addEventListener('change', function() {
+        passwordFields.style.display = this.checked ? 'block' : 'none';
+        // Torna os campos obrigatórios apenas se estiver marcado
+        const passwordInputs = passwordFields.querySelectorAll('input[type="password"]');
+        passwordInputs.forEach(input => {
+            input.required = this.checked;
+        });
+    });
+    
+    // Preview da imagem
+    const imageInput = document.getElementById('id_imagem');
+    const imagePreview = document.getElementById('image-preview');
+    
+    imageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // Validação do formulário antes de enviar
+    form.addEventListener('submit', function(e) {
+        if (changePasswordCheckbox.checked) {
+            const oldPassword = document.getElementById('id_old_password').value;
+            const newPassword1 = document.getElementById('id_password1').value;
+            const newPassword2 = document.getElementById('id_password2').value;
+            
+            if (!oldPassword || !newPassword1 || !newPassword2) {
+                e.preventDefault();
+                alert('Por favor, preencha todos os campos de senha para alteração.');
+                return false;
+            }
+            
+            if (newPassword1 !== newPassword2) {
+                e.preventDefault();
+                alert('As novas senhas não coincidem.');
+                return false;
+            }
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+    });
+    
+    // Initialize state
+    passwordFields.style.display = changePasswordCheckbox.checked ? 'block' : 'none';
+});
+</script>
+{% endblock %}

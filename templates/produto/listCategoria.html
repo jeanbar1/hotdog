@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Categorias{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Conteúdo principal -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Lista de Categorias</h1>
+        <a href="{% url 'addCategoria' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Nova Categoria
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            {% if categorias %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th>Nome</th>
+                            <th width="15%">Produtos</th>
+                            <th width="20%">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for categoria in categorias %}
+                        <tr>
+                            <td>{{ categoria.id }}</td>
+                            <td>{{ categoria.nome }}</td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill">
+                                    {{ categoria.produtos.count }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'editCategoria' categoria.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" 
+                                            onclick="confirmarExclusao({{ categoria.id }}, '{{ categoria.nome }}')"
+                                            title="Excluir">
+                                        <i class="fas fa-trash-alt"></i> Excluir
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-info-circle fa-lg me-2"></i>
+                Nenhuma categoria cadastrada.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Configuração do SweetAlert2
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
+// Mostra mensagens do Django
+{% if messages %}
+    {% for message in messages %}
+        {% if forloop.first %}
+        Toast.fire({
+            icon: '{{ message.tags }}',
+            title: '{{ message|escapejs }}'
+        });
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+// Função de confirmação de exclusão
+function confirmarExclusao(categoriaId, categoriaNome) {
+    Swal.fire({
+        title: 'Confirmar exclusão?',
+        html: `Você está prestes a excluir a categoria <b>${categoriaNome}</b>.<br>Esta ação não pode ser desfeita!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-trash-alt"></i> Confirmar',
+        cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'btn btn-danger mx-2',
+            cancelButton: 'btn btn-secondary mx-2'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const url = "{% url 'deleteCategoria' 0 %}".replace('0', categoriaId);
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = 'csrfmiddlewaretoken';
+            csrf.value = '{{ csrf_token }}';
+            form.appendChild(csrf);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
+
+<style>
+.swal2-popup {
+    font-size: 1.6rem;
+}
+</style>
+{% endblock %}

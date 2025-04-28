@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ titulo }}</h2>
+    
+    <div class="card mt-3">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        
+                        {% if field.field.widget.input_type == "number" %}
+                            <div class="input-group">
+                                {% if field.name == "taxa" %}
+                                    <span class="input-group-text">R$</span>
+                                {% endif %}
+                                {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'carrinho' %}" class="btn btn-secondary me-md-2">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
