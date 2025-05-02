@@ -5,14 +5,14 @@ from .models import CategoriaProduto, Produto, Adicional, ProdutoAdicional  # Ad
 class ProdutoForm(ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'categorias', 'preco', 'imagem', 'disponivel']
+        fields = ['nome', 'descricao', 'categorias', 'preco', 'imagem', 'ativo']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome do produto'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control-textarea', 'placeholder': 'Digite a descrição'}),
             'categorias': forms.CheckboxSelectMultiple(attrs={'class': 'form-control-select-multiple'}),
             'preco': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Digite o preço'}),
             'imagem': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'disponivel': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'ativo': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 class CategoriaProdutoForm(forms.ModelForm):

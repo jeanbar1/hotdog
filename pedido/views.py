@@ -1,3 +1,4 @@
+from venv import logger
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -6,7 +7,8 @@ from django.forms import inlineformset_factory
 from django.http import Http404
 from django.contrib.auth.decorators import user_passes_test
 from principal.decorators import group_required
-from .models import Bairro, LocalEntrega, Pedido, ItemPedido, Usuario
+from produto.models import Adicional
+from .models import Bairro,LocalEntrega, Pedido, ItemPedido, Usuario
 from carrinho.models import Carrinho, ItemCarrinho
 from .forms import BairroForm, LocalEntregaForm, PedidoForm, ItemPedidoForm
 
@@ -54,39 +56,40 @@ def listar_pedidos(request, id=None):
         return redirect('home')
 
 
+
 @login_required
 @group_required('Administradores')
 def create_pedido(request):
+    # Formset para itens de pedido
     ItemPedidoFormSet = inlineformset_factory(
         Pedido, 
         ItemPedido, 
         form=ItemPedidoForm, 
-        extra=1, 
+        extra=1,  # 1 item extra (em branco)
         can_delete=True
     )
-    
+
     if request.method == "POST":
-        form = PedidoForm(request.POST)
-        formset = ItemPedidoFormSet(request.POST)
-        
+        form = PedidoForm(request.POST)  # Formulário do pedido
+        formset = ItemPedidoFormSet(request.POST)  # Formulário dos itens do pedido
+
+        # Verifica se os formulários são válidos
         if form.is_valid() and formset.is_valid():
-            try:
-                with transaction.atomic():
-                    pedido = form.save(commit=False)
-                    pedido.save()
-                    
-                    instances = formset.save(commit=False)
-                    for instance in instances:
-                        instance.pedido = pedido
-                        instance.preco_unitario = instance.produto.preco  # Define o preço automaticamente
-                        instance.save()
-                    
-                    pedido.atualizar_total()
-                    messages.success(request, 'Pedido criado com sucesso!')
-                    return redirect('detalhe_pedido', id=pedido.id)
-                    
-            except Exception as e:
-                messages.error(request, f'Erro ao criar pedido: {str(e)}')
+            # Coleta os dados sem salvar no banco
+            pedido_data = form.cleaned_data
+            item_data = []
+            for form_item in formset.forms:
+                item = form_item.cleaned_data
+                item_data.append(item)
+
+            # Exibe os dados coletados (ou você pode fazer algo com esses dados aqui)
+            messages.success(request, 'Os dados foram coletados com sucesso! Veja abaixo: ')
+            return render(request, 'pedido/pedido_preview.html', {
+                'pedido_data': pedido_data,
+                'item_data': item_data,
+                'titulo': 'Pré-visualização do Pedido'
+            })
+
     else:
         form = PedidoForm()
         formset = ItemPedidoFormSet()
@@ -96,7 +99,8 @@ def create_pedido(request):
         'formset': formset,
         'titulo': 'Criar Novo Pedido'
     })
-
+    
+    
 @login_required
 @group_required('Administradores')
 def edit_pedido(request, id):
@@ -189,79 +193,6 @@ def detalhe_pedido(request, id):
         'titulo': f'Pedido #{pedido.id}'
     })
 
-@login_required
-def criar_pedido_do_carrinho(request):
-    carrinho, created = Carrinho.objects.get_or_create(usuario=request.user)
-    itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho).select_related('produto')
-    
-    if not itens_carrinho.exists():
-        messages.warning(request, 'Seu carrinho está vazio!')
-        return redirect('carrinho')
-    
-    if request.method == 'POST':
-        form = PedidoForm(request.POST)
-        
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    # Cria o pedido
-                    pedido = form.save(commit=False)
-                    pedido.cliente = request.user
-                    pedido.status = 'PROCESSANDO'
-                    pedido.save()
-                    
-                    # Transferência dos itens com verificação explícita
-                    for item_carrinho in itens_carrinho:
-                        # Garante que a observação não seja None
-                        obs = item_carrinho.observacao if item_carrinho.observacao else ""
-                        
-                        # Cria o item do pedido com todos os campos
-                        ItemPedido.objects.create(
-                            pedido=pedido,
-                            produto=item_carrinho.produto,
-                            quantidade=item_carrinho.quantidade,
-                            preco_unitario=item_carrinho.produto.preco,
-                            observacoes=obs,  # Campo exatamente como no modelo
-                        )
-                    
-                    # Limpa o carrinho
-                    itens_carrinho.delete()
-                    pedido.atualizar_total()
-                    
-                    messages.success(request, f'Pedido #{pedido.id} criado com sucesso!')
-                    return redirect('detalhe_pedido', id=pedido.id)
-                    
-            except Exception as e:
-                messages.error(request, f'Erro ao criar pedido: {str(e)}')
-                return redirect('carrinho')
-    else:
-        form = PedidoForm(initial={'cliente': request.user})
-    
-    # Cálculo do resumo do pedido
-    itens_resumo = [
-        {
-            'produto': item.produto,
-            'quantidade': item.quantidade,
-            'preco': item.produto.preco,
-            'subtotal': item.quantidade * item.produto.preco,
-            'observacao': item.observacao or ""  # Para exibir no template
-        }
-        for item in itens_carrinho
-    ]
-    
-    context = {
-        'form': form,
-        'itens': itens_resumo,
-        'total': sum(item['subtotal'] for item in itens_resumo),
-        'titulo': 'Confirmar Pedido',
-    }
-    
-    return render(request, 'pedido/confirmar_pedido.html', context)
-
-
-
-
-
 
 
 #--------------------------local entrega--------------------------------
@@ -286,7 +217,7 @@ def adicionar_bairro(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Bairro adicionado com sucesso!')
-            return redirect('carrinho')
+            return redirect('listar_bairros')
     else:
         form = BairroForm()
     return render(request, 'admin/adicionar_bairro.html', {'form': form})
@@ -353,3 +284,104 @@ def remover_endereco(request, endereco_id):
     endereco.delete()
     messages.success(request, 'Endereço removido com sucesso!')
     return redirect('listar_enderecos')
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+@login_required
+def criar_pedido_do_carrinho(request):
+    try:
+        carrinho = Carrinho.objects.get(usuario=request.user)
+        # Otimiza a consulta com prefetch dos adicionais
+        itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho).prefetch_related('adicionais')
+
+        if request.method == 'POST':
+            form = PedidoForm(request.POST)
+            if form.is_valid():
+                try:
+                    with transaction.atomic():
+                        pedido = form.save(commit=False)
+                        pedido.cliente = request.user
+                        pedido.status = 'PROCESSANDO'
+                        pedido.save()  # Salva o pedido antes de criar os itens
+
+                        for item_carrinho in itens_carrinho:
+                            adicionais = item_carrinho.adicionais.all()
+                            preco_adicionais = sum(a.preco_extra for a in adicionais)
+                            preco_unitario = item_carrinho.produto.preco + preco_adicionais
+
+                            item_pedido = ItemPedido.objects.create(
+                                pedido=pedido,
+                                produto=item_carrinho.produto,
+                                quantidade=item_carrinho.quantidade,
+                                preco_unitario=preco_unitario
+                            )
+                            # Adiciona os adicionais ao item do pedido
+                            item_pedido.adicionais.set(adicionais)
+
+                        pedido.atualizar_total()
+                        carrinho.itens.all().delete()  # Esvazia o carrinho
+
+                        messages.success(request, 'Pedido criado com sucesso!')
+                        return redirect('detalhe_pedido', id=pedido.id)
+
+                except Exception as e:
+                    messages.error(request, f'Erro ao criar pedido: {str(e)}')
+
+        else:
+            form = PedidoForm()
+
+        return render(request, 'pedido/pedido_form.html', {
+            'form': form,
+            'itens_carrinho': itens_carrinho,
+            'titulo': 'Finalizar Pedido'
+        })
+
+    except Carrinho.DoesNotExist:
+        messages.warning(request, 'Seu carrinho está vazio.')
+        return redirect('listar_produtos')

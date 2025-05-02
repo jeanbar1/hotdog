@@ -1,0 +1,70 @@
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.table thead {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.bg-pendente     { background-color: #f39c12; }
+.bg-preparo      { background-color: #3498db; }
+.bg-transporte   { background-color: #9b59b6; }
+.bg-entregue     { background-color: #2ecc71; }
+.bg-cancelado    { background-color: #e74c3c; }
+
+.status-filter .btn {
+    border-radius: 20px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+.search-box {
+    max-width: 300px;
+    margin-left: auto;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.empty-state {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 60px;
+    color: #e74c3c;
+    opacity: 0.6;
+    margin-bottom: 20px;
+}
+
+.pagination .page-link {
+    color: #e74c3c;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+}

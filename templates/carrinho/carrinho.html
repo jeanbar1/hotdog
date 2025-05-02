@@ -4,143 +4,15 @@
 {% block title %}Carrinho de Compras{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/carrinho1.css' %}">
+<link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
 <style>
-    .product-img {
-        max-width: 100px;
-        height: auto;
-        border-radius: 8px;
-        object-fit: cover;
-    }
     
-    .quantity-input {
-        width: 70px;
-        text-align: center;
-    }
-    
-    .total-section {
-        background-color: rgba(248, 249, 250, 0.9);
-        padding: 20px;
-        border-radius: 8px;
-    }
-    
-    .empty-cart {
-        text-align: center;
-        padding: 50px 0;
-    }
-    
-    .empty-cart i {
-        font-size: 50px;
-        color: #6c757d;
-        margin-bottom: 20px;
-    }
-
-    /* Estilos para adicionais */
-    .adicionais-list {
-        margin-top: 8px;
-        padding-left: 20px;
-    }
-    
-    .adicional-item {
-        font-size: 0.85rem;
-        color: #6c757d;
-        display: flex;
-        justify-content: space-between;
-    }
-    
-    .adicional-price {
-        color: #28a745;
-        font-weight: 500;
-    }
-    
-    /* Melhorias para dispositivos móveis */
-    @media (max-width: 768px) {
-        .product-img {
-            max-width: 60px;
-        }
-        
-        .table thead {
-            display: none;
-        }
-        
-        .table tr {
-            display: block;
-            margin-bottom: 1rem;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-        }
-        
-        .table td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .table td:before {
-            content: attr(data-label);
-            font-weight: bold;
-            margin-right: 1rem;
-        }
-        
-        .table td:last-child {
-            border-bottom: none;
-        }
-        
-        .quantity-input {
-            width: 60px;
-        }
-        
-        .btn-responsive {
-            padding: 0.375rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .adicionais-list {
-            padding-left: 15px;
-        }
-    }
-    
-    /* Efeitos de hover e transição */
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-primary, .btn-outline-secondary {
-        transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Melhorias visuais */
-    .card {
-        border: none;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    
-    .card-body {
-        padding: 1.5rem;
-    }
-    
-    .table {
-        margin-bottom: 0;
-    }
-    
-    .table th {
-        border-top: none;
-        font-weight: 600;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-4">
     <h1 class="my-4">Seu Carrinho</h1>
     
     {% if itens_carrinho %}
@@ -161,7 +33,7 @@
                             </thead>
                             <tbody>
                                 {% for item in itens_carrinho %}
-                                <tr>
+                                <tr class="item-row" data-item-id="{{ item.id }}">
                                     <td data-label="Produto">
                                         <div class="d-flex align-items-center">
                                             {% if item.produto.imagem %}
@@ -175,9 +47,8 @@
                                                 <h5 class="mb-0">{{ item.produto.nome }}</h5>
                                                 <small class="text-muted">{{ item.produto.descricao|truncatechars:50 }}</small>
                                                 
-                                                <!-- Corrigido: Usar .all() para iterar sobre adicionais -->
                                                 {% if item.adicionais.all %}
-                                                <ul class="adicionais-list">
+                                                <ul class="adicionais-list mt-2">
                                                     {% for adicional in item.adicionais.all %}
                                                     <li class="adicional-item">
                                                         <span>{{ adicional.nome }}</span>
@@ -195,21 +66,24 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td data-label="Preço">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                    <td data-label="Preço" class="price">R$ {{ item.produto.preco|floatformat:2 }}</td>
                                     <td data-label="Quantidade">
-                                        <form method="post" action="{% url 'atualizar_carrinho' %}" class="d-inline">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
-                                            <input type="number" name="quantidade" 
-                                                   value="{{ item.quantidade }}" min="1" 
-                                                   class="form-control quantity-input" onchange="this.form.submit()">
-                                        </form>
+                                        <div class="quantity-control">
+                                            <button class="btn btn-sm btn-outline-secondary btn-quantity minus-btn">-</button>
+                                            <input type="number" value="{{ item.quantidade }}" min="1" 
+                                                   class="form-control quantity-input" data-item-id="{{ item.id }}">
+                                            <button class="btn btn-sm btn-outline-secondary btn-quantity plus-btn">+</button>
+                                        </div>
                                     </td>
-                                    <td data-label="Total">R$ {{ item.total_item|floatformat:2 }}</td>
+                                    <td data-label="Total" class="item-total">
+                                        R$ <span class="item-total-value">{{ item.total_item|floatformat:2 }}</span>
+                                        {% if item.total_adicionais > 0 %}
+                                        <br><small class="text-muted">(+ R$ <span class="item-adicionais-value">{{ item.total_adicionais|floatformat:2 }}</span> adicionais)</small>
+                                        {% endif %}
+                                    </td>
                                     <td data-label="">
-                                        <a href="{% url 'remover_do_carrinho' item.produto.id %}" class="btn btn-sm btn-outline-danger btn-responsive">
+                                        <a href="{% url 'remover_do_carrinho' item.produto.id %}" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i>
-                                            <span class="d-none d-md-inline">Remover</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -222,30 +96,30 @@
         </div>
         
         <div class="col-lg-4">
-            <div class="card sticky-top" style="top: 20px;">
+            <div class="card mb-4 sticky-top" style="top: 20px;">
                 <div class="card-body total-section">
                     <h4 class="card-title mb-4">Resumo do Pedido</h4>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal ({{ itens_carrinho|length }} itens):</span>
-                        <span>R$ {{ total|floatformat:2 }}</span>
+                        <span>Subtotal (<span id="total-items">{{ itens_carrinho|length }}</span> itens):</span>
+                        <span>R$ <span id="subtotal">{{ total|floatformat:2 }}</span></span>
                     </div>
                     
                     {% if total_adicionais > 0 %}
                     <div class="d-flex justify-content-between mb-2">
                         <span>Adicionais:</span>
-                        <span>R$ {{ total_adicionais|floatformat:2 }}</span>
+                        <span>R$ <span id="total-adicionais">{{ total_adicionais|floatformat:2 }}</span></span>
                     </div>
                     {% endif %}
                     
                     <hr>
                     <div class="d-flex justify-content-between fw-bold mb-4">
                         <span>Total:</span>
-                        <span class="text-primary">R$ {{ total|floatformat:2 }}</span>
+                        <span class="text-primary">R$ <span id="total-geral">{{ total_geral|floatformat:2 }}</span></span>
                     </div>
-                    <a href="{% url 'confirmar_compra' %}" class="btn btn-primary btn-lg w-100 mb-2 py-2">
+                    <a href="{% url 'confirmar_compra' %}" class="btn btn-primary btn-lg w-100 mb-2">
                         <i class="bi bi-check-circle me-2"></i>Finalizar Compra
                     </a>
-                    <a href="{% url 'listar_produtos' %}" class="btn btn-outline-secondary w-100 py-2">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100">
                         <i class="bi bi-arrow-left me-2"></i>Continuar Comprando
                     </a>
                 </div>
@@ -253,11 +127,11 @@
         </div>
     </div>
     {% else %}
-    <div class="empty-cart">
-        <i class="bi bi-cart-x-fill"></i>
-        <h3 class="mb-3">Seu carrinho está vazio</h3>
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x-fill display-4 text-muted"></i>
+        <h3 class="my-3">Seu carrinho está vazio</h3>
         <p class="text-muted mb-4">Adicione produtos ao seu carrinho para continuar</p>
-        <a href="{% url 'listar_produtos' %}" class="btn btn-primary btn-lg px-4">
+        <a href="{% url 'home' %}" class="btn btn-primary btn-lg px-4">
             <i class="bi bi-arrow-right me-2"></i>Ver Cardápio
         </a>
     </div>
@@ -266,11 +140,188 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
     // Atualiza o contador do carrinho no navbar
-    document.addEventListener('DOMContentLoaded', function() {
-        const cartCount = {{ itens_carrinho|length|default:0 }};
+    updateCartCount();
+    
+    // Função para formatar valores monetários
+    function formatMoney(value) {
+        return parseFloat(value).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+    
+    // Função para calcular o total de um item
+    function calculateItemTotal(itemRow) {
+        const price = parseFloat(itemRow.querySelector('.price').textContent.replace('R$ ', '').replace('.', '').replace(',', '.'));
+        const quantity = parseInt(itemRow.querySelector('.quantity-input').value);
+        const adicionais = itemRow.querySelector('.item-adicionais-value');
+        
+        let adicionaisTotal = 0;
+        if (adicionais) {
+            adicionaisTotal = parseFloat(adicionais.textContent.replace('.', '').replace(',', '.'));
+        }
+        
+        const itemTotal = (price * quantity) + (adicionaisTotal * quantity);
+        return itemTotal;
+    }
+    
+    // Função para calcular e atualizar os totais
+    function updateTotals() {
+        let subtotal = 0;
+        let totalAdicionais = 0;
+        let totalItems = 0;
+        
+        document.querySelectorAll('.item-row').forEach(row => {
+            const quantity = parseInt(row.querySelector('.quantity-input').value);
+            const price = parseFloat(row.querySelector('.price').textContent.replace('R$ ', '').replace('.', '').replace(',', '.'));
+            const adicionaisValue = row.querySelector('.item-adicionais-value') ? 
+                parseFloat(row.querySelector('.item-adicionais-value').textContent.replace('.', '').replace(',', '.')) : 0;
+            
+            const itemTotal = (price * quantity) + (adicionaisValue * quantity);
+            
+            row.querySelector('.item-total-value').textContent = formatMoney(itemTotal);
+            
+            subtotal += price * quantity;
+            totalAdicionais += adicionaisValue * quantity;
+            totalItems += quantity;
+        });
+        
+        // Atualiza os totais no resumo
+        document.getElementById('subtotal').textContent = formatMoney(subtotal);
+        if (totalAdicionais > 0) {
+            document.getElementById('total-adicionais').textContent = formatMoney(totalAdicionais);
+        }
+        document.getElementById('total-geral').textContent = formatMoney(subtotal + totalAdicionais);
+        document.getElementById('total-items').textContent = document.querySelectorAll('.item-row').length;
+        
+        // Atualiza o contador do carrinho no navbar
+        updateCartCount();
+    }
+    
+    // Função para atualizar o contador do carrinho
+    function updateCartCount() {
+        const cartCount = document.querySelectorAll('.item-row').length;
         document.getElementById('cart-count').textContent = cartCount;
+    }
+    
+    // Eventos para os botões de quantidade
+    document.querySelectorAll('.plus-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.parentNode.querySelector('.quantity-input');
+            input.value = parseInt(input.value) + 1;
+            updateQuantity(input);
+        });
     });
+    
+    document.querySelectorAll('.minus-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.parentNode.querySelector('.quantity-input');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+                updateQuantity(input);
+            }
+        });
+    });
+    
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            if (parseInt(this.value) < 1) {
+                this.value = 1;
+            }
+            updateQuantity(this);
+        });
+    });
+    
+    // Função para atualizar a quantidade no servidor
+// Função para atualizar a quantidade no servidor
+    function updateQuantity(input) {
+    const itemId = input.dataset.itemId;
+    const quantity = parseInt(input.value);
+    const itemRow = input.closest('.item-row');
+    
+    // Mostrar loading
+    const originalValue = input.value;
+    input.disabled = true;
+    
+    fetch("{% url 'atualizar_carrinho' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            produto_id: itemId,
+            quantidade: quantity
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na requisição');
+        }
+        return response.json();
+    })
+    .then(data => {
+        input.disabled = false;
+        
+        if (data.success) {
+            // Atualiza os valores do item
+            itemRow.querySelector('.item-total-value').textContent = 
+                parseFloat(data.item_total).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            
+            const adicionaisElement = itemRow.querySelector('.item-adicionais-value');
+            if (adicionaisElement && parseFloat(data.adicionais_total) > 0) {
+                adicionaisElement.textContent = 
+                    parseFloat(data.adicionais_total).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+            }
+            
+            // Atualiza os totais gerais
+            updateTotals();
+            
+            // Feedback visual
+            Swal.fire({
+                icon: 'success',
+                title: data.message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else {
+            // Reverte o valor se houve erro
+            input.value = originalValue;
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: data.message || 'Ocorreu um erro ao atualizar a quantidade'
+            });
+        }
+    })
+    .catch(error => {
+        input.disabled = false;
+        input.value = originalValue;
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Ocorreu um erro ao se comunicar com o servidor'
+        });
+    });
+}
+
+    
+    // Inicializa os totais
+    updateTotals();
+});
 </script>
 {% endblock %}

@@ -1,82 +1,162 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Detalhes do Pedido #{{ pedido.id }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pedidoD.css' %}" />
+{% endblock %}
+{% block title %}Detalhes do Pedido #{{ pedido.numero_diario }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container py-4">
+    <!-- Cabeçalho do Pedido -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="mb-0 text-dark">
+            <i class="fas fa-shopping-bag me-2 text-danger"></i>Pedido #{{ pedido.numero_diario }}
+        </h2>
+        <span class="badge bg-{% if pedido.status == 'ENTREGUE' %}success{% elif pedido.status == 'CANCELADO' %}danger{% else %}warning{% endif %} py-2 px-3 fw-normal">
+            <i class="fas {% if pedido.status == 'ENTREGUE' %}fa-check-circle{% elif pedido.status == 'CANCELADO' %}fa-times-circle{% else %}fa-clock{% endif %} me-1"></i>
+            {{ pedido.get_status_display }}
+        </span>
+    </div>
+
     <div class="row">
+        <!-- Coluna Principal -->
         <div class="col-lg-8">
-            <!-- Card de informações do pedido -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Detalhes do Pedido #{{ pedido.id }}</h4>
-                        <span class="badge bg-{% if pedido.status == 'ENTREGUE' %}success{% elif pedido.status == 'CANCELADO' %}danger{% else %}warning{% endif %}">
-                            {{ pedido.get_status_display }}
-                        </span>
-                    </div>
+            <!-- Seção de Informações do Cliente -->
+            <div class="card mb-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>Informações do Cliente
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h5 class="mb-3">Informações do Cliente</h5>
-                            <p><strong>Nome:</strong> {{ pedido.cliente.get_full_name|default:pedido.cliente.username }}</p>
-                            <p><strong>Data do Pedido:</strong> {{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
-                            <p><strong>Última Atualização:</strong> {{ pedido.data_atualizacao|date:"d/m/Y H:i" }}</p>
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-id-card me-2"></i>Cliente</h6>
+                                <p class="ps-3">
+                                    {{ pedido.cliente.nome_completo|default:pedido.cliente.username }}
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-phone me-2"></i>Telefone</h6>
+                                <p class="ps-3">{{ pedido.cliente.telefone|default:"Não informado" }}</p>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <h5 class="mb-3">Informações de Entrega</h5>
-                            <p><strong>Bairro:</strong> {{ pedido.bairro_entrega.nome }}</p>
-                            <p><strong>Taxa de Entrega:</strong> R$ {{ pedido.taxa_entrega|floatformat:2 }}</p>
-                            <p><strong>Endereço:</strong> {{ pedido.endereco_entrega }}</p>
-                            {% if pedido.referencia_entrega %}
-                            <p><strong>Referência:</strong> {{ pedido.referencia_entrega }}</p>
-                            {% endif %}
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-calendar-day me-2"></i>Data do Pedido</h6>
+                                <p class="ps-3">{{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-sync-alt me-2"></i>Última Atualização</h6>
+                                <p class="ps-3">{{ pedido.data_atualizacao|date:"d/m/Y H:i" }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Card de itens do pedido -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h4 class="mb-0">Itens do Pedido</h4>
+            <!-- Seção de Entrega -->
+            <div class="card mb-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-truck me-2"></i>Informações de Entrega
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-map-marker-alt me-2"></i>Bairro</h6>
+                                <p class="ps-3">{{ pedido.bairro_entrega.nome }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-stopwatch me-2"></i>Tempo Estimado</h6>
+                                <p class="ps-3">{{ pedido.bairro_entrega.tempo }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-home me-2"></i>Endereço</h6>
+                                <p class="ps-3">{{ pedido.endereco_entrega }}</p>
+                                {% if pedido.referencia_entrega %}
+                                <small class="text-muted ps-3"><i class="fas fa-flag me-1"></i>Referência: {{ pedido.referencia_entrega }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-money-bill-wave me-2"></i>Taxa de Entrega</h6>
+                                <p class="ps-3">R$ {{ pedido.taxa_entrega|floatformat:2 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Itens do Pedido -->
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-alt me-2"></i>Itens do Pedido
+                    </h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                            <thead class="table-danger">
                                 <tr>
-                                    <th width="40%">Produto</th>
-                                    <th class="text-center">Qtd</th>
-                                    <th class="text-end">Unitário</th>
-                                    <th class="text-end">Subtotal</th>
+                                    <th class="border-danger">Produto</th>
+                                    <th class="text-center border-danger">Qtd</th>
+                                    <th class="text-end border-danger">Unitário</th>
+                                    <th class="text-end border-danger">Adicionais</th>
+                                    <th class="text-end border-danger">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in pedido.itens_pedido.all %}
                                 <tr>
-                                    <td>
+                                    <td class="border-danger">
                                         <div class="d-flex align-items-center">
                                             {% if item.produto.imagem %}
                                             <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" 
-                                                 class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                 class="img-thumbnail me-3 border-danger" style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% else %}
+                                            <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center border-danger" 
+                                                 style="width: 60px; height: 60px; background-color: #f8f9fa;">
+                                                <i class="fas fa-image text-danger"></i>
+                                            </div>
                                             {% endif %}
                                             <div>
                                                 <strong>{{ item.produto.nome }}</strong>
                                                 {% if item.observacoes %}
                                                 <div class="text-muted small mt-1">
-                                                    <i class="fas fa-info-circle"></i> {{ item.observacoes|truncatechars:40 }}
+                                                    <i class="fas fa-info-circle text-danger"></i> {{ item.observacoes }}
                                                 </div>
                                                 {% endif %}
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">{{ item.quantidade }}</td>
-                                    <td class="text-end">R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                                    <td class="text-end">R$ {{ item.subtotal|floatformat:2 }}</td>
+                                    <td class="text-center align-middle border-danger">{{ item.quantidade }}</td>
+                                    <td class="text-end align-middle border-danger">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                                    <td class="text-end align-middle border-danger">
+                                        <span class="badge bg-danger bg-opacity-10 text-danger">+R$ {{ item.adicionais_total|floatformat:2 }}</span>
+                                    </td>
+                                    <td class="text-end align-middle fw-bold border-danger">R$ {{ item.subtotal|floatformat:2 }}</td>
                                 </tr>
+                                {% if item.adicionais.all %}
+                                <tr>
+                                    <td colspan="5" class="bg-danger bg-opacity-10 pt-0 pb-2 border-danger">
+                                        <div class="ps-5 py-2 small">
+                                            <strong class="text-danger">Adicionais:</strong>
+                                            {% for adicional in item.adicionais.all %}
+                                            <span class="badge bg-white text-danger border border-danger ms-2">
+                                                {{ adicional.nome }} (+R$ {{ adicional.preco_extra|floatformat:2 }})
+                                            </span>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -85,44 +165,58 @@
             </div>
         </div>
 
-        <!-- Resumo do pedido -->
+        <!-- Resumo do Pedido -->
         <div class="col-lg-4">
-            <div class="card shadow-sm sticky-top" style="top: 20px;">
-                <div class="card-header bg-light">
-                    <h4 class="mb-0">Resumo do Pedido</h4>
+            <div class="card border-danger sticky-top" style="top: 20px;">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-invoice me-2"></i>Resumo do Pedido
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal dos Itens:</span>
-                        <span>R$ {{ pedido.preco_total|floatformat:2 }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Taxa de Entrega:</span>
-                        <span>R$ {{ pedido.taxa_entrega|floatformat:2 }}</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold fs-5">
-                        <span>Total do Pedido:</span>
-                        <span class="text-primary">
-                            R$ {{ pedido.total_final|floatformat:2 }}
-                        </span>
-                    </div>
-
-                    <div class="mt-4">
-                        <div class="alert alert-info">
-                            <h6 class="alert-heading"><i class="fas fa-truck"></i> Informações de Entrega</h6>
-                            <p class="mb-1"><strong>Bairro:</strong> {{ pedido.bairro_entrega.nome }}</p>
-                            <p class="mb-1"><strong>Tempo Estimado:</strong> {{ pedido.bairro_entrega.tempo }}</p>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal:</span>
+                            <span>R$ {{ pedido.subtotal_produtos|floatformat:2 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Adicionais:</span>
+                            <span>R$ {{ pedido.total_adicionais|floatformat:2 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Taxa de Entrega:</span>
+                            <span>R$ {{ pedido.taxa_entrega|floatformat:2 }}</span>
+                        </div>
+                        <hr class="border-danger">
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Total:</span>
+                            <span class="text-danger">R$ {{ pedido.total_final|floatformat:2 }}</span>
                         </div>
                     </div>
+
+                    <!-- Informações adicionais -->
+                    <div class="border-top border-danger pt-3">
+                        <h6 class="text-danger mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Detalhes
+                        </h6>
+                        <div class="mb-2">
+                            <small class="text-muted">Número do Pedido:</small>
+                            <p class="mb-0">{{ pedido.numero_diario }}</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Data de Referência:</small>
+                            <p class="mb-0">{{ pedido.data_referencia|date:"d/m/Y" }}</p>
+                        </div>
+                        
+                    </div>
                 </div>
-                <div class="card-footer bg-light">
+                <div class="card-footer bg-danger bg-opacity-10">
                     <div class="d-grid gap-2">
-                        <a href="{% url 'listar_pedidos' %}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Voltar para Pedidos
+                        <a href="{% url 'listar_pedidos' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
                         </a>
                         {% if request.user.is_superuser and pedido.pode_ser_editado %}
-                        <a href="{% url 'edit_pedido' pedido.id %}" class="btn btn-primary">
+                        <a href="{% url 'edit_pedido' pedido.id %}" class="btn btn-danger">
                             <i class="fas fa-edit me-2"></i>Editar Pedido
                         </a>
                         {% endif %}
@@ -134,43 +228,24 @@
 </div>
 {% endblock %}
 
-{% block extra_css %}
-<style>
-    .card-header {
-        border-radius: 0.375rem 0.375rem 0 0 !important;
-    }
-    .table th {
-        border-top: none;
-    }
-    .img-thumbnail {
-        padding: 0.25rem;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
-        max-width: 100%;
-        height: auto;
-    }
-    .sticky-top {
-        z-index: 10;
-    }
-</style>
-{% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Tooltips para observações longas
+    // Inicializa tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
     
-    // Confirmação para ações importantes
-    document.querySelectorAll('.btn-danger').forEach(function(button) {
-        button.addEventListener('click', function(e) {
-            if (!confirm('Tem certeza que deseja realizar esta ação?')) {
-                e.preventDefault();
-            }
+    // Efeito de hover nas linhas da tabela
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', () => {
+            row.style.backgroundColor = 'rgba(220, 53, 69, 0.03)';
+        });
+        row.addEventListener('mouseleave', () => {
+            row.style.backgroundColor = '';
         });
     });
 });

@@ -12,7 +12,7 @@ class Produto(models.Model):
     categorias = models.ManyToManyField(CategoriaProduto, related_name='produtos')
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
-    disponivel = models.BooleanField(default=True)  # Campo para controlar disponibilidade
+    ativo = models.BooleanField(default=True)  # Para habilitar/desabilitar por produto
 
     def __str__(self):
         tipos_str = ", ".join([tipo.nome for tipo in self.categorias.all()])

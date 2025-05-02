@@ -1,3 +1,4 @@
+import json
 from venv import logger
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -13,7 +14,6 @@ from usuario.models import Usuario
 from .models import Carrinho, ItemCarrinho
 
 
-
 @login_required(login_url='login')
 def carrinho(request, id=None):
     if id and not request.user.is_superuser:
@@ -25,40 +25,51 @@ def carrinho(request, id=None):
     itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho_usuario).select_related('produto').prefetch_related('adicionais')
     locais_entrega = LocalEntrega.objects.all()
     
-    # Calcula os totais
+    # Calcula os totais - MODIFICADO PARA INCLUIR ADICIONAIS
     total_produtos = sum(item.produto.preco * item.quantidade for item in itens_carrinho)
     total_adicionais = sum(
         sum(adicional.preco_extra for adicional in item.adicionais.all()) * item.quantidade 
         for item in itens_carrinho
     )
-    total_geral = total_produtos + total_adicionais
+    total_geral = total_produtos + total_adicionais  # Agora inclui os adicionais
     
     context = {
         'itens_carrinho': itens_carrinho,
-        'total': total_produtos,
-        'total_adicionais': total_adicionais,
-        'total_geral': total_geral,
+        'total': total_produtos,  # Mantém como estava (sem adicionais)
+        'total_adicionais': total_adicionais,  # Novo campo para mostrar adicionais separadamente
+        'total_geral': total_geral,  # Total final (produtos + adicionais)
         'is_own_cart': user == request.user,
         'locais_entrega': locais_entrega,
         'total_com_entrega': total_geral  # Inicial sem taxa
     }
     return render(request, 'carrinho/carrinho.html', context)
 
+
+
 @login_required
 def adicionar_ao_carrinho(request, produto_id):
     if request.method == 'POST':
         produto = get_object_or_404(Produto, id=produto_id)
+
+        # 🔒 Verifica se o produto está ativo
+        if not produto.ativo:
+            messages.error(request, 'Este produto está indisponivel e não pode ser adicionado ao carrinho.')
+            return redirect('detalhes_produto', id=produto.id)
+
         carrinho, created = Carrinho.objects.get_or_create(usuario=request.user)
         
         try:
             quantidade = int(request.POST.get('quantidade', 1))
             if quantidade < 1:
-                raise ValueError
+                raise ValueError("Quantidade deve ser positiva.")
             observacao = request.POST.get('observacao', '')
-            adicionais_ids = request.POST.get('adicionais', '').split(',')
+
+            adicionais_raw = request.POST.get('adicionais', '')
+            adicionais_ids = [int(aid) for aid in adicionais_raw.split(',') if aid.strip().isdigit()]
             adicionais = Adicional.objects.filter(id__in=adicionais_ids)
+
         except (ValueError, TypeError):
-            messages.error(request, 'Quantidade inválida.')
+            messages.error(request, 'Quantidade ou adicionais inválidos.')
             return redirect('detalhes_produto', id=produto.id)
 
         # Cria ou atualiza o item no carrinho
@@ -76,16 +87,15 @@ def adicionar_ao_carrinho(request, produto_id):
             if observacao:
                 item.observacao = observacao
             item.save()
-        
-        # Adiciona os adicionais ao item
-        item.adicionais.clear()
-        for adicional in adicionais:
-            item.adicionais.add(adicional)
+
+        # Atualiza os adicionais
+        item.adicionais.set(adicionais)
 
         messages.success(request, f'"{produto.nome}" adicionado ao carrinho!')
         return redirect('detalhes_produto', id=produto.id)
     
     return redirect('home')
+
 
 @login_required
 def remover_do_carrinho(request, id):
@@ -102,54 +112,71 @@ def remover_do_carrinho(request, id):
     
     return redirect('carrinho')
 
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt  # Temporário para testes - remova em produção
 @require_POST
 @login_required
 def atualizar_carrinho(request):
-    """
-    Atualiza quantidades de múltiplos itens no carrinho.
-    """
-    updates = {}
-    for key, value in request.POST.items():
-        if key.startswith('quantidade_'):
-            try:
-                item_id = int(key.split('_')[1])
-                quantidade = int(value)
-                if quantidade > 0:
-                    updates[item_id] = quantidade
-            except (ValueError, IndexError):
-                continue
-    
-    if not updates:
-        messages.error(request, "Nenhuma quantidade válida foi enviada.")
-        return redirect('carrinho')
-    
-    with transaction.atomic():
-        user_items = ItemCarrinho.objects.filter(
-            id__in=updates.keys(),
-            carrinho__usuario=request.user
-        )
+    try:
+        # Obter dados do POST
+        data = json.loads(request.body)
+        item_id = data.get('produto_id')
+        quantidade = int(data.get('quantidade'))
         
-        if user_items.count() != len(updates):
-            messages.error(request, "Alguns itens não pertencem ao seu carrinho.")
-            return redirect('carrinho')
-        
-        for item in user_items:
-            item.quantidade = updates[item.id]
+        if not item_id or quantidade < 1:
+            return JsonResponse({
+                'success': False,
+                'message': 'Dados inválidos'
+            }, status=400)
+
+        with transaction.atomic():
+            item = ItemCarrinho.objects.filter(
+                id=item_id,
+                carrinho__usuario=request.user
+            ).first()
+
+            if not item:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Item não encontrado no seu carrinho'
+                }, status=404)
+
+            item.quantidade = quantidade
             item.save()
-    
-    messages.success(request, 'Carrinho atualizado com sucesso!')
-    return redirect('carrinho')
 
+            # Calcular totais atualizados
+            total_item = item.produto.preco * quantidade
+            total_adicionais = sum(adicional.preco_extra for adicional in item.adicionais.all()) * quantidade
+            total_geral_item = total_item + total_adicionais
 
+            return JsonResponse({
+                'success': True,
+                'item_total': f'{total_item:.2f}',
+                'adicionais_total': f'{total_adicionais:.2f}',
+                'total_geral_item': f'{total_geral_item:.2f}',
+                'quantidade': quantidade,
+                'message': 'Quantidade atualizada com sucesso!'
+            })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Erro ao atualizar: {str(e)}'
+        }, status=500)
+        
+        
+        
+        
 @require_http_methods(["GET", "POST"])
 @login_required
 @transaction.atomic
 def confirmar_compra(request):
     try:
         carrinho = get_object_or_404(Carrinho, usuario=request.user)
-        itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho).select_related('produto')
+        itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho)\
+            .select_related('produto')\
+            .prefetch_related('adicionais')
         bairros = Bairro.objects.all().order_by('nome')
 
         if not itens_carrinho.exists():
@@ -165,11 +192,12 @@ def confirmar_compra(request):
                 return redirect('confirmar_compra')
 
             with transaction.atomic():
-                # Criar pedido
                 bairro = get_object_or_404(Bairro, id=bairro_id)
+                
+                # Criar pedido com valores iniciais (serão atualizados depois)
                 pedido = Pedido.objects.create(
                     cliente=request.user,
-                    preco_total=carrinho.total() + bairro.taxa,
+                    preco_total=0,  # Será atualizado após criar os itens
                     bairro_entrega=bairro,
                     endereco_entrega=endereco,
                     referencia_entrega=request.POST.get('referencia', ''),
@@ -177,24 +205,46 @@ def confirmar_compra(request):
                     taxa_entrega=bairro.taxa
                 )
 
-                # Criar itens garantindo todos os campos obrigatórios
+                # Criar itens do pedido e calcular totais
                 for item in itens_carrinho:
-                    ItemPedido.objects.create(
+                    # Calcular preço unitário com adicionais
+                    preco_adicionais = sum(adicional.preco_extra for adicional in item.adicionais.all())
+                    preco_unitario = item.produto.preco + preco_adicionais
+                    
+                    # Criar item do pedido
+                    item_pedido = ItemPedido.objects.create(
                         pedido=pedido,
                         produto=item.produto,
                         quantidade=item.quantidade,
-                        preco_unitario=item.produto.preco,  # Campo obrigatório
+                        preco_unitario=preco_unitario,
                         observacoes=item.observacao or ""
                     )
-
+                    
+                    # Adicionar os adicionais ao item do pedido
+                    item_pedido.adicionais.set(item.adicionais.all())
+                
+                # Atualizar total do pedido (incluindo adicionais e taxa)
+                pedido.atualizar_total()
+                                
+                # Limpar carrinho
                 itens_carrinho.delete()
 
             messages.success(request, f'Pedido #{pedido.id} criado com sucesso!')
             return redirect('detalhe_pedido', id=pedido.id)
 
+        # Para GET - calcular totais corretamente para exibição
+        total_produtos = sum(item.produto.preco * item.quantidade for item in itens_carrinho)
+        total_adicionais = sum(
+            sum(adicional.preco_extra for adicional in item.adicionais.all()) * item.quantidade
+            for item in itens_carrinho
+        )
+        total_geral = total_produtos + total_adicionais
+
         return render(request, 'pedido/confirmar_pedido.html', {
             'itens': itens_carrinho,
-            'total': carrinho.total(),
+            'total_produtos': total_produtos,
+            'total_adicionais': total_adicionais,
+            'total_geral': total_geral,
             'bairros': bairros,
         })
 
@@ -202,7 +252,7 @@ def confirmar_compra(request):
         logger.error(f"Erro na confirmação: {str(e)}", exc_info=True)
         messages.error(request, 'Erro ao processar seu pedido')
         return redirect('carrinho')
-
+    
 @login_required
 def calcular_taxa(request):
     """

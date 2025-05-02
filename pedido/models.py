@@ -1,19 +1,15 @@
 from django.db import models
 from usuario.models import Usuario
-from produto.models import Produto
+from produto.models import Adicional, Produto
+from datetime import date
+from django.utils import timezone
+
+
 
 class Bairro(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome do Bairro")
-    taxa = models.DecimalField(
-        max_digits=6, 
-        decimal_places=2,
-        verbose_name="Taxa de Entrega"
-    )
-    tempo = models.CharField(
-        max_length=50, 
-        default="30-45 min",
-        verbose_name="Tempo Estimado"
-    )
+    taxa = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Taxa de Entrega")
+    tempo = models.CharField(max_length=50, default="30-45 min", verbose_name="Tempo Estimado")
     ativo = models.BooleanField(default=True, verbose_name="Ativo")
 
     class Meta:
@@ -24,6 +20,7 @@ class Bairro(models.Model):
     def __str__(self):
         return f"{self.nome} (Taxa: R$ {self.taxa})"
 
+
 class Pedido(models.Model):
     STATUS_PEDIDO = [
         ('PROCESSANDO', 'Processando'),
@@ -32,105 +29,71 @@ class Pedido(models.Model):
         ('CANCELADO', 'Cancelado'),
     ]
 
-    cliente = models.ForeignKey(
-        Usuario, 
-        on_delete=models.CASCADE, 
-        related_name='pedidos',
-        verbose_name="Cliente"
-    )
-    bairro_entrega = models.ForeignKey(
-        Bairro, 
-        on_delete=models.SET_NULL, 
-        null=True,
-        blank=True,
-        verbose_name="Bairro de Entrega"
-    )
-    endereco_entrega = models.CharField(
-        max_length=150, 
-        verbose_name="Endereço Completo"
-    )
-    referencia_entrega = models.CharField(
-        max_length=100, 
-        blank=True, 
-        null=True,
-        verbose_name="Ponto de Referência"
-    )
-    taxa_entrega = models.DecimalField(
-        max_digits=6, 
-        decimal_places=2, 
-        default=0,
-        verbose_name="Taxa de Entrega"
-    )
-    data_pedido = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Data do Pedido"
-    )
-    data_atualizacao = models.DateTimeField(
-        auto_now=True,
-        verbose_name="Última Atualização"
-    )
-    preco_total = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=0,
-        verbose_name="Preço Total"
-    )
-    status = models.CharField(
-        max_length=20, 
-        choices=STATUS_PEDIDO, 
-        default='PROCESSANDO',
-        verbose_name="Status"
-    )
+    cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos', verbose_name="Cliente")
+    bairro_entrega = models.ForeignKey(Bairro, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Bairro de Entrega")
+    endereco_entrega = models.CharField(max_length=150, verbose_name="Endereço Completo")
+    referencia_entrega = models.CharField(max_length=100, blank=True, null=True, verbose_name="Ponto de Referência")
+    taxa_entrega = models.DecimalField(max_digits=6, decimal_places=2, default=0, verbose_name="Taxa de Entrega")
+    data_pedido = models.DateTimeField(auto_now_add=True, verbose_name="Data do Pedido")
+    data_atualizacao = models.DateTimeField(auto_now=True, verbose_name="Última Atualização")
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Preço Total")
+    status = models.CharField(max_length=20, choices=STATUS_PEDIDO, default='PROCESSANDO', verbose_name="Status")
+
+    numero_diario = models.PositiveIntegerField(default=1, verbose_name="Número do Pedido do Dia")
+    data_referencia = models.DateField(default=date.today, verbose_name="Data de Referência")
 
     class Meta:
         ordering = ['-data_pedido']
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
+    
+    def pode_ser_editado(self):
+        """Permite edição apenas se o pedido tiver menos de 30 minutos."""
+        agora = timezone.now()
+        return (agora - self.data_pedido).total_seconds() < 1800
 
     def __str__(self):
-        return f'Pedido #{self.id} - {self.cliente.username}'
+        return f'Pedido {self.numero_diario} - {self.cliente.username} ({self.data_referencia})'
+
+    def save(self, *args, **kwargs):
+        hoje = date.today()
+
+        if not self.pk:
+            ultimo_pedido_hoje = Pedido.objects.filter(data_referencia=hoje).order_by('-numero_diario').first()
+            if ultimo_pedido_hoje:
+                self.numero_diario = ultimo_pedido_hoje.numero_diario + 1
+            else:
+                self.numero_diario = 1
+            self.data_referencia = hoje
+
+        super().save(*args, **kwargs)
 
     def atualizar_total(self):
-        """Atualiza o total do pedido baseado nos itens"""
-        self.preco_total = sum(item.subtotal() for item in self.itens_pedido.all())
+        self.preco_total = sum(item.subtotal for item in self.itens_pedido.all())
+        if self.bairro_entrega:
+            self.taxa_entrega = self.bairro_entrega.taxa
         self.save()
 
-    def pode_ser_editado(self):
-        """Verifica se o pedido ainda pode ser editado"""
-        return self.status == 'PROCESSANDO'
+    @property
+    def subtotal_produtos(self):
+        return sum(item.total_produto for item in self.itens_pedido.all())
+
+    @property
+    def total_adicionais(self):
+        return sum(item.adicionais_total for item in self.itens_pedido.all())
 
     @property
     def total_final(self):
-        """Retorna o valor total incluindo a taxa de entrega"""
-        return self.preco_total + self.taxa_entrega
+        return self.subtotal_produtos + self.total_adicionais + self.taxa_entrega
+
 
 class ItemPedido(models.Model):
-    pedido = models.ForeignKey(
-        Pedido, 
-        on_delete=models.CASCADE, 
-        related_name='itens_pedido',
-        verbose_name="Pedido"
-    )
-    produto = models.ForeignKey(
-        Produto, 
-        on_delete=models.PROTECT,
-        verbose_name="Produto"
-    )
-    quantidade = models.PositiveIntegerField(
-        default=1,
-        verbose_name="Quantidade"
-    )
-    preco_unitario = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2,
-        verbose_name="Preço Unitário"
-    )
-    observacoes = models.CharField(
-        max_length=100, 
-        blank=True, 
-        null=True,
-        verbose_name="Observações"
-    )
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens_pedido', verbose_name="Pedido")
+    produto = models.ForeignKey(Produto, on_delete=models.PROTECT, verbose_name="Produto")
+    quantidade = models.PositiveIntegerField(default=1, verbose_name="Quantidade")
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário")
+    observacoes = models.CharField(max_length=100, blank=True, null=True, verbose_name="Observações")
+    adicionais = models.ManyToManyField(Adicional, blank=True)
 
     class Meta:
         verbose_name = 'Item do Pedido'
@@ -139,26 +102,33 @@ class ItemPedido(models.Model):
     def __str__(self):
         return f'{self.quantidade}x {self.produto.nome} (Pedido #{self.pedido.id})'
 
+    @property
+    def adicionais_total(self):
+        return sum(adicional.preco_extra for adicional in self.adicionais.all()) * self.quantidade
+
+    @property
+    def total_produto(self):
+        return self.preco_unitario * self.quantidade
+
+    @property
     def subtotal(self):
-        return self.quantidade * self.preco_unitario
+        return self.total_produto + self.adicionais_total
 
     def save(self, *args, **kwargs):
-        """Garante que o preço unitário é sempre o atual do produto"""
-        if not self.preco_unitario:
+        if not self.pk or not self.preco_unitario:
             self.preco_unitario = self.produto.preco
         super().save(*args, **kwargs)
         self.pedido.atualizar_total()
 
+    def delete(self, *args, **kwargs):
+        pedido = self.pedido
+        super().delete(*args, **kwargs)
+        pedido.atualizar_total()
+
+
 class LocalEntrega(models.Model):
-    bairro = models.ForeignKey(
-        Bairro, 
-        on_delete=models.CASCADE,
-        verbose_name="Bairro"
-    )
-    endereco = models.CharField(
-        max_length=150, 
-        verbose_name="Endereço Completo"
-    )
+    bairro = models.ForeignKey(Bairro, on_delete=models.CASCADE, verbose_name="Bairro")
+    endereco = models.CharField(max_length=150, verbose_name="Endereço Completo")
 
     class Meta:
         verbose_name = "Local de Entrega"

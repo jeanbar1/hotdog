@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Acesso Rápido - Meu Cardápio{% endblock %}
+
+{% block extra_css %}
+<style>
+  .acesso-rapido-container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .acesso-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .acesso-option {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .acesso-option.active {
+    background-color: #e74c3c;
+    color: white;
+  }
+  .acesso-option:not(.active) {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ddd;
+  }
+  .acesso-option:not(.active):hover {
+    background-color: rgba(231, 76, 60, 0.1);
+  }
+  .whatsapp-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .alternative-login {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #ddd;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="acesso-rapido-container">
+  <div class="text-center mb-4">
+    <h2 class="mb-3">Acesso Rápido</h2>
+    <p class="text-muted">Faça seu pedido sem cadastro em poucos segundos</p>
+  </div>
+
+  <div class="acesso-options">
+    <div class="acesso-option active">
+      <i class="fas fa-mobile-alt me-2"></i> Cliente
+    </div>
+    <a href="{% url 'login' %}" class="acesso-option text-decoration-none">
+      <i class="fas fa-user-shield me-2"></i> Admin
+    </a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          <label for="id_nome" class="form-label">Como devemos te chamar?</label>
+          <input type="text" 
+                 class="form-control form-control-lg {% if form.nome.errors %}is-invalid{% endif %}" 
+                 id="id_nome" 
+                 name="nome" 
+                 placeholder="Seu nome completo"
+                 value="{{ form.nome.value|default_if_none:'' }}"
+                 required>
+          {% if form.nome.errors %}
+            <div class="invalid-feedback">
+              {{ form.nome.errors.0 }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <div class="mb-4">
+          <label for="id_telefone" class="form-label">
+            <img src="{% static 'img/whatsapp-icon.png' %}" alt="WhatsApp" class="whatsapp-icon">
+            WhatsApp (para contato)
+          </label>
+          <input type="tel" 
+                 class="form-control form-control-lg {% if form.telefone.errors %}is-invalid{% endif %}" 
+                 id="id_telefone" 
+                 name="telefone" 
+                 placeholder="(99) 99999-9999"
+                 value="{{ form.telefone.value|default_if_none:'' }}"
+                 required>
+          {% if form.telefone.errors %}
+            <div class="invalid-feedback">
+              {{ form.telefone.errors.0 }}
+            </div>
+          {% else %}
+            <small class="form-text text-muted">Formato: (DDD) 99999-9999</small>
+          {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-lg w-100 py-2">
+          <i class="fas fa-arrow-right me-2"></i> Continuar para o Cardápio
+        </button>
+      </form>
+
+      <div class="alternative-login">
+        <p class="mb-2">Já tem uma conta?</p>
+        <a href="{% url 'loginRapido' %}" class="btn btn-outline-primary">
+          <i class="fas fa-sign-in-alt me-2"></i> Fazer Login
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Máscara para o telefone
+  document.getElementById('id_telefone').addEventListener('input', function(e) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+    e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+  });
+
+  // Validação do formulário antes de enviar
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const telefone = document.getElementById('id_telefone').value;
+    const telefoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+    
+    if (!telefoneRegex.test(telefone)) {
+      e.preventDefault();
+      alert('Por favor, insira um número de telefone válido no formato (DDD) 99999-9999');
+    }
+  });
+</script>
+{% endblock %}

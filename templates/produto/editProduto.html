@@ -1,207 +1,68 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Editar Produto{% endblock %}
-
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">Editar Produto</h2>
-                        <a href="{% url 'listar_produtos' %}" class="btn btn-sm btn-light">
-                            <i class="fas fa-arrow-left"></i> Voltar
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-                        
-                        <!-- Mensagens de erro do formulário -->
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        
-                        <div class="row">
-                            <!-- Coluna Esquerda -->
-                            <div class="col-md-6">
-                                <!-- Campo Nome -->
-                                <div class="mb-4">
-                                    <label for="{{ form.nome.id_for_label }}" class="form-label">
-                                        Nome do Produto*
-                                    </label>
-                                    {{ form.nome }}
-                                    {% if form.nome.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.nome.errors|first }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Campo Preço -->
-                                <div class="mb-4">
-                                    <label for="{{ form.preco.id_for_label }}" class="form-label">
-                                        Preço*
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">R$</span>
-                                        {{ form.preco }}
-                                    </div>
-                                    {% if form.preco.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.preco.errors|first }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Campo Categorias -->
-                                <div class="mb-4">
-                                    <label for="{{ form.categorias.id_for_label }}" class="form-label">
-                                        Categorias*
-                                    </label>
-                                    {{ form.categorias }}
-                                    {% if form.categorias.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.categorias.errors|first }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Coluna Direita -->
-                            <div class="col-md-6">
-                                <!-- Campo Imagem -->
-                                <div class="mb-4">
-                                    <label for="{{ form.imagem.id_for_label }}" class="form-label">
-                                        Imagem do Produto
-                                    </label>
-                                    {{ form.imagem }}
-                                    {% if form.imagem.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.imagem.errors|first }}
-                                    </div>
-                                    {% endif %}
-                                    
-                                    <!-- Pré-visualização da imagem atual -->
-                                    {% if form.instance.imagem %}
-                                    <div class="mt-3">
-                                        <img src="{{ form.instance.imagem.url }}" id="image-preview" 
-                                             class="img-thumbnail" style="max-height: 200px;">
-                                        <div class="form-text">Imagem atual</div>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Campo Descrição -->
-                        <div class="mb-4">
-                            <label for="{{ form.descricao.id_for_label }}" class="form-label">
-                                Descrição
-                            </label>
-                            {{ form.descricao }}
-                            {% if form.descricao.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.descricao.errors|first }}
-                            </div>
-                            {% endif %}
-                            <div class="form-text">
-                                Descreva detalhes importantes sobre o produto (ingredientes, tamanho, etc.)
-                            </div>
-                        </div>
-                        
-                        <!-- Botões de ação -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'listar_produtos' %}" class="btn btn-secondary me-md-2">
-                                <i class="fas fa-times"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Salvar Alterações
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="container mt-4">
+    <h2 class="mb-4">{{ titulo }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.nome.id_for_label }}" class="form-label">Nome</label>
+            {{ form.nome }}
+            <div class="text-danger">{{ form.nome.errors }}</div>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label for="{{ form.descricao.id_for_label }}" class="form-label">Descrição</label>
+            {{ form.descricao }}
+            <div class="text-danger">{{ form.descricao.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.categorias.id_for_label }}" class="form-label">Categorias</label>
+            {{ form.categorias }}
+            <div class="text-danger">{{ form.categorias.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.preco.id_for_label }}" class="form-label">Preço</label>
+            {{ form.preco }}
+            <div class="text-danger">{{ form.preco.errors }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.imagem.id_for_label }}" class="form-label">Imagem</label><br>
+            {% if form.instance.imagem %}
+                <img src="{{ form.instance.imagem.url }}" alt="Imagem do produto" class="img-thumbnail mb-2" width="200">
+            {% endif %}
+            {{ form.imagem }}
+            <div class="text-danger">{{ form.imagem.errors }}</div>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            {{ form.disponivel }}
+            <label class="form-check-label" for="{{ form.disponivel.id_for_label }}">
+                Disponível
+            </label>
+            <div class="text-danger">{{ form.disponivel.errors }}</div>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+            {{ form.ativo }}
+            <label class="form-check-label" for="{{ form.ativo.id_for_label }}">
+                Ativo
+            </label>
+            <div class="text-danger">{{ form.ativo.errors }}</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Salvar
+        </button>
+        <a href="{% url 'listar_produtos' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Cancelar
+        </a>
+    </form>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<!-- Adiciona Font Awesome para os ícones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<script>
-$(document).ready(function() {
-    // Validação do formulário
-    $('form').submit(function() {
-        let isValid = true;
-        
-        // Valida campos obrigatórios
-        const requiredFields = ['#id_nome', '#id_preco', '#id_categorias'];
-        requiredFields.forEach(field => {
-            const element = $(field);
-            if (!element.val()) {
-                element.addClass('is-invalid');
-                isValid = false;
-            }
-        });
-        
-        // Valida preço positivo
-        const preco = parseFloat($('#id_preco').val());
-        if (preco <= 0) {
-            $('#id_preco').addClass('is-invalid');
-            $('#id_preco').next('.invalid-feedback').text('O preço deve ser maior que zero.').removeClass('d-none');
-            isValid = false;
-        }
-        
-        return isValid;
-    });
-    
-    // Remove a classe de erro quando o usuário começa a digitar
-    $('input, select, textarea').on('input change', function() {
-        $(this).removeClass('is-invalid');
-    });
-    
-    // Pré-visualização da imagem ao selecionar
-    $('#id_imagem').change(function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                $('#image-preview').attr('src', e.target.result).show();
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-});
-</script>
-
-<style>
-    /* Estilo para o campo de categorias (select múltiplo) */
-    select[multiple] {
-        height: auto;
-        min-height: 120px;
-    }
-    
-    /* Melhora a aparência dos campos do formulário */
-    .form-control, .form-select {
-        padding: 10px;
-        border-radius: 5px;
-    }
-    
-    /* Estilo para a pré-visualização da imagem */
-    #image-preview {
-        max-width: 100%;
-        display: {% if form.instance.imagem %}block{% else %}none{% endif %};
-        margin-top: 10px;
-    }
-</style>
 {% endblock %}

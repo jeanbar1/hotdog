@@ -12,19 +12,19 @@ class PedidoForm(forms.ModelForm):
         }
 
 class ItemPedidoForm(forms.ModelForm):
+    adicionais = forms.ModelMultipleChoiceField(
+        queryset=Adicional.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
     class Meta:
         model = ItemPedido
-        fields = ['produto', 'quantidade']
-        widgets = {
-            'produto': forms.Select(attrs={
-                'class': 'form-control select-produto',
-                'data-live-search': 'true'
-            }),
-            'quantidade': forms.NumberInput(attrs={
-                'class': 'form-control quantidade',
-                'min': '1'
-            }),
-        }
+        fields = ['produto', 'quantidade', 'adicionais']  # Adicionado o campo
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['adicionais'].queryset = Adicional.objects.filter(disponivel=True)
 
 # Formset para múltiplos itens
 ItemPedidoFormSet = inlineformset_factory(

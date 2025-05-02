@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{% if bairro %}Editar{% else %}Criar{% endif %} Bairro{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>{% if bairro %}Editar{% else %}Criar{% endif %} Bairro</h2>
+
+  <form method="post" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id_nome" class="form-label">Nome do Bairro</label>
+      {{ form.nome }}
+    </div>
+    <div class="mb-3">
+      <label for="id_valor_entrega" class="form-label">Valor de Entrega (R$)</label>
+      {{ form.valor_entrega }}
+    </div>
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'listar_bairros' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

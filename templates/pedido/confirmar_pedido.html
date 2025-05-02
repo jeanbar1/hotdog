@@ -14,7 +14,6 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Bairro -->
                     <div class="col-md-6 mb-3">
                         <label for="bairro" class="form-label">Selecione seu Bairro *</label>
                         <select class="form-select" id="bairro" name="bairro" required>
@@ -24,6 +23,7 @@
                                     value="{{ bairro.id }}"
                                     data-taxa="{{ bairro.taxa }}"
                                     data-tempo="{{ bairro.tempo }}"
+                                    {% if bairro.id == bairro_selecionado %}selected{% endif %}
                                 >
                                     {{ bairro.nome }} (Taxa: R$ {{ bairro.taxa|floatformat:2 }})
                                 </option>
@@ -31,6 +31,13 @@
                                 <option value="">Nenhum bairro disponível</option>
                             {% endfor %}
                         </select>
+
+                        <div class="mt-2">
+                            <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
+                            </a>
+                        </div>
+
                         <div class="mt-2">
                             <small class="text-muted">
                                 Tempo estimado: <span id="tempo-entrega" class="fw-bold">---</span>
@@ -38,20 +45,19 @@
                         </div>
                     </div>
 
-                    <!-- Endereço -->
                     <div class="col-md-6 mb-3">
                         <label for="endereco" class="form-label">Endereço Completo *</label>
-                        <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Rua, número, complemento..." required>
+                        <input type="text" class="form-control" id="endereco" name="endereco" 
+                               value="{{ endereco|default:'' }}" placeholder="Rua, número, complemento..." required>
                     </div>
                 </div>
 
-                <!-- Referência -->
                 <div class="mb-3">
                     <label for="referencia" class="form-label">Ponto de Referência</label>
-                    <input type="text" class="form-control" id="referencia" name="referencia" placeholder="Ex: próximo ao mercado X">
+                    <input type="text" class="form-control" id="referencia" name="referencia" 
+                           value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
                 </div>
 
-                <!-- Outros campos do formulário -->
                 {% for field in form %}
                     <div class="mb-3">
                         <label class="form-label">{{ field.label }}</label>
@@ -88,10 +94,24 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         {% if item.produto.imagem %}
-                                        <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" 
+                                             class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
                                         {% endif %}
                                         <div>
                                             <h6 class="mb-1">{{ item.produto.nome }}</h6>
+                                            
+                                            {% if item.adicionais.all %}
+                                            <div class="mt-2">
+                                                <ul class="list-unstyled">
+                                                    {% for adicional in item.adicionais.all %}
+                                                    <li class="small text-muted">
+                                                        + {{ adicional.nome }} (R$ {{ adicional.preco_extra|floatformat:2 }})
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            
                                             {% if item.observacao %}
                                             <div class="observacao-container mt-2">
                                                 <span class="badge bg-light text-dark">
@@ -105,28 +125,36 @@
                                 </td>
                                 <td class="text-end">R$ {{ item.produto.preco|floatformat:2 }}</td>
                                 <td class="text-center">{{ item.quantidade }}</td>
-                                <td class="text-end">R$ {{ total|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    R$ {{ item.total_item|floatformat:2 }}
+                                    {% if item.total_adicionais > 0 %}
+                                    <div class="small text-muted">
+                                        (+ R$ {{ item.total_adicionais|floatformat:2 }} adicionais)
+                                    </div>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Resumo de Valores -->
                 <div class="p-4 border-top">
                     <div class="row">
                         <div class="col-md-6 offset-md-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal ({{ itens|length }} itens):</span>
-                                <span>R$ <span id="subtotal">{{ total|floatformat:2 }}</span></span>
+                                <span>R$ <span id="subtotal">{{ total_geral|floatformat:2 }}</span></span>
                             </div>
+  
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Taxa de Entrega:</span>
-                                <span>R$ <span id="taxa-entrega">0,00</span></span>
+                                <span>R$ <span id="taxa-entrega">{{ taxa_entrega|default:"0.00" }}</span></span>
                             </div>
+                            
                             <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2 mt-2">
                                 <span>Total do Pedido:</span>
-                                <span>R$ <span id="total-pedido">{{ total|floatformat:2 }}</span></span>
+                                <span>R$ <span id="total-pedido">{{ total_geral|floatformat:2 }}</span></span>
                             </div>
                         </div>
                     </div>
@@ -134,7 +162,6 @@
             </div>
         </div>
 
-        <!-- Botões de Ação -->
         <div class="d-flex justify-content-between">
             <a href="{% url 'carrinho' %}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Voltar ao Carrinho
@@ -152,35 +179,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const tempoEntrega = document.getElementById('tempo-entrega');
     const taxaEntregaSpan = document.getElementById('taxa-entrega');
     const subtotalSpan = document.getElementById('subtotal');
+    const totalAdicionaisSpan = document.getElementById('total-adicionais');
     const totalPedidoSpan = document.getElementById('total-pedido');
     const formPedido = document.getElementById('form-pedido');
 
-    // Atualiza valores quando muda o bairro
+    // Atualiza os valores quando a página carrega
+    updateTotals();
+
     bairroSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
+        updateTotals();
+    });
+
+    function updateTotals() {
+        const selectedOption = bairroSelect.options[bairroSelect.selectedIndex];
         
         if (selectedOption.value) {
-            // Atualiza tempo de entrega
             const tempo = selectedOption.getAttribute('data-tempo') || "30-45 min";
             tempoEntrega.textContent = tempo;
             
-            // Atualiza valor da taxa
-            const taxa = parseFloat(selectedOption.getAttribute('data-taxa'));
-            taxaEntregaSpan.textContent = taxa.toFixed(2).replace('.', ',');
+            const taxa = parseFloat(selectedOption.getAttribute('data-taxa')) || 0;
+            taxaEntregaSpan.textContent = taxa.toFixed(2);
             
-            // Calcula total
-            const subtotal = parseFloat(subtotalSpan.textContent.replace(',', '.'));
-            const total = subtotal + taxa;
-            totalPedidoSpan.textContent = total.toFixed(2).replace('.', ',');
+            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
+            const adicionais = totalAdicionaisSpan ? parseFloat(totalAdicionaisSpan.textContent.replace('.', '').replace(',', '.')) || 0 : 0;
+            const total = subtotal + adicionais + taxa;
+            totalPedidoSpan.textContent = total.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         } else {
-            // Reseta valores
             tempoEntrega.textContent = '---';
-            taxaEntregaSpan.textContent = '0,00';
-            totalPedidoSpan.textContent = subtotalSpan.textContent;
+            taxaEntregaSpan.textContent = '0.00';
+            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
+            const adicionais = totalAdicionaisSpan ? parseFloat(totalAdicionaisSpan.textContent.replace('.', '').replace(',', '.')) || 0 : 0;
+            totalPedidoSpan.textContent = (subtotal + adicionais).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
-    });
+    }
 
-    // Validação do formulário
     formPedido.addEventListener('submit', function(e) {
         if (!bairroSelect.value) {
             e.preventDefault();
@@ -195,32 +233,30 @@ document.addEventListener('DOMContentLoaded', function() {
     .card-header {
         padding: 1rem 1.5rem;
     }
-    
     .table th, .table td {
         vertical-align: middle;
     }
-    
     #tempo-entrega {
         color: #0d6efd;
     }
-    
     .img-thumbnail {
         padding: 0.25rem;
         background-color: #fff;
-        border: 1px solid rgb(0, 0, 0);
+        border: 1px solid #dee2e6;
         border-radius: 0.375rem;
     }
-    
     .observacao-container {
         max-width: 300px;
     }
-    
     .badge {
         font-weight: normal;
         padding: 0.35em 0.65em;
         white-space: normal;
         text-align: left;
         display: inline-block;
+    }
+    .list-unstyled li {
+        margin-bottom: 0.25rem;
     }
 </style>
 {% endblock %}

@@ -5,14 +5,96 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/produto.css' %}">
-<link rel="stylesheet" href="{% static 'css/produto1.css' %}">
+<style>
+    /* Estilos melhorados para responsividade */
+    .product-detail-container {
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+    }
+    
+    .product-image-container {
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    
+    .product-info-container {
+        padding: 2rem;
+    }
+    
+    .product-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+    
+    .description-container {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        margin-top: 1rem;
+    }
+    
+    .adicional-checkbox-container {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .adicional-checkbox-container.checked {
+        background: #e9f7ef;
+    }
+    
+    .adicional-label {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-left: 1rem;
+        cursor: pointer;
+    }
+    
+    .price-summary {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .quantity-selector {
+        text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+        .product-info-container {
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.5rem;
+        }
+        
+        .description-container {
+            padding: 1rem;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <!-- Navegação -->
-    <div class="d-flex justify-content-between mb-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+    <div class="d-flex justify-content-between mb-4 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-2 mb-md-0">
             <i class="fas fa-arrow-left me-2"></i>Voltar para Cardápio
         </a>
         <a href="{% url 'carrinho' %}" class="btn btn-primary">
@@ -20,10 +102,10 @@
         </a>
     </div>
 
-    <div class="row product-detail-container bg-white rounded shadow-sm">
+    <div class="product-detail-container bg-white rounded shadow-sm">
         <!-- Imagem do Produto -->
-        <div class="col-lg-6 p-0">
-            <div class="product-image-container h-100">
+        <div class="col-lg-6 col-md-12 p-0">
+            <div class="product-image-container">
                 {% if produto.imagem %}
                 <img src="{{ produto.imagem.url }}" class="product-image" alt="{{ produto.nome }}">
                 {% else %}
@@ -33,18 +115,19 @@
                 </div>
                 {% endif %}
             </div>
-            <!-- Descrição abaixo da imagem -->
+        </div>
+
+        <!-- Detalhes do Produto -->
+        <div class="col-lg-6 col-md-12 product-info-container">
+            <h1 class="product-title">{{ produto.nome }}</h1>
+
+            <!-- Descrição acima dos adicionais -->
             {% if produto.descricao %}
-            <div class="description-container">
+            <div class="description-container mb-4">
                 <h5>Descrição</h5>
                 <p class="mb-0">{{ produto.descricao }}</p>
             </div>
             {% endif %}
-        </div>
-
-        <!-- Detalhes do Produto -->
-        <div class="col-lg-6 p-4 p-md-5">
-            <h1 class="product-title mb-3">{{ produto.nome }}</h1>
 
             <!-- Preço Base -->
             <div class="d-flex align-items-center mb-3">
@@ -122,7 +205,7 @@
                         <i class="fas fa-cart-plus me-2"></i>Adicionar ao Carrinho
                     </button>
                 </form>
-                
+
                 <!-- Observação Atual -->
                 <div id="current-observation" class="mt-3 d-none">
                     <div class="d-flex justify-content-between align-items-center">
@@ -164,14 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const adicionaisCheckboxes = document.querySelectorAll('.adicional-checkbox');
     const editObsBtn = document.querySelector('.edit-obs-btn');
 
-    // Função para formatar valores monetários corretamente
-    function formatCurrency(value) {
-        return parseFloat(value).toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
     // Controles de quantidade
     document.querySelector('.minus-btn').addEventListener('click', function() {
         let value = parseInt(quantidadeInput.value);
@@ -201,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePriceSummary();
     }
 
-    // Seleção de adicionais com tratamento correto de decimais
+    // Seleção de adicionais
     adicionaisCheckboxes.forEach(checkbox => {
         const container = checkbox.closest('.adicional-checkbox-container');
 
@@ -218,27 +293,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
     function updatePriceSummary() {
-        const basePrice = parseFloat("{{ produto.preco }}");
+        const basePrice = parseFloat("{{ produto.preco|floatformat:2 }}".replace(',', '.'));
+    
         let adicionaisTotal = 0;
         const selectedAdicionais = [];
-
+    
         adicionaisCheckboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                const price = parseFloat(checkbox.dataset.price);
+                const price = parseFloat(checkbox.dataset.price.replace(',', '.')); // <- Aqui
                 adicionaisTotal += price;
                 selectedAdicionais.push(checkbox.dataset.id);
             }
         });
-
+    
         const quantidade = parseInt(quantidadeInput.value);
         const total = (basePrice + adicionaisTotal) * quantidade;
-
-        document.getElementById('summary-adicionais').textContent = formatCurrency(adicionaisTotal);
-        document.getElementById('summary-total').textContent = formatCurrency(total);
-
-        adicionaisInput.value = selectedAdicionais.join(',');
+    
+        document.getElementById('summary-adicionais').textContent = adicionaisTotal.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    
+        document.getElementById('summary-total').textContent = total.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    
+        adicionaisInput.value = selectedAdicionais.length > 0 ? selectedAdicionais.join(',') : '';
     }
 
     // Editar observação
@@ -248,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Alteração principal: Mudar para submit do formulário
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         showObservationDialog(observationInput.value);
@@ -279,54 +360,54 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.isConfirmed) {
                 observationInput.value = result.value || '';
                 
-                // Cria um formulário temporário para garantir o envio
+                if (result.value) {
+                    currentObservation.classList.remove('d-none');
+                    observationText.textContent = result.value;
+                } else {
+                    currentObservation.classList.add('d-none');
+                }
+                
+                // Cria um formulário temporário para enviar os dados
                 const tempForm = document.createElement('form');
                 tempForm.method = 'POST';
                 tempForm.action = form.action;
-                
-                // Adiciona todos os campos necessários
+
                 const csrf = document.createElement('input');
                 csrf.type = 'hidden';
                 csrf.name = 'csrfmiddlewaretoken';
                 csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
                 tempForm.appendChild(csrf);
-                
+
                 const quantidade = document.createElement('input');
                 quantidade.type = 'hidden';
                 quantidade.name = 'quantidade';
                 quantidade.value = quantidadeHidden.value;
                 tempForm.appendChild(quantidade);
-                
+
                 const obs = document.createElement('input');
                 obs.type = 'hidden';
                 obs.name = 'observacao';
                 obs.value = observationInput.value;
                 tempForm.appendChild(obs);
-                
+
                 const adics = document.createElement('input');
                 adics.type = 'hidden';
                 adics.name = 'adicionais';
                 adics.value = adicionaisInput.value;
                 tempForm.appendChild(adics);
-                
+
                 const redirect = document.createElement('input');
                 redirect.type = 'hidden';
                 redirect.name = 'redirect_to';
                 redirect.value = 'home';
                 tempForm.appendChild(redirect);
-                
+
                 document.body.appendChild(tempForm);
                 tempForm.submit();
-                
-                // Redireciona após um pequeno delay para garantir o processamento
-                setTimeout(() => {
-                    window.location.href = "{% url 'home' %}";
-                }, 500);
             }
         });
     }
 
-    // Notificação quando um produto é adicionado ao carrinho
     {% if messages %}
         {% for message in messages %}
             {% if 'carrinho' in message.tags %}
