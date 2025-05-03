@@ -1,0 +1,144 @@
+.btn-primary {
+    transition: all 0.3s ease;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: all 0.3s ease;
+}
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.badge {
+    font-size: 0.9rem;
+}
+.product-detail-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-image-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+}
+
+.product-image {
+    max-height: 400px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product-image:hover {
+    transform: scale(1.03);
+}
+
+.product-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.product-title:after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #e74c3c;
+    margin-top: 10px;
+}
+
+.product-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #e74c3c;
+    margin-bottom: 1.5rem;
+}
+
+.product-meta {
+    margin-bottom: 2rem;
+}
+
+.product-meta .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+    background-color: #3498db;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+.quantity-selector {
+    width: 100px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.add-to-cart-btn {
+    background-color: #27ae60;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #219653;
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn {
+    padding: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.back-btn {
+    color: #7f8c8d;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    color: #e74c3c;
+    transform: translateX(-3px);
+}
+
+.no-image-placeholder {
+    font-size: 5rem;
+    color: #bdc3c7;
+}
+
+@media (max-width: 768px) {
+    .product-image {
+        max-height: 300px;
+    }
+    
+    .product-title {
+        font-size: 1.8rem;
+    }
+    
+    .product-price {
+        font-size: 1.8rem;
+    }
+}

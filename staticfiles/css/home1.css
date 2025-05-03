@@ -1,0 +1,71 @@
+.card-img-container {
+    position: relative;
+    height: 180px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Garante que nada ultrapasse os limites */
+  }
+
+  /* Estilo APENAS para produtos sem imagem */
+  .card-img-container:not(:has(img)) {
+    background-image: url("{% static 'images/produto.avif' %}");
+    background-size: cover; /* Cobrir todo o espaço */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Estilo para o ícone de fallback */
+  .card-img-container .no-image-icon {
+    color: rgba(255,255,255,0.7);
+    font-size: 3rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 1; /* Fica acima do background */
+  }
+
+  /* Estilo para imagens reais dos produtos */
+  .card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Preenche todo o espaço mantendo proporção */
+  }
+
+  @media (max-width: 768px) {
+    .card-img-container {
+      height: 150px;
+    }
+  }
+
+
+    .hero-container {
+        width: 100%;
+        height: 180px; /* Altura fixa */
+        background-color: #fc2f2d; /* Faixa vermelha */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-image {
+        height: 80%; /* Altura relativa ao container */
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .search-btn {
+        background-image: url("{% static 'images/lupa.webp' %}");
+        background-size: 20px;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 40px;
+    }
+    @media (max-width: 768px) {
+        .hero-container {
+            height: 150px;
+        }
+    }
