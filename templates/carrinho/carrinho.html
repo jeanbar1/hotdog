@@ -83,7 +83,7 @@
                                     </td>
                                     <td data-label="">
                                         <a href="{% url 'remover_do_carrinho' item.produto.id %}" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-trash">Remover</i>
                                         </a>
                                     </td>
                                 </tr>
@@ -99,23 +99,22 @@
             <div class="card mb-4 sticky-top" style="top: 20px;">
                 <div class="card-body total-section">
                     <h4 class="card-title mb-4">Resumo do Pedido</h4>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal (<span id="total-items">{{ itens_carrinho|length }}</span> itens):</span>
-                        <span>R$ <span id="subtotal">{{ total|floatformat:2 }}</span></span>
-                    </div>
-                    
-                    {% if total_adicionais > 0 %}
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Adicionais:</span>
-                        <span>R$ <span id="total-adicionais">{{ total_adicionais|floatformat:2 }}</span></span>
-                    </div>
-                    {% endif %}
-                    
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold mb-4">
-                        <span>Total:</span>
-                        <span class="text-primary">R$ <span id="total-geral">{{ total_geral|floatformat:2 }}</span></span>
-                    </div>
+                    <div class="card-footer bg-light">
+    <div class="d-flex justify-content-between mb-2">
+        <span>Subtotal:</span>
+        <span class="fw-bold">R$ <span id="subtotal">{{ total|floatformat:2 }}</span></span>
+    </div>
+    {% if total_adicionais > 0 %}
+    <div class="d-flex justify-content-between mb-2">
+        <span>Adicionais:</span>
+        <span class="fw-bold">R$ <span id="total-adicionais">{{ total_adicionais|floatformat:2 }}</span></span>
+    </div>
+    {% endif %}
+    <hr>
+    <div class="d-flex justify-content-between fw-bold mb-4">
+        <span>Total:</span>
+        <span class="text-primary">R$ <span id="total-geral">{{ total_geral|floatformat:2 }}</span></span>
+    </div>
                     <a href="{% url 'confirmar_compra' %}" class="btn btn-primary btn-lg w-100 mb-2">
                         <i class="bi bi-check-circle me-2"></i>Finalizar Compra
                     </a>
@@ -139,189 +138,171 @@
 </div>
 {% endblock %}
 
+
+
+
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Atualiza o contador do carrinho no navbar
-    updateCartCount();
-    
-    // Função para formatar valores monetários
-    function formatMoney(value) {
-        return parseFloat(value).toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-    
-    // Função para calcular o total de um item
-    function calculateItemTotal(itemRow) {
-        const price = parseFloat(itemRow.querySelector('.price').textContent.replace('R$ ', '').replace('.', '').replace(',', '.'));
-        const quantity = parseInt(itemRow.querySelector('.quantity-input').value);
-        const adicionais = itemRow.querySelector('.item-adicionais-value');
-        
-        let adicionaisTotal = 0;
-        if (adicionais) {
-            adicionaisTotal = parseFloat(adicionais.textContent.replace('.', '').replace(',', '.'));
-        }
-        
-        const itemTotal = (price * quantity) + (adicionaisTotal * quantity);
-        return itemTotal;
-    }
-    
-    // Função para calcular e atualizar os totais
-    function updateTotals() {
-        let subtotal = 0;
+    const currency = {
+        parse: (value) => parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()),
+        format: (value) => 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.")
+    };
+
+    const calculateTotals = () => {
+        const itemRows = document.querySelectorAll('tbody tr');
+        let subtotalProdutos = 0;
         let totalAdicionais = 0;
-        let totalItems = 0;
-        
-        document.querySelectorAll('.item-row').forEach(row => {
-            const quantity = parseInt(row.querySelector('.quantity-input').value);
-            const price = parseFloat(row.querySelector('.price').textContent.replace('R$ ', '').replace('.', '').replace(',', '.'));
-            const adicionaisValue = row.querySelector('.item-adicionais-value') ? 
-                parseFloat(row.querySelector('.item-adicionais-value').textContent.replace('.', '').replace(',', '.')) : 0;
-            
-            const itemTotal = (price * quantity) + (adicionaisValue * quantity);
-            
-            row.querySelector('.item-total-value').textContent = formatMoney(itemTotal);
-            
-            subtotal += price * quantity;
-            totalAdicionais += adicionaisValue * quantity;
-            totalItems += quantity;
-        });
-        
-        // Atualiza os totais no resumo
-        document.getElementById('subtotal').textContent = formatMoney(subtotal);
-        if (totalAdicionais > 0) {
-            document.getElementById('total-adicionais').textContent = formatMoney(totalAdicionais);
-        }
-        document.getElementById('total-geral').textContent = formatMoney(subtotal + totalAdicionais);
-        document.getElementById('total-items').textContent = document.querySelectorAll('.item-row').length;
-        
-        // Atualiza o contador do carrinho no navbar
-        updateCartCount();
-    }
-    
-    // Função para atualizar o contador do carrinho
-    function updateCartCount() {
-        const cartCount = document.querySelectorAll('.item-row').length;
-        document.getElementById('cart-count').textContent = cartCount;
-    }
-    
-    // Eventos para os botões de quantidade
-    document.querySelectorAll('.plus-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const input = this.parentNode.querySelector('.quantity-input');
-            input.value = parseInt(input.value) + 1;
-            updateQuantity(input);
-        });
-    });
-    
-    document.querySelectorAll('.minus-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const input = this.parentNode.querySelector('.quantity-input');
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-                updateQuantity(input);
-            }
-        });
-    });
-    
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', function() {
-            if (parseInt(this.value) < 1) {
-                this.value = 1;
-            }
-            updateQuantity(this);
-        });
-    });
-    
-    // Função para atualizar a quantidade no servidor
-// Função para atualizar a quantidade no servidor
-    function updateQuantity(input) {
-    const itemId = input.dataset.itemId;
-    const quantity = parseInt(input.value);
-    const itemRow = input.closest('.item-row');
-    
-    // Mostrar loading
-    const originalValue = input.value;
-    input.disabled = true;
-    
-    fetch("{% url 'atualizar_carrinho' %}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({
-            produto_id: itemId,
-            quantidade: quantity
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro na requisição');
-        }
-        return response.json();
-    })
-    .then(data => {
-        input.disabled = false;
-        
-        if (data.success) {
-            // Atualiza os valores do item
-            itemRow.querySelector('.item-total-value').textContent = 
-                parseFloat(data.item_total).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            
-            const adicionaisElement = itemRow.querySelector('.item-adicionais-value');
-            if (adicionaisElement && parseFloat(data.adicionais_total) > 0) {
-                adicionaisElement.textContent = 
-                    parseFloat(data.adicionais_total).toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-            }
-            
-            // Atualiza os totais gerais
-            updateTotals();
-            
-            // Feedback visual
-            Swal.fire({
-                icon: 'success',
-                title: data.message,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1500
+
+        itemRows.forEach(row => {
+            const priceElement = row.querySelector('td[data-label="Preço"]');
+            const quantityInput = row.querySelector('.quantity-input');
+            const adicionaisElements = row.querySelectorAll('.adicional-price');
+            const totalElement = row.querySelector('td[data-label="Total"]');
+
+            const price = currency.parse(priceElement.textContent);
+            const quantity = parseInt(quantityInput.value);
+            let adicionais = 0;
+
+            adicionaisElements.forEach(el => {
+                adicionais += currency.parse(el.textContent.replace('+ R$', ''));
             });
-        } else {
-            // Reverte o valor se houve erro
+
+            const totalItem = (price + adicionais) * quantity;
+            subtotalProdutos += price * quantity; // ⬅️ SOMA SÓ PRODUTO
+            totalAdicionais += adicionais * quantity;
+
+            totalElement.textContent = currency.format(totalItem);
+        });
+
+        return {
+            subtotal: subtotalProdutos,
+            adicionais: totalAdicionais,
+            total: subtotalProdutos + totalAdicionais,
+            itensCount: itemRows.length
+        };
+    };
+
+    const updateTotalsDisplay = () => {
+        const { subtotal, adicionais, total, itensCount } = calculateTotals();
+
+        const subtotalElement = document.querySelector('.subtotal-value');
+        const adicionaisElement = document.querySelector('.adicionais-value');
+        const adicionaisContainer = adicionaisElement?.closest('.adicionais');
+        const totalElement = document.querySelector('.total-value');
+        const cartCountElement = document.getElementById('cart-count');
+
+        if (subtotalElement) subtotalElement.textContent = currency.format(subtotal);
+        if (totalElement) totalElement.textContent = currency.format(total);
+        if (cartCountElement) cartCountElement.textContent = itensCount;
+
+        if (adicionaisElement && adicionaisContainer) {
+            if (adicionais > 0) {
+                adicionaisElement.textContent = currency.format(adicionais);
+                adicionaisContainer.style.display = 'flex';
+            } else {
+                adicionaisContainer.style.display = 'none';
+            }
+        }
+    };
+
+    const updateQuantity = async (input) => {
+        const itemId = input.dataset.itemId;
+        const quantity = parseInt(input.value);
+        const itemRow = input.closest('.item-row');
+        const originalValue = input.value;
+        
+        input.disabled = true;
+
+        try {
+            const response = await fetch("{% url 'atualizar_carrinho' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    produto_id: itemId,
+                    quantidade: quantity
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.message || 'Erro na requisição');
+
+            if (data.success) {
+                const adicionaisElement = itemRow.querySelector('.item-adicionais-value');
+                if (adicionaisElement && data.adicionais_total) {
+                    adicionaisElement.textContent = currency.format(currency.parse(data.adicionais_total));
+                }
+
+                updateTotalsDisplay();
+
+
+                location.reload();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Quantidade atualizada!',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                input.value = originalValue;
+                throw new Error(data.message || 'Erro ao atualizar quantidade');
+            }
+        } catch (error) {
+            console.error('Error:', error);
             input.value = originalValue;
+            
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: data.message || 'Ocorreu um erro ao atualizar a quantidade'
+                text: error.message || 'Ocorreu um erro ao atualizar a quantidade',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
             });
+        } finally {
+            input.disabled = false;
         }
-    })
-    .catch(error => {
-        input.disabled = false;
-        input.value = originalValue;
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro',
-            text: 'Ocorreu um erro ao se comunicar com o servidor'
-        });
-    });
-}
+    };
 
-    
-    // Inicializa os totais
-    updateTotals();
+    const setupQuantityButtons = () => {
+        document.querySelectorAll('.plus-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('.quantity-input');
+                input.value = parseInt(input.value) + 1;
+                updateQuantity(input);
+            });
+        });
+
+        document.querySelectorAll('.minus-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('.quantity-input');
+                if (parseInt(input.value) > 1) {
+                    input.value = parseInt(input.value) - 1;
+                    updateQuantity(input);
+                }
+            });
+        });
+
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                if (parseInt(this.value) < 1) this.value = 1;
+                updateQuantity(this);
+            });
+        });
+    };
+
+    setupQuantityButtons();
+    updateTotalsDisplay();
 });
 </script>
 {% endblock %}

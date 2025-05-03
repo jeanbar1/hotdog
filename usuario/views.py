@@ -91,7 +91,7 @@ def create_usuario(request):
         'titulo': 'Criar Conta'
     })
 
-@login_required
+@login_required(login_url='loginRapido')
 def edit_usuario(request, id):
     """View para edição de usuários"""
     if not request.user.is_superuser and id != request.user.id:
@@ -134,7 +134,7 @@ def edit_usuario(request, id):
 
     return render(request, 'usuario/editUser.html', context)
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def remove_usuario(request, id):
     """View para remoção de usuários (apenas admin)"""
@@ -149,7 +149,7 @@ def remove_usuario(request, id):
     return redirect('listUser')
 
 
-@login_required
+@login_required(login_url='loginRapido')
 def perfil_usuario(request, id=None):
     """
     View para exibição e atualização do perfil.
@@ -309,7 +309,7 @@ def loginRapido(request):
 
 
 
-@login_required
+@login_required(login_url='loginRapido')
 def editar_perfil_simples(request):
     """
     Edição simplificada do perfil - apenas nome e telefone
@@ -331,7 +331,7 @@ def editar_perfil_simples(request):
     })
     
     
-@login_required
+@login_required(login_url='loginRapido')
 def perfil_simples(request):
     """
     Perfil simplificado para usuários de acesso rápido

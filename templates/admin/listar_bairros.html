@@ -1,19 +1,61 @@
 {% extends 'base.html' %}
+{% load static %}
+<style>
+  /* Estilos específicos para detalhes do pedido */
+  .card-header {
+      background-color: #e74c3c !important;
+  }
+  .border-danger {
+      border-color: #e74c3c !important;
+  }
+  .text-danger {
+      color: #e74c3c !important;
+  }
+  .table-danger {
+      background-color: rgba(231, 76, 60, 0.1);
+  }
+  .table-danger th {
+      background-color: #e74c3c;
+      color: white;
+  }
+  .badge.bg-danger {
+      background-color: #e74c3c !important;
+  }
+  .btn-outline-danger {
+      color: #e74c3c;
+      border-color: #e74c3c;
+  }
+  .btn-outline-danger:hover {
+      background-color: #e74c3c;
+      color: white;
+  }
+  .bg-danger-bg-opacity-10 {
+      background-color: rgba(231, 76, 60, 0.1);
+  }
+</style>
+
+
 {% block title %}Lista de Bairros{% endblock %}
 
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2>Lista de Bairros</h2>
-  <a href="{% url 'adicionar_bairro' %}" class="btn btn-primary">Novo Bairro</a>
+<div class="container py-4">
+  <!-- Cabeçalho do Pedido -->
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <h2 class="mb-0 text-danger">📍 Lista Personalizada de Bairros</h2>
+      <a href="{% url 'adicionar_bairro' %}" class="btn btn-primary">Novo Bairro</a>
+  </div>
 </div>
 
+
 {% if bairros %}
-  <table class="table table-striped table-hover">
-    <thead class="table-dark">
+  <table class="table table-striped table-hover border border-danger">
+    <thead class="table-danger">
       <tr>
         <th>#</th>
         <th>Nome</th>
         <th>Valor de Entrega</th>
+        <th>Tempo</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -23,6 +65,7 @@
           <td>{{ forloop.counter }}</td>
           <td>{{ bairro.nome }}</td>
           <td>R$ {{ bairro.taxa|floatformat:2 }}</td>
+          <td>{{ bairro.tempo }}</td>
           <td>
             <a href="{% url 'editar_bairro' bairro.id %}" class="btn btn-sm btn-warning">Editar</a>
             <a href="{% url 'remover_bairro' bairro.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este bairro?')">Excluir</a>
@@ -34,4 +77,5 @@
 {% else %}
   <p>Nenhum bairro cadastrado.</p>
 {% endif %}
+
 {% endblock %}

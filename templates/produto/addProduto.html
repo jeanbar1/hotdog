@@ -103,7 +103,14 @@
                                 Tamanho recomendado: 800x600px. Formatos: JPG, PNG.
                             </div>
                         </div>
-                        
+                        <!-- Campo Disponibilidade -->
+<div class="mb-4 form-check form-switch">
+    {{ form.ativo }}
+    <label class="form-check-label" for="{{ form.ativo.id_for_label }}">
+        Disponível para exibição
+    </label>
+</div>
+
                         <!-- Botões de ação -->
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="{% url 'listar_produtos' %}" class="btn btn-secondary me-md-2">

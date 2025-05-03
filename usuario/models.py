@@ -34,7 +34,7 @@ class Usuario(AbstractUser):
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nome_completo']
+    REQUIRED_FIELDS = ['username']
 
     class Meta:
         verbose_name = 'Usuário'

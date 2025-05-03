@@ -3,20 +3,60 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pedidoD.css' %}" />
+<style>
+    /* Estilos específicos para detalhes do pedido */
+    .card-header {
+        background-color: #e74c3c !important;
+    }
+    .border-danger {
+        border-color: #e74c3c !important;
+    }
+    .text-danger {
+        color: #e74c3c !important;
+    }
+    .table-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+    }
+    .table-danger th {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .badge.bg-danger {
+        background-color: #e74c3c !important;
+    }
+    .btn-outline-danger {
+        color: #e74c3c;
+        border-color: #e74c3c;
+    }
+    .btn-outline-danger:hover {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .bg-danger-bg-opacity-10 {
+        background-color: rgba(231, 76, 60, 0.1);
+    }
+    .time-left {
+        font-size: 0.8rem;
+        color: #e74c3c;
+        font-weight: bold;
+    }
+</style>
 {% endblock %}
+
 {% block title %}Detalhes do Pedido #{{ pedido.numero_diario }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <!-- Cabeçalho do Pedido -->
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h2 class="mb-0 text-dark">
-            <i class="fas fa-shopping-bag me-2 text-danger"></i>Pedido #{{ pedido.numero_diario }}
+        <h2 class="mb-0 text-black">
+            <i class="fas fa-shopping-bag me-2"></i>Pedido #{{ pedido.numero_diario }}
         </h2>
-        <span class="badge bg-{% if pedido.status == 'ENTREGUE' %}success{% elif pedido.status == 'CANCELADO' %}danger{% else %}warning{% endif %} py-2 px-3 fw-normal">
-            <i class="fas {% if pedido.status == 'ENTREGUE' %}fa-check-circle{% elif pedido.status == 'CANCELADO' %}fa-times-circle{% else %}fa-clock{% endif %} me-1"></i>
-            {{ pedido.get_status_display }}
-        </span>
+        {% if pedido.pode_ser_editado or request.user.is_staff %}
+        <div class="time-left" data-pedido-id="{{ pedido.id }}" data-pedido-time="{{ pedido.data_pedido|date:'U' }}">
+            ⏳ Tempo para remoção: <span class="countdown"></span>
+        </div>
+        {% endif %}
     </div>
 
     <div class="row">
@@ -24,7 +64,7 @@
         <div class="col-lg-8">
             <!-- Seção de Informações do Cliente -->
             <div class="card mb-4 border-danger">
-                <div class="card-header bg-danger text-white">
+                <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-user me-2"></i>Informações do Cliente
                     </h5>
@@ -56,10 +96,50 @@
                     </div>
                 </div>
             </div>
+            <!-- Seção de Pagamento -->
+            <div class="card mb-4 border-danger">
+                <div class="card-header text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-money-bill-wave me-2"></i>Informações de Pagamento
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-credit-card me-2"></i>Forma de Pagamento</h6>
+                                <p class="ps-3">
+                                    <span class="badge bg-danger-bg-opacity-10 text-danger">
+                                        {{ pedido.get_forma_pagamento_display }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {% if pedido.forma_pagamento == 'DINHEIRO' %}
+                            <div class="mb-3">
+                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-exchange-alt me-2"></i>Troco</h6>
+                                <p class="ps-3">
+                                    {% if pedido.precisa_troco %}
+                                        <span class="badge bg-danger-bg-opacity-10 text-danger">
+                                            Sim (Para R$ {{ pedido.valor_troco_para|floatformat:2 }})
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                            Não necessário
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Seção de Entrega -->
             <div class="card mb-4 border-danger">
-                <div class="card-header bg-danger text-white">
+                <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-truck me-2"></i>Informações de Entrega
                     </h5>
@@ -95,7 +175,7 @@
 
             <!-- Itens do Pedido -->
             <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
+                <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-list-alt me-2"></i>Itens do Pedido
                     </h5>
@@ -139,13 +219,13 @@
                                     <td class="text-center align-middle border-danger">{{ item.quantidade }}</td>
                                     <td class="text-end align-middle border-danger">R$ {{ item.preco_unitario|floatformat:2 }}</td>
                                     <td class="text-end align-middle border-danger">
-                                        <span class="badge bg-danger bg-opacity-10 text-danger">+R$ {{ item.adicionais_total|floatformat:2 }}</span>
+                                        <span class="badge bg-danger-bg-opacity-10 text-danger">+R$ {{ item.adicionais_total|floatformat:2 }}</span>
                                     </td>
                                     <td class="text-end align-middle fw-bold border-danger">R$ {{ item.subtotal|floatformat:2 }}</td>
                                 </tr>
                                 {% if item.adicionais.all %}
                                 <tr>
-                                    <td colspan="5" class="bg-danger bg-opacity-10 pt-0 pb-2 border-danger">
+                                    <td colspan="5" class="bg-danger-bg-opacity-10 pt-0 pb-2 border-danger">
                                         <div class="ps-5 py-2 small">
                                             <strong class="text-danger">Adicionais:</strong>
                                             {% for adicional in item.adicionais.all %}
@@ -168,7 +248,7 @@
         <!-- Resumo do Pedido -->
         <div class="col-lg-4">
             <div class="card border-danger sticky-top" style="top: 20px;">
-                <div class="card-header bg-danger text-white">
+                <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice me-2"></i>Resumo do Pedido
                     </h5>
@@ -197,27 +277,40 @@
                     <!-- Informações adicionais -->
                     <div class="border-top border-danger pt-3">
                         <h6 class="text-danger mb-3">
-                            <i class="fas fa-info-circle me-2"></i>Detalhes
+                            <i class="fas fa-info-circle me-2"></i>Detalhes do Pagamento
                         </h6>
+                        <div class="mb-2">
+                            <small class="text-muted">Forma de Pagamento:</small>
+                            <p class="mb-0">{{ pedido.get_forma_pagamento_display }}</p>
+                        </div>
+                        {% if pedido.forma_pagamento == 'DINHEIRO' %}
+                        <div class="mb-2">
+                            <small class="text-muted">Troco:</small>
+                            <p class="mb-0">
+                                {% if pedido.precisa_troco %}
+                                    Sim (Para R$ {{ pedido.valor_troco_para|floatformat:2 }})
+                                {% else %}
+                                    Não necessário
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
                         <div class="mb-2">
                             <small class="text-muted">Número do Pedido:</small>
                             <p class="mb-0">{{ pedido.numero_diario }}</p>
                         </div>
-                        <div class="mb-2">
-                            <small class="text-muted">Data de Referência:</small>
-                            <p class="mb-0">{{ pedido.data_referencia|date:"d/m/Y" }}</p>
-                        </div>
-                        
                     </div>
                 </div>
-                <div class="card-footer bg-danger bg-opacity-10">
+                <div class="card-footer bg-danger-bg-opacity-10">
                     <div class="d-grid gap-2">
                         <a href="{% url 'listar_pedidos' %}" class="btn btn-outline-danger">
                             <i class="fas fa-arrow-left me-2"></i>Voltar
                         </a>
-                        {% if request.user.is_superuser and pedido.pode_ser_editado %}
-                        <a href="{% url 'edit_pedido' pedido.id %}" class="btn btn-danger">
-                            <i class="fas fa-edit me-2"></i>Editar Pedido
+                        {% if pedido.pode_ser_editado or request.user.is_staff %}
+                     
+                        <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-danger" id="remove-pedido-btn"
+                           onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
+                            <i class="fas fa-edit me-2"></i>Remover Pedido
                         </a>
                         {% endif %}
                     </div>
@@ -227,7 +320,6 @@
     </div>
 </div>
 {% endblock %}
-
 
 {% block extra_js %}
 <script>
@@ -242,12 +334,53 @@ document.addEventListener('DOMContentLoaded', function() {
     const tableRows = document.querySelectorAll('tbody tr');
     tableRows.forEach(row => {
         row.addEventListener('mouseenter', () => {
-            row.style.backgroundColor = 'rgba(220, 53, 69, 0.03)';
+            row.style.backgroundColor = 'rgba(231, 76, 60, 0.03)';
         });
         row.addEventListener('mouseleave', () => {
             row.style.backgroundColor = '';
         });
     });
+
+    // Contador regressivo para edição/remoção de pedidos
+    function updateCountdown() {
+        const now = Math.floor(Date.now() / 1000);
+        const countdownElement = document.querySelector('.time-left');
+        
+        if (countdownElement) {
+            const pedidoTime = parseInt(countdownElement.getAttribute('data-pedido-time'));
+            const timeLeft = 300 - (now - pedidoTime); // 5 minutos = 300 segundos
+            
+            if (timeLeft > 0) {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.querySelector('.countdown').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                countdownElement.textContent = 'Tempo para remoção esgotado';
+                countdownElement.style.color = '#7f8c8d';
+                
+                // Desabilita os botões se o usuário não for staff
+                if (!{{ request.user.is_staff|yesno:"true,false" }}) {
+                    const editBtn = document.getElementById('edit-pedido-btn');
+                    const removeBtn = document.getElementById('remove-pedido-btn');
+                    
+                    
+                    
+                    if (removeBtn) {
+                        removeBtn.classList.add('disabled');
+                        removeBtn.onclick = function(e) {
+                            e.preventDefault();
+                            alert('O tempo para remover este pedido expirou.');
+                            return false;
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    // Atualiza a cada segundo
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 });
 </script>
 {% endblock %}

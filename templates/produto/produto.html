@@ -49,6 +49,11 @@
         background: #f8f9fa;
         border-radius: 0.5rem;
         cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .adicional-checkbox-container:hover {
+        background: #e9ecef;
     }
     
     .adicional-checkbox-container.checked {
@@ -68,10 +73,64 @@
         padding: 1.5rem;
         border-radius: 0.5rem;
         margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     
-    .quantity-selector {
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ddd;
+        background: #f8f9fa;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .quantity-btn:hover {
+        background: #e9ecef;
+    }
+    
+    .quantity-input {
+        width: 60px;
+        height: 40px;
         text-align: center;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+    }
+    
+    /* Estilo para a observação */
+    .observation-container {
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .observation-input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+    }
+    
+    #add-to-cart-btn {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+    
+    #add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     @media (max-width: 768px) {
@@ -121,6 +180,14 @@
         <div class="col-lg-6 col-md-12 product-info-container">
             <h1 class="product-title">{{ produto.nome }}</h1>
 
+            <!-- Verificação de disponibilidade -->
+            {% if not produto.ativo %}
+            <div class="alert alert-danger mb-4">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Este produto não está disponível no momento.
+            </div>
+            {% endif %}
+
             <!-- Descrição acima dos adicionais -->
             {% if produto.descricao %}
             <div class="description-container mb-4">
@@ -135,95 +202,102 @@
                 <span class="product-price fs-4">R$ <span id="base-price">{{ produto.preco|floatformat:2 }}</span></span>
             </div>
 
-            <!-- Adicionais como checklist -->
             {% if produto.adicionais.exists %}
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Adicionais</h5>
-                    {% if user.is_superuser %}
-                    <a href="{% url 'gerenciar_adicionais_produto' produto.id %}" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-cog me-1"></i> Gerenciar
-                    </a>
-                    {% endif %}
-                </div>
-                <div class="adicionais-container">
-                    {% for pa in produto.adicionais.all %}
-                        {% if pa.ativo %}
-                        <div class="adicional-checkbox-container" id="container-{{ pa.adicional.id }}">
-                            <input class="form-check-input adicional-checkbox" 
-                                   type="checkbox" 
-                                   id="adicional-{{ pa.adicional.id }}" 
-                                   data-id="{{ pa.adicional.id }}"
-                                   data-price="{{ pa.adicional.preco_extra }}">
-                            <label class="adicional-label" for="adicional-{{ pa.adicional.id }}">
-                                <span>{{ pa.adicional.nome }}</span>
-                                <span class="adicional-price">+ R$ {{ pa.adicional.preco_extra|floatformat:2 }}</span>
-                            </label>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Adicionais</h5>
+        {% if user.is_superuser %}
+        <a href="{% url 'gerenciar_adicionais_produto' produto.id %}" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-cog me-1"></i> Gerenciar
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Mensagem explicando como adicionais funcionam -->
+    <div class="alert alert-info py-2 px-3" role="alert">
+        Os valores dos adicionais serão multiplicados pela quantidade de itens selecionada.
+    </div>
+
+    <div class="adicionais-container">
+        {% for pa in produto.adicionais.all %}
+            {% if pa.ativo %}
+            <div class="adicional-checkbox-container" id="container-{{ pa.adicional.id }}">
+                <input class="form-check-input adicional-checkbox" 
+                       type="checkbox" 
+                       id="adicional-{{ pa.adicional.id }}" 
+                       data-id="{{ pa.adicional.id }}"
+                       data-price="{{ pa.adicional.preco_extra|floatformat:2 }}">
+                <label class="adicional-label" for="adicional-{{ pa.adicional.id }}">
+                    <span>{{ pa.adicional.nome }}</span>
+                    <span class="adicional-price">+ R$ {{ pa.adicional.preco_extra|floatformat:2 }}</span>
+                </label>
             </div>
             {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
-            <!-- Resumo do Preço -->
-            <div class="price-summary mb-4">
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Preço Base:</span>
-                    <span>R$ <span id="summary-base">{{ produto.preco|floatformat:2 }}</span></span>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Adicionais:</span>
-                    <span>R$ <span id="summary-adicionais">0.00</span></span>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between fw-bold">
-                    <span>Total:</span>
-                    <span>R$ <span id="summary-total">{{ produto.preco|floatformat:2 }}</span></span>
-                </div>
+            
+            <!-- Quantidade -->
+            <small> Quantidade</small>
+            <div class="quantity-controls">
+        
+                <button class="quantity-btn minus-btn" type="button">-</button>
+                <input type="number" id="quantidade" class="form-control quantity-input" value="1" min="1" max="99">
+                <button class="quantity-btn plus-btn" type="button">+</button>
             </div>
-
+            
+            <!-- Resumo do Preço -->
+<div class="price-summary mb-4">
+    <div class="d-flex justify-content-between mb-2">
+        <span>Preço Base:</span>
+        <span>
+            R$ <span id="summary-base">{{ produto.preco|floatformat:2 }}</span>
+            <!-- Mostrando a quantidade separadamente -->
+            <span> + </span>
+            <small class="text-muted">(Qtd: <span id="summary-quantidade">{{ quantidade }}</span>)</small>
+        </span>
+    </div>
+    <div class="d-flex justify-content-between mb-2">
+        <span>Adicionais:</span>
+        <span>R$ <span id="summary-adicionais">0.00</span></span>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between fw-bold">
+        <span>Total:</span>
+        <span>R$ <span id="summary-total">{{ produto.preco|floatformat:2 }}</span></span>
+    </div>
+</div>
             <!-- Formulário de Adição ao Carrinho -->
             {% if user.is_authenticated %}
             <div class="mb-4">
                 <form method="post" action="{% url 'adicionar_ao_carrinho' produto.id %}" id="add-to-cart-form">
                     {% csrf_token %}
                     <input type="hidden" name="quantidade" id="quantidade-hidden" value="1">
-                    <input type="hidden" name="observacao" id="observacao-input">
                     <input type="hidden" name="adicionais" id="adicionais-input">
-                    <input type="hidden" name="redirect_to" value="home">
                     
-                    <!-- Quantidade -->
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
-                        <input type="number" id="quantidade" class="form-control quantity-selector" value="1" min="1" max="99">
-                        <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
+                    <!-- Observação -->
+                    <div class="observation-container">
+                        <label for="observacao" class="form-label">Observação:</label>
+                        <textarea id="observacao" name="observacao" class="form-control" 
+                                  placeholder="Ex: sem cebola, ponto da carne, etc." 
+                                  rows="2" maxlength="100"></textarea>
+                        <div class="text-muted small mt-1">Máximo 100 caracteres</div>
                     </div>
                     
                     <!-- Botão Principal -->
-                    <button type="submit" id="add-to-cart-btn" class="btn btn-success w-100 py-3">
-                        <i class="fas fa-cart-plus me-2"></i>Adicionar ao Carrinho
+                    <button type="submit" id="add-to-cart-btn" class="btn btn-success w-100 py-3" {% if not produto.ativo %}disabled{% endif %}>
+                        <i class="fas fa-cart-plus me-2"></i>
+                        {% if produto.ativo %}Adicionar ao Carrinho{% else %}Produto Indisponível{% endif %}
                     </button>
                 </form>
-
-                <!-- Observação Atual -->
-                <div id="current-observation" class="mt-3 d-none">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge observation-badge">
-                            <i class="fas fa-info-circle me-1"></i>
-                            <span id="observation-text"></span>
-                        </span>
-                        <button class="btn btn-sm btn-outline-secondary edit-obs-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
             </div>
             {% else %}
             <div class="alert alert-warning mb-4 d-flex align-items-center">
                 <i class="fas fa-info-circle me-3 fs-4"></i>
                 <div>
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link fw-bold">Faça login</a> para adicionar itens ao carrinho
+                    <a href="{% url 'loginRapido' %}?next={{ request.path }}" class="alert-link fw-bold">Faça login</a> para adicionar itens ao carrinho
                 </div>
             </div>
             {% endif %}
@@ -232,20 +306,22 @@
 </div>
 {% endblock %}
 
+
+
+
+
+
 {% block extra_js %}
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('add-to-cart-form');
-    const observationInput = document.getElementById('observacao-input');
-    const currentObservation = document.getElementById('current-observation');
-    const observationText = document.getElementById('observation-text');
     const quantidadeInput = document.getElementById('quantidade');
     const quantidadeHidden = document.getElementById('quantidade-hidden');
     const adicionaisInput = document.getElementById('adicionais-input');
     const adicionaisCheckboxes = document.querySelectorAll('.adicional-checkbox');
-    const editObsBtn = document.querySelector('.edit-obs-btn');
+    const observacaoInput = document.getElementById('observacao');
 
     // Controles de quantidade
     document.querySelector('.minus-btn').addEventListener('click', function() {
@@ -293,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
     function updatePriceSummary() {
         const basePrice = parseFloat("{{ produto.preco|floatformat:2 }}".replace(',', '.'));
     
@@ -301,14 +378,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
         adicionaisCheckboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                const price = parseFloat(checkbox.dataset.price.replace(',', '.')); // <- Aqui
+                const priceText = checkbox.dataset.price;
+                const price = parseFloat(priceText.replace(/\./g, '').replace(',', '.'));
                 adicionaisTotal += price;
                 selectedAdicionais.push(checkbox.dataset.id);
             }
         });
     
-        const quantidade = parseInt(quantidadeInput.value);
+        const quantidade = parseInt(quantidadeInput.value) || 1;
         const total = (basePrice + adicionaisTotal) * quantidade;
+
+        // Atualiza a exibição da quantidade no resumo
+        document.getElementById('summary-quantidade').textContent = quantidade;
+
     
         document.getElementById('summary-adicionais').textContent = adicionaisTotal.toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
@@ -323,111 +405,101 @@ document.addEventListener('DOMContentLoaded', function() {
         adicionaisInput.value = selectedAdicionais.length > 0 ? selectedAdicionais.join(',') : '';
     }
 
-    // Editar observação
-    if (editObsBtn) {
-        editObsBtn.addEventListener('click', function() {
-            showObservationDialog(observationInput.value);
-        });
-    }
-
+    // Envio do formulário com confirmação - AJUSTADO PARA COMPATIBILIDADE COM A VIEW
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        showObservationDialog(observationInput.value);
-    });
+        
+        // Verifica se o produto está disponível
+        const produtoDisponivel = {% if produto.ativo %}true{% else %}false{% endif %};
+        
+        if (!produtoDisponivel) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Produto Indisponível',
+                text: 'Este produto não está disponível no momento.',
+                confirmButtonText: 'Entendi'
+            });
+            return;
+        }
 
-    function showObservationDialog(currentObs) {
+        // Mostra loader enquanto processa
         Swal.fire({
-            title: 'Personalize seu pedido',
-            html: `
-                <textarea id="swal-observation" class="form-control mt-3" 
-                    placeholder="Ex: sem cebola, ponto da carne, etc." 
-                    rows="3">${currentObs || ''}</textarea>
-                <div class="mt-3 text-muted small">Máximo 100 caracteres</div>
-            `,
-            focusConfirm: false,
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar Pedido',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                const observation = document.getElementById('swal-observation').value;
-                if (observation.length > 100) {
-                    Swal.showValidationMessage('A observação deve ter no máximo 100 caracteres!');
-                    return false;
-                }
-                return observation;
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                observationInput.value = result.value || '';
-                
-                if (result.value) {
-                    currentObservation.classList.remove('d-none');
-                    observationText.textContent = result.value;
-                } else {
-                    currentObservation.classList.add('d-none');
-                }
-                
-                // Cria um formulário temporário para enviar os dados
-                const tempForm = document.createElement('form');
-                tempForm.method = 'POST';
-                tempForm.action = form.action;
-
-                const csrf = document.createElement('input');
-                csrf.type = 'hidden';
-                csrf.name = 'csrfmiddlewaretoken';
-                csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                tempForm.appendChild(csrf);
-
-                const quantidade = document.createElement('input');
-                quantidade.type = 'hidden';
-                quantidade.name = 'quantidade';
-                quantidade.value = quantidadeHidden.value;
-                tempForm.appendChild(quantidade);
-
-                const obs = document.createElement('input');
-                obs.type = 'hidden';
-                obs.name = 'observacao';
-                obs.value = observationInput.value;
-                tempForm.appendChild(obs);
-
-                const adics = document.createElement('input');
-                adics.type = 'hidden';
-                adics.name = 'adicionais';
-                adics.value = adicionaisInput.value;
-                tempForm.appendChild(adics);
-
-                const redirect = document.createElement('input');
-                redirect.type = 'hidden';
-                redirect.name = 'redirect_to';
-                redirect.value = 'home';
-                tempForm.appendChild(redirect);
-
-                document.body.appendChild(tempForm);
-                tempForm.submit();
+            title: 'Adicionando ao carrinho...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
             }
         });
-    }
 
-    {% if messages %}
-        {% for message in messages %}
-            {% if 'carrinho' in message.tags %}
-            Swal.fire({
-                icon: 'success',
-                title: '{{ message|escapejs }}',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
+        // Cria FormData tradicional (não JSON) para compatibilidade com a view
+        const formData = new FormData(form);
+        
+        // Faz a requisição AJAX tradicional (multipart/form-data)
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+                // Não precisa enviar cabeçalho Content-Type com FormData
+                // O CSRF token já está incluído no FormData
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Se a view redirecionou (como está fazendo atualmente)
+                return { redirected: true, url: response.url };
+            }
+            return response.json().catch(() => {
+                return { success: false, message: 'Resposta inválida do servidor' };
             });
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
+        })
+        .then(data => {
+            Swal.close();
+            
+            if (data.redirected) {
+                // Se a view redirecionou, seguimos o redirecionamento
+                window.location.href = data.url;
+            } 
+            else if (data.success) {
+                // Mostra o diálogo de confirmação personalizado
+                Swal.fire({
+                    title: 'Item adicionado ao carrinho!',
+                    text: 'O que você gostaria de fazer agora?',
+                    icon: 'success',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Continuar comprando',
+                    denyButtonText: 'Ver Carrinho',
+                    cancelButtonText: 'Ficar nesta página',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'home' %}";
+                    } else if (result.isDenied) {
+                        window.location.href = "{% url 'carrinho' %}";
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: data.message || 'Não foi possível adicionar o item ao carrinho',
+                    confirmButtonText: 'Entendi'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.',
+                confirmButtonText: 'Entendi'
+            });
+            console.error('Erro:', error);
+        });
+    });
+    
     // Inicializa o resumo de preços
     updatePriceSummary();
 });

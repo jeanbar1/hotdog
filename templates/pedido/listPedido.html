@@ -5,14 +5,20 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/listpedido.css' %}">
 <style>
-    .status-pendente { color: #e67e22; }
-    .status-processando { color: #3498db; }
-    .status-completo { color: #2ecc71; }
-    .status-cancelado { color: #e74c3c; }
     .empty-state { padding: 2rem; text-align: center; }
     .empty-state i { font-size: 3rem; color: #7f8c8d; margin-bottom: 1rem; }
     .btn-action { margin-right: 5px; }
     .search-box { min-width: 250px; }
+    .time-left { 
+        font-size: 0.8rem;
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    .btn-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
 </style>
 {% endblock %}
 
@@ -30,20 +36,6 @@
                     </button>
                 </div>
             </form>
-            
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="statusFilter" data-bs-toggle="dropdown">
-                    <i class="fas fa-filter"></i> Status
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="?status=">Todos</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="?status=Pendente">Pendente</a></li>
-                    <li><a class="dropdown-item" href="?status=Processando">Processando</a></li>
-                    <li><a class="dropdown-item" href="?status=Completo">Completo</a></li>
-                    <li><a class="dropdown-item" href="?status=Cancelado">Cancelado</a></li>
-                </ul>
-            </div>
         </div>
     </div>
 
@@ -55,45 +47,46 @@
                         <tr>
                             <th>Nº Pedido</th>
                             <th>Cliente</th>
+                            <th>Telefone</th>
                             <th>Data</th>
                             <th>Total</th>
-                            <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for pedido in page_obj %}
                         <tr>
-                            <td><strong>#{{ pedido.id }}</strong></td>
+                            <td><strong>#{{ pedido.numero_diario }}</strong></td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-user-circle fa-lg me-2 text-primary"></i>
                                     <div>
-                                        {{ pedido.cliente.get_full_name|default:pedido.cliente.username|truncatechars:20 }}<br>
-                                        <small class="text-muted">{{ pedido.cliente.email|truncatechars:25 }}</small>
+                                        {{ pedido.cliente.nome_completo|default:pedido.cliente.username }}<br>
                                     </div>
                                 </div>
                             </td>
                             <td>
+                                {{ pedido.cliente.telefone|default:"-" }}
+                            </td>
+                            <td>
                                 {{ pedido.data_pedido|date:"d/m/Y" }}<br>
                                 <small class="text-muted">{{ pedido.data_pedido|date:"H:i" }}</small>
+                                {% if pedido.pode_ser_editado %}
+                                <div class="time-left" data-pedido-id="{{ pedido.id }}" data-pedido-time="{{ pedido.data_pedido|date:'U' }}">
+                                    ⏳ Tempo para remoção: <span class="countdown"></span>
+                                </div>
+                                {% endif %}
                             </td>
-                            <td>R$ {{ pedido.preco_total|floatformat:2 }}</td>
-                            <td>
-                                <span class="status-{{ pedido.status|lower }}">
-                                    {{ pedido.status }}
-                                </span>
-                            </td>
+                            <td>R$ {{ pedido.total_final|floatformat:2 }}</td>
                             <td>
                                 <div class="d-flex">
                                     <a href="{% url 'detalhe_pedido' pedido.id %}" class="btn btn-sm btn-info btn-action" title="Ver detalhes">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    {% if request.user.is_staff %}
-                                    <a href="{% url 'edit_pedido' pedido.id %}" class="btn btn-sm btn-warning btn-action" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-sm btn-danger btn-action" title="Excluir" 
+                                    
+                                    
+                                    {% if pedido.pode_ser_editado or request.user.is_staff %}
+                                    <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-sm btn-danger btn-action {% if not pedido.pode_ser_editado and not request.user.is_staff %}btn-disabled{% endif %}" title="Excluir" 
                                        onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
@@ -108,7 +101,7 @@
                                     <i class="fas fa-clipboard-list"></i>
                                     <h4>Nenhum pedido encontrado</h4>
                                     <p class="text-muted">
-                                        {% if search_query or status_filter %}
+                                        {% if search_query %}
                                             Nenhum pedido corresponde aos filtros aplicados.
                                         {% else %}
                                             Nenhum pedido foi registrado ainda.
@@ -132,12 +125,12 @@
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}">
                     <i class="fas fa-angle-double-left"></i>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">
                     <i class="fas fa-angle-left"></i>
                 </a>
             </li>
@@ -148,7 +141,7 @@
                 <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">
                         {{ num }}
                     </a>
                 </li>
@@ -157,12 +150,12 @@
             
             {% if page_obj.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">
                     <i class="fas fa-angle-right"></i>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}">
                     <i class="fas fa-angle-double-right"></i>
                 </a>
             </li>
@@ -179,13 +172,66 @@
         // Ativa tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
         tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+
+        // Variável para armazenar o último ID de pedido conhecido
+        let ultimoPedidoId = {% if page_obj.0 %}{{ page_obj.0.id }}{% else %}0{% endif %};
         
-        // Mantém os filtros ativos visíveis
-        const statusFilter = "{{ status_filter|default:'' }}";
-        if (statusFilter) {
-            const dropdownButton = document.getElementById('statusFilter');
-            dropdownButton.innerHTML = `<i class="fas fa-filter"></i> Status: ${statusFilter}`;
+        // Contador regressivo para edição/remoção de pedidos
+        function updateCountdowns() {
+            const now = Math.floor(Date.now() / 1000);
+            const countdownElements = document.querySelectorAll('.time-left');
+            
+            countdownElements.forEach(el => {
+                const pedidoTime = parseInt(el.getAttribute('data-pedido-time'));
+                const timeLeft = 300 - (now - pedidoTime); // 5 minutos = 300 segundos
+                
+                if (timeLeft > 0) {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    el.querySelector('.countdown').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    el.textContent = 'Tempo para remoção esgotado';
+                    el.style.color = '#7f8c8d';
+                    
+                    // Desabilita os botões de edição e remoção se o tempo expirou
+                    const pedidoId = el.getAttribute('data-pedido-id');
+                    const actionBtns = document.querySelectorAll(`a[href*="edit_pedido/${pedidoId}"], a[href*="remove_pedido/${pedidoId}"]`);
+                    
+                    actionBtns.forEach(btn => {
+                        if (!btn.hasAttribute('data-staff')) {
+                            btn.classList.add('btn-disabled');
+                            btn.onclick = function(e) {
+                                e.preventDefault();
+                                alert('O tempo para remover este pedido expirou.');
+                                return false;
+                            };
+                        }
+                    });
+                }
+            });
         }
+
+        // Função para verificar novos pedidos
+        function verificarNovosPedidos() {
+            fetch('{% url "check_novos_pedidos" %}?ultimo_id=' + ultimoPedidoId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.novo_pedido) {
+                        // Atualiza o último ID conhecido
+                        ultimoPedidoId = data.ultimo_id;
+                        // Recarrega a página para mostrar o novo pedido
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Erro ao verificar novos pedidos:', error));
+        }
+
+        // Atualiza a cada segundo os contadores
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+        
+        // Verifica novos pedidos a cada 5 segundos
+        setInterval(verificarNovosPedidos, 5000);
     });
 </script>
 {% endblock %}

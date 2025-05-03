@@ -13,7 +13,7 @@ urlpatterns = [
     
     #--------------------------------------------------------------
     
-    
+    path('check-novos-pedidos/', views.check_novos_pedidos, name='check_novos_pedidos'),
     path('admin/bairros/', views.listar_bairros, name='listar_bairros'),
     path('admin/bairros/adicionar/', views.adicionar_bairro, name='adicionar_bairro'),
     path('admin/bairros/editar/<int:bairro_id>/', views.editar_bairro, name='editar_bairro'),

@@ -7,17 +7,165 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <link rel="stylesheet" href="{% static 'css/home1.css' %}">
+<style>
+.hero-image {
+    height: 80%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.search-btn {
+    background-image: url("{% static 'images/lupa.webp' %}");
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+}
+
+/* Estilos melhorados para os cards */
+.product-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card-img-container {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Imagem de fundo padrão (só aparece se não tiver imagem) */
+.card-img-container:not(:has(img)) {
+  background-image: url("{% static 'images/produto.avif' %}");
+  background-size: cover;
+  background-position: center;
+}
+
+.card-img-container img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+  position: relative;
+}
+
+/* Ícone de imagem faltando (só aparece se não tiver imagem) */
+.card-img-container:not(:has(img)) i {
+  position: relative;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.card-body {
+    padding: 1.25rem;
+    background: white;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #666;
+    min-height: 42px;
+}
+
+.price-text h5 {
+    font-weight: 700;
+    color: #e63946 !important;
+}
+
+.badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.card-footer {
+    padding: 0.75rem 1.25rem;
+    background: white !important;
+}
+
+.btn-ver-produto {
+    width: 100%;
+    background-color: #f8f9fa;
+    border: none;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-ver-produto:hover {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .hero-container {
+        height: 150px;
+    }
+    
+    .card-img-container {
+        height: 150px;
+    }
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 24px;
+    margin-left: auto;
+}
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 
+<!-- Ícone do carrinho com quantidade -->
+<div class="container my-3 d-flex justify-content-end">
+    <a href="{% url 'carrinho' %}" class="cart-icon position-relative">
+        <i class="fas fa-shopping-cart"></i>
+        {% if quantidade_carrinho and quantidade_carrinho > 0 %}
+        <span class="cart-count">{{ quantidade_carrinho }}</span>
+        {% endif %}
+    </a>
+</div>
+
 <div class="container-fluid px-0">
-  <!-- Banner da Empresa com Faixa Vermelha -->
+  <!-- Hero banner -->
   <div class="hero-container animate__animated animate__fadeIn">
     <img src="{% static 'images/chapa.jpeg' %}" alt="HOTDOG MING" class="hero-image">
   </div>
 
-  <!-- Barra de Pesquisa Melhorada -->
+  <!-- Barra de Pesquisa -->
   <div class="search-container bg-light py-3">
     <div class="container">
       <form method="get" action="{% url 'pesquisar_produto' %}" class="row g-2">
@@ -43,8 +191,7 @@
     </div>
   </div>
 
-  <!-- Restante do conteúdo permanece igual -->
-  <!-- Categorias em Scroll Horizontal -->
+  <!-- Categorias em Scroll -->
   <div class="categories-scroll bg-light">
     <div class="container">
       <div class="d-flex">
@@ -60,101 +207,181 @@
     </div>
   </div>
 
-<!-- Seção de Todos os Produtos -->
-<section id="todos" class="product-section py-5">
-  <div class="container">
+  <!-- Seção Todos os Produtos -->
+  <section id="todos" class="product-section py-5">
+    <div class="container">
       <h2 class="h4 fw-bold section-title">Todos os Produtos</h2>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {% for produto in produtos %}
-          <div class="col">
-              <div class="card h-100 product-card">
-                  <div class="card-img-container">
-                      {% if produto.imagem %}
-                      <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
-                      {% else %}
-                      <i class="fas fa-image fa-3x text-muted"></i>
-                      {% endif %}
-                  </div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ produto.nome }}</h5>
-                      <div class="mb-2">
-                          {% for categoria in produto.categorias.all %}
-                          <span class="badge bg-secondary me-1 mb-1">{{ categoria.nome }}</span>
-                          {% endfor %}
-                      </div>
-                      <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
-                      <div class="price-text">
-                          <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
-                      </div>
-                  </div>
-                  <div class="card-footer bg-white border-top-0">
-                      <div class="d-grid">
-                          <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-secondary btn-sm">
-                              <i class="fas fa-info-circle me-1"></i> Adicionar
-                          </a>
-                      </div>
-                  </div>
+        {% for produto in produtos %}
+        <div class="col">
+          <a href="{% url 'detalhes_produto' produto.id %}" class="text-decoration-none">
+            <div class="card h-100 product-card">
+              <div class="card-img-container">
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                {% else %}
+                <i class="fas fa-image fa-3x text-muted"></i>
+                {% endif %}
               </div>
-          </div>
-          {% empty %}
-          <div class="col-12">
-              <div class="alert alert-info">Nenhum produto disponível no momento</div>
-          </div>
-          {% endfor %}
+              <div class="card-body">
+                <h5 class="card-title">{{ produto.nome }}</h5>
+                <div class="mb-2">
+                  {% for categoria in produto.categorias.all %}
+                  <span class="badge bg-secondary me-1 mb-1">{{ categoria.nome }}</span>
+                  {% endfor %}
+                </div>
+                <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
+                <div class="price-text">
+                  <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
+                </div>
+              </div>
+              <div class="card-footer bg-white border-top-0">
+                <div class="d-grid">
+                  <span class="btn btn-ver-produto">
+                    <i class="fas fa-eye me-1"></i> Ver Produto
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info">Nenhum produto disponível no momento</div>
+        </div>
+        {% endfor %}
       </div>
-  </div>
-</section>
+    </div>
+  </section>
 
-<!-- Seções por Categoria -->
-{% for categoria in categorias %}
-<section id="categoria-{{ categoria.id }}" class="category-section py-5 bg-light">
-  <div class="container">
+  <!-- Seções por Categoria -->
+  {% for categoria in categorias %}
+  <section id="categoria-{{ categoria.id }}" class="category-section py-5 bg-light">
+    <div class="container">
       <h2 class="h4 fw-bold section-title">{{ categoria.nome }}</h2>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {% for produto in categoria.produtos.all %}
-          <div class="col">
-              <div class="card h-100 product-card">
-                  <div class="card-img-container">
-                      {% if produto.imagem %}
-                      <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
-                      {% else %}
-                      <i class="fas fa-image fa-3x text-muted"></i>
-                      {% endif %}
-                  </div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ produto.nome }}</h5>
-                      <div class="mb-2">
-                          {% for cat in produto.categorias.all %}
-                          <span class="badge bg-secondary me-1 mb-1">{{ cat.nome }}</span>
-                          {% endfor %}
-                      </div>
-                      <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
-                      <div class="price-text">
-                          <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
-                      </div>
-                  </div>
-                  <div class="card-footer bg-white border-top-0">
-                      <div class="d-grid">
-                          <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-secondary btn-sm">
-                              <i class="fas fa-info-circle me-1"></i> Adicionar
-                          </a>
-                      </div>
-                  </div>
+        {% for produto in categoria.produtos.all %}
+        <div class="col">
+          <a href="{% url 'detalhes_produto' produto.id %}" class="text-decoration-none">
+            <div class="card h-100 product-card">
+              <div class="card-img-container">
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}">
+                {% else %}
+                <i class="fas fa-image fa-3x text-muted"></i>
+                {% endif %}
               </div>
-          </div>
-          {% empty %}
-          <div class="col-12">
-              <div class="alert alert-info">Nenhum produto nesta categoria</div>
-          </div>
-          {% endfor %}
+              <div class="card-body">
+                <h5 class="card-title">{{ produto.nome }}</h5>
+                <div class="mb-2">
+                  {% for cat in produto.categorias.all %}
+                  <span class="badge bg-secondary me-1 mb-1">{{ cat.nome }}</span>
+                  {% endfor %}
+                </div>
+                <p class="card-text text-muted small mb-3">{{ produto.descricao|truncatechars:100 }}</p>
+                <div class="price-text">
+                  <h5 class="text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</h5>
+                </div>
+              </div>
+              <div class="card-footer bg-white border-top-0">
+                <div class="d-grid">
+                  <span class="btn btn-ver-produto">
+                    <i class="fas fa-eye me-1"></i> Ver Produto
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
       </div>
-  </div>
-</section>
-{% endfor %}
-</div>
+    </div>
+  </section>
+  {% endfor %}
 
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/home1.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Carrega o carrinho do localStorage ou inicia vazio
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+  
+    // Atualiza o contador do carrinho
+    function updateCartCounters() {
+      const totalCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  
+      // Atualiza todos os elementos que exibem o contador do carrinho
+      document.querySelectorAll('#cart-count').forEach(el => {
+        el.textContent = totalCount;
+      });
+  
+      // Salva o carrinho no localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+  
+    // Atualiza os contadores ao carregar a página
+    updateCartCounters();
+  
+    // Evento para adicionar itens ao carrinho
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.dataset.id;
+  
+        // Atualiza ou adiciona o item no carrinho
+        cart[id] = (cart[id] || 0) + 1;
+  
+        // Atualiza os contadores visuais
+        updateCartCounters();
+  
+        // Feedback visual para o usuário
+        button.textContent = '✔ Adicionado';
+        setTimeout(() => {
+          button.textContent = 'Adicionar';
+        }, 1000);
+      });
+    });
+  
+    // (Opcional) Sincronização com servidor a cada 30s
+    function syncCartWithServer() {
+      // fetch('/sync-cart/', { method: 'POST', body: JSON.stringify(cart) });
+    }
+  
+    setInterval(syncCartWithServer, 30000);
+  });
+  
+        // Verifica por novos pedidos a cada 10 segundos
+            // Substitua a função checkForNewOrders por esta versão mais avançada
+    function checkForNewOrders() {
+      fetch(window.location.href, {
+          headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+          }
+      })
+      .then(response => response.text())
+      .then(html => {
+          const parser = new DOMParser();
+          const newDoc = parser.parseFromString(html, 'text/html');
+          const newTableBody = newDoc.querySelector('tbody');
+          const currentTableBody = document.querySelector('tbody');
+
+          if (newTableBody.innerHTML !== currentTableBody.innerHTML) {
+              currentTableBody.innerHTML = newTableBody.innerHTML;
+              // Reativa os tooltips e contadores
+              const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+              tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+              updateCountdowns();
+          }
+      })
+      .catch(error => console.error('Error checking for new orders:', error));
+    }
+            // Atualiza a cada segundo os contadores
+            updateCountdowns();
+            setInterval(updateCountdowns, 1000);
+
+            // Verifica novos pedidos a cada 10 segundos
+            setInterval(checkForNewOrders, 10000);
+          });
+</script>
 {% endblock %}

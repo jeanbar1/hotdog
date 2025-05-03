@@ -1,10 +1,8 @@
 from django.db import models
 from usuario.models import Usuario
 from produto.models import Adicional, Produto
-from datetime import date
+from datetime import date, timedelta
 from django.utils import timezone
-
-
 
 class Bairro(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome do Bairro")
@@ -20,15 +18,15 @@ class Bairro(models.Model):
     def __str__(self):
         return f"{self.nome} (Taxa: R$ {self.taxa})"
 
-
 class Pedido(models.Model):
-    STATUS_PEDIDO = [
-        ('PROCESSANDO', 'Processando'),
-        ('ENVIADO', 'Enviado'),
-        ('ENTREGUE', 'Entregue'),
-        ('CANCELADO', 'Cancelado'),
+    # FORMAS DE PAGAMENTO (NOVO - substituindo o status)
+    FORMA_PAGAMENTO = [
+        ('CREDITO', 'Cartão de Crédito'),
+        ('DEBITO', 'Cartão de Débito'),
+        ('PIX', 'PIX'),
+        ('DINHEIRO', 'Dinheiro'),
     ]
-
+    
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos', verbose_name="Cliente")
     bairro_entrega = models.ForeignKey(Bairro, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Bairro de Entrega")
     endereco_entrega = models.CharField(max_length=150, verbose_name="Endereço Completo")
@@ -37,7 +35,11 @@ class Pedido(models.Model):
     data_pedido = models.DateTimeField(auto_now_add=True, verbose_name="Data do Pedido")
     data_atualizacao = models.DateTimeField(auto_now=True, verbose_name="Última Atualização")
     preco_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Preço Total")
-    status = models.CharField(max_length=20, choices=STATUS_PEDIDO, default='PROCESSANDO', verbose_name="Status")
+    
+    # CAMPOS DE PAGAMENTO (SUBSTITUINDO O STATUS)
+    forma_pagamento = models.CharField(max_length=20, choices=FORMA_PAGAMENTO, verbose_name="Forma de Pagamento")
+    precisa_troco = models.BooleanField(default=False, verbose_name="Precisa de Troco?")
+    valor_troco_para = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Troco para (R$)")
 
     numero_diario = models.PositiveIntegerField(default=1, verbose_name="Número do Pedido do Dia")
     data_referencia = models.DateField(default=date.today, verbose_name="Data de Referência")
@@ -73,6 +75,35 @@ class Pedido(models.Model):
         if self.bairro_entrega:
             self.taxa_entrega = self.bairro_entrega.taxa
         self.save()
+        
+    def pode_ser_editado(self):
+        """Verifica se o pedido pode ser editado/removido (dentro de 5 minutos da criação)"""
+        tempo_decorrido = (timezone.now() - self.data_pedido).total_seconds()
+        return tempo_decorrido < 300  # 5 minutos = 300 segundos
+    
+    def pode_ser_removido(self):
+        """Verifica se o pedido pode ser removido (dentro de 5 minutos da criação)"""
+        tempo_decorrido = (timezone.now() - self.data_pedido).total_seconds()
+        return tempo_decorrido < 300  # 5 minutos = 300 segundos
+    
+    def save(self, *args, **kwargs):
+        if not self.numero_diario:
+            self.numero_diario = self.get_next_numero_diario()
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_next_numero_diario(cls):
+        agora = timezone.localtime()
+        
+        # Define o horário de corte como meio-dia (12:00)
+        if agora.hour < 12:
+            inicio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0) - timedelta(days=1)
+        else:
+            inicio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
+
+        # Conta quantos pedidos existem a partir do início do "dia lógico"
+        count = cls.objects.filter(data_criacao__gte=inicio_dia).count()
+        return count + 1
 
     @property
     def subtotal_produtos(self):
@@ -85,7 +116,6 @@ class Pedido(models.Model):
     @property
     def total_final(self):
         return self.subtotal_produtos + self.total_adicionais + self.taxa_entrega
-
 
 class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens_pedido', verbose_name="Pedido")
@@ -125,7 +155,6 @@ class ItemPedido(models.Model):
         super().delete(*args, **kwargs)
         pedido.atualizar_total()
 
-
 class LocalEntrega(models.Model):
     bairro = models.ForeignKey(Bairro, on_delete=models.CASCADE, verbose_name="Bairro")
     endereco = models.CharField(max_length=150, verbose_name="Endereço Completo")
@@ -136,3 +165,7 @@ class LocalEntrega(models.Model):
 
     def __str__(self):
         return f"{self.endereco} ({self.bairro.nome})"
+    
+    
+    
+    

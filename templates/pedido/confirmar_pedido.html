@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pedido1.css' %}" />
+{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -15,9 +20,9 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="bairro" class="form-label">Selecione seu Bairro *</label>
+                        <label for="bairro" class="form-label">Selecione seu setor *</label>
                         <select class="form-select" id="bairro" name="bairro" required>
-                            <option value="">Escolha um bairro</option>
+                            <option value="">Escolha um setor</option>
                             {% for bairro in bairros %}
                                 <option 
                                     value="{{ bairro.id }}"
@@ -32,11 +37,14 @@
                             {% endfor %}
                         </select>
 
-                        <div class="mt-2">
-                            <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
-                            </a>
-                        </div>
+                        {% if user.is_superuser %}
+<div class="mt-2">
+    <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
+    </a>
+</div>
+{% endif %}
+
 
                         <div class="mt-2">
                             <small class="text-muted">
@@ -48,7 +56,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="endereco" class="form-label">Endereço Completo *</label>
                         <input type="text" class="form-control" id="endereco" name="endereco" 
-                               value="{{ endereco|default:'' }}" placeholder="Rua, número, complemento..." required>
+                               value="{{ endereco|default:'' }}" placeholder="Quadra e número" required>
                     </div>
                 </div>
 
@@ -57,18 +65,47 @@
                     <input type="text" class="form-control" id="referencia" name="referencia" 
                            value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
                 </div>
+            </div>
+        </div>
 
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-danger small">
-                                {{ field.errors|striptags }}
-                            </div>
-                        {% endif %}
+        <!-- Seção de Pagamento (NOVA) -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Forma de Pagamento</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="forma_pagamento" class="form-label">Método de Pagamento *</label>
+                        <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
+                            <option value="">Selecione a forma de pagamento</option>
+                            <option value="CREDITO">Cartão de Crédito</option>
+                            <option value="DEBITO">Cartão de Débito</option>
+                            <option value="PIX">PIX</option>
+                            <option value="DINHEIRO">Dinheiro</option>
+                        </select>
                     </div>
-                {% endfor %}
+                    
+                    <!-- Campos condicionais para pagamento em dinheiro -->
+                    <div class="col-md-6 mb-3" id="troco-container" style="display: none;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="precisa_troco" name="precisa_troco">
+                            <label class="form-check-label" for="precisa_troco">
+                                Precisa de troco?
+                            </label>
+                        </div>
+                        
+                        <div id="valor_troco_field" style="display: none;">
+                            <label for="valor_troco_para" class="form-label">Troco para quanto?</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" class="form-control" id="valor_troco_para" 
+                                       name="valor_troco_para" step="0.01" min="0">
+                            </div>
+                            <small class="text-muted">Informe o valor total que você vai pagar em dinheiro</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -176,19 +213,23 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const bairroSelect = document.getElementById('bairro');
+    const formaPagamentoSelect = document.getElementById('forma_pagamento');
+    const trocoContainer = document.getElementById('troco-container');
+    const precisaTrocoCheckbox = document.getElementById('precisa_troco');
+    const valorTrocoField = document.getElementById('valor_troco_field');
     const tempoEntrega = document.getElementById('tempo-entrega');
     const taxaEntregaSpan = document.getElementById('taxa-entrega');
     const subtotalSpan = document.getElementById('subtotal');
-    const totalAdicionaisSpan = document.getElementById('total-adicionais');
     const totalPedidoSpan = document.getElementById('total-pedido');
     const formPedido = document.getElementById('form-pedido');
 
     // Atualiza os valores quando a página carrega
     updateTotals();
 
-    bairroSelect.addEventListener('change', function() {
-        updateTotals();
-    });
+    // Event listeners
+    bairroSelect.addEventListener('change', updateTotals);
+    formaPagamentoSelect.addEventListener('change', toggleTrocoFields);
+    precisaTrocoCheckbox.addEventListener('change', toggleValorTrocoField);
 
     function updateTotals() {
         const selectedOption = bairroSelect.options[bairroSelect.selectedIndex];
@@ -201,8 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
             taxaEntregaSpan.textContent = taxa.toFixed(2);
             
             const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-            const adicionais = totalAdicionaisSpan ? parseFloat(totalAdicionaisSpan.textContent.replace('.', '').replace(',', '.')) || 0 : 0;
-            const total = subtotal + adicionais + taxa;
+            const total = subtotal + taxa;
             totalPedidoSpan.textContent = total.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
@@ -211,11 +251,30 @@ document.addEventListener('DOMContentLoaded', function() {
             tempoEntrega.textContent = '---';
             taxaEntregaSpan.textContent = '0.00';
             const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-            const adicionais = totalAdicionaisSpan ? parseFloat(totalAdicionaisSpan.textContent.replace('.', '').replace(',', '.')) || 0 : 0;
-            totalPedidoSpan.textContent = (subtotal + adicionais).toLocaleString('pt-BR', {
+            totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        }
+    }
+
+    function toggleTrocoFields() {
+        if (formaPagamentoSelect.value === 'DINHEIRO') {
+            trocoContainer.style.display = 'block';
+        } else {
+            trocoContainer.style.display = 'none';
+            precisaTrocoCheckbox.checked = false;
+            valorTrocoField.style.display = 'none';
+        }
+    }
+
+    function toggleValorTrocoField() {
+        if (precisaTrocoCheckbox.checked) {
+            valorTrocoField.style.display = 'block';
+            document.getElementById('valor_troco_para').required = true;
+        } else {
+            valorTrocoField.style.display = 'none';
+            document.getElementById('valor_troco_para').required = false;
         }
     }
 
@@ -224,39 +283,39 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             alert('Por favor, selecione um bairro para entrega.');
             bairroSelect.focus();
+            return;
+        }
+
+        if (!formaPagamentoSelect.value) {
+            e.preventDefault();
+            alert('Por favor, selecione uma forma de pagamento.');
+            formaPagamentoSelect.focus();
+            return;
+        }
+
+        if (formaPagamentoSelect.value === 'DINHEIRO' && 
+            precisaTrocoCheckbox.checked && 
+            !document.getElementById('valor_troco_para').value) {
+            e.preventDefault();
+            alert('Por favor, informe para quanto precisa de troco.');
+            document.getElementById('valor_troco_para').focus();
         }
     });
 });
 </script>
 
 <style>
+    /* Estilos específicos para a seção de pagamento */
+    #troco-container {
+        transition: all 0.3s ease;
+    }
+    
+    #valor_troco_field {
+        transition: all 0.3s ease;
+    }
+    
     .card-header {
-        padding: 1rem 1.5rem;
-    }
-    .table th, .table td {
-        vertical-align: middle;
-    }
-    #tempo-entrega {
-        color: #0d6efd;
-    }
-    .img-thumbnail {
-        padding: 0.25rem;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
-    }
-    .observacao-container {
-        max-width: 300px;
-    }
-    .badge {
-        font-weight: normal;
-        padding: 0.35em 0.65em;
-        white-space: normal;
-        text-align: left;
-        display: inline-block;
-    }
-    .list-unstyled li {
-        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
     }
 </style>
 {% endblock %}

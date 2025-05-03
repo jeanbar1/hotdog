@@ -14,7 +14,7 @@ from usuario.models import Usuario
 from .models import Carrinho, ItemCarrinho
 
 
-@login_required(login_url='login')
+@login_required(login_url='loginRapido')
 def carrinho(request, id=None):
     if id and not request.user.is_superuser:
         messages.error(request, 'Você não tem permissão para acessar este carrinho.')
@@ -46,33 +46,35 @@ def carrinho(request, id=None):
 
 
 
-@login_required
+from django.http import JsonResponse
+
+@login_required(login_url='loginRapido')
 def adicionar_ao_carrinho(request, produto_id):
     if request.method == 'POST':
         produto = get_object_or_404(Produto, id=produto_id)
 
-        # 🔒 Verifica se o produto está ativo
         if not produto.ativo:
-            messages.error(request, 'Este produto está indisponivel e não pode ser adicionado ao carrinho.')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': 'Produto indisponível'}, status=400)
+            messages.error(request, 'Este produto está indisponível.')
             return redirect('detalhes_produto', id=produto.id)
 
         carrinho, created = Carrinho.objects.get_or_create(usuario=request.user)
-        
+
         try:
             quantidade = int(request.POST.get('quantidade', 1))
             if quantidade < 1:
                 raise ValueError("Quantidade deve ser positiva.")
             observacao = request.POST.get('observacao', '')
-
             adicionais_raw = request.POST.get('adicionais', '')
             adicionais_ids = [int(aid) for aid in adicionais_raw.split(',') if aid.strip().isdigit()]
             adicionais = Adicional.objects.filter(id__in=adicionais_ids)
-
         except (ValueError, TypeError):
-            messages.error(request, 'Quantidade ou adicionais inválidos.')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': 'Dados inválidos.'}, status=400)
+            messages.error(request, 'Dados inválidos.')
             return redirect('detalhes_produto', id=produto.id)
 
-        # Cria ou atualiza o item no carrinho
         item, created = ItemCarrinho.objects.get_or_create(
             carrinho=carrinho,
             produto=produto,
@@ -88,16 +90,19 @@ def adicionar_ao_carrinho(request, produto_id):
                 item.observacao = observacao
             item.save()
 
-        # Atualiza os adicionais
         item.adicionais.set(adicionais)
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
 
         messages.success(request, f'"{produto.nome}" adicionado ao carrinho!')
         return redirect('detalhes_produto', id=produto.id)
-    
+
     return redirect('home')
 
 
-@login_required
+
+@login_required(login_url='loginRapido')
 def remover_do_carrinho(request, id):
     """
     Remove um produto do carrinho do usuário.
@@ -116,7 +121,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt  # Temporário para testes - remova em produção
 @require_POST
-@login_required
+@login_required(login_url='loginRapido')
 def atualizar_carrinho(request):
     try:
         # Obter dados do POST
@@ -167,7 +172,11 @@ def atualizar_carrinho(request):
         
         
         
-        
+   
+    
+    
+    
+    
 @require_http_methods(["GET", "POST"])
 @login_required
 @transaction.atomic
@@ -186,22 +195,33 @@ def confirmar_compra(request):
         if request.method == "POST":
             bairro_id = request.POST.get('bairro')
             endereco = request.POST.get('endereco', '').strip()
+            forma_pagamento = request.POST.get('forma_pagamento')
+            precisa_troco = request.POST.get('precisa_troco') == 'on'
+            valor_troco_para = request.POST.get('valor_troco_para', None)
             
-            if not bairro_id or not endereco:
+            # Validação dos campos obrigatórios
+            if not bairro_id or not endereco or not forma_pagamento:
                 messages.error(request, 'Preencha todos os campos obrigatórios')
+                return redirect('confirmar_compra')
+            
+            # Validação específica para pagamento em dinheiro
+            if forma_pagamento == 'DINHEIRO' and precisa_troco and not valor_troco_para:
+                messages.error(request, 'Informe para quanto precisa de troco')
                 return redirect('confirmar_compra')
 
             with transaction.atomic():
                 bairro = get_object_or_404(Bairro, id=bairro_id)
                 
-                # Criar pedido com valores iniciais (serão atualizados depois)
+                # Criar pedido com os novos campos de pagamento
                 pedido = Pedido.objects.create(
                     cliente=request.user,
                     preco_total=0,  # Será atualizado após criar os itens
                     bairro_entrega=bairro,
                     endereco_entrega=endereco,
                     referencia_entrega=request.POST.get('referencia', ''),
-                    status='PROCESSANDO',
+                    forma_pagamento=forma_pagamento,
+                    precisa_troco=precisa_troco,
+                    valor_troco_para=valor_troco_para if forma_pagamento == 'DINHEIRO' and precisa_troco else None,
                     taxa_entrega=bairro.taxa
                 )
 
@@ -229,7 +249,7 @@ def confirmar_compra(request):
                 # Limpar carrinho
                 itens_carrinho.delete()
 
-            messages.success(request, f'Pedido #{pedido.id} criado com sucesso!')
+            messages.success(request, f'Pedido #{pedido.numero_diario} criado com sucesso!')
             return redirect('detalhe_pedido', id=pedido.id)
 
         # Para GET - calcular totais corretamente para exibição
@@ -246,12 +266,20 @@ def confirmar_compra(request):
             'total_adicionais': total_adicionais,
             'total_geral': total_geral,
             'bairros': bairros,
+            'formas_pagamento': Pedido.FORMA_PAGAMENTO,  # Adicionado para o template
         })
 
     except Exception as e:
         logger.error(f"Erro na confirmação: {str(e)}", exc_info=True)
         messages.error(request, 'Erro ao processar seu pedido')
         return redirect('carrinho')
+    
+    
+    
+    
+    
+    
+    
     
 @login_required
 def calcular_taxa(request):

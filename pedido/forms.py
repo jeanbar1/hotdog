@@ -5,11 +5,29 @@ from .models import *
 class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
-        fields = ['cliente', 'status']
+        fields = ['cliente', 'forma_pagamento', 'precisa_troco', 'valor_troco_para']
         widgets = {
             'cliente': forms.Select(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
+            'forma_pagamento': forms.Select(attrs={'class': 'form-control'}),
+            'precisa_troco': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'valor_troco_para': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01',
+                'min': '0'
+            }),
         }
+        labels = {
+            'forma_pagamento': 'Forma de Pagamento',
+            'precisa_troco': 'Precisa de troco?',
+            'valor_troco_para': 'Troco para quanto? (R$)',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Tornar o campo de troco condicional
+        if not self.instance.pk or self.instance.forma_pagamento != 'DINHEIRO':
+            self.fields['valor_troco_para'].required = False
+            self.fields['precisa_troco'].required = False
 
 class ItemPedidoForm(forms.ModelForm):
     adicionais = forms.ModelMultipleChoiceField(
@@ -20,11 +38,11 @@ class ItemPedidoForm(forms.ModelForm):
 
     class Meta:
         model = ItemPedido
-        fields = ['produto', 'quantidade', 'adicionais']  # Adicionado o campo
+        fields = ['produto', 'quantidade', 'adicionais']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['adicionais'].queryset = Adicional.objects.filter(disponivel=True)
+        self.fields['adicionais'].queryset = Adicional.objects.filter(ativo=True)
 
 # Formset para múltiplos itens
 ItemPedidoFormSet = inlineformset_factory(
@@ -34,15 +52,6 @@ ItemPedidoFormSet = inlineformset_factory(
     extra=1,
     can_delete=True
 )
-
-
-
-
-
-#---------------------forms entrega-----------------------
-
-
-
 
 class BairroForm(forms.ModelForm):
     class Meta:
@@ -68,8 +77,6 @@ class BairroForm(forms.ModelForm):
             'taxa': 'Taxa de Entrega (R$)',
             'tempo': 'Tempo Estimado de Entrega',
         }
-        
-        
 
 class LocalEntregaForm(forms.ModelForm):
     class Meta:

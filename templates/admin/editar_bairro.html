@@ -13,7 +13,11 @@
     </div>
     <div class="mb-3">
       <label for="id_valor_entrega" class="form-label">Valor de Entrega (R$)</label>
-      {{ form.valor_entrega }}
+      {{ form.taxa }}
+    </div>
+    <div class="mb-3">
+      <label for="id_tempo" class="form-label">Tempo estimado</label>
+      {{ form.tempo }}
     </div>
     <button type="submit" class="btn btn-success">Salvar</button>
     <a href="{% url 'listar_bairros' %}" class="btn btn-secondary">Cancelar</a>

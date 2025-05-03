@@ -57,10 +57,54 @@
       margin-top: 2rem;
       margin-bottom: 2rem;
     }
-    footer.footer {
-      background-color: rgba(231, 76, 60, 0.9) !important;
-      color: white;
-    }
+    .footer {
+    background: linear-gradient rgba(231, 76, 60, 0.9) !important;
+    border-top: 3px solid #ffc107;
+}
+
+.footer h5 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.footer h5:after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 2px;
+    background: #ffc107;
+    bottom: -5px;
+    left: 0;
+}
+
+.footer ul li {
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.footer ul li:hover {
+    color: #ffc107;
+    transform: translateX(5px);
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(231, 76, 60, 0.9) !important;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background: #ffc107;
+    color: #000 !important;
+    transform: translateY(-3px);
+}
     .card, .alert {
       background-color: rgba(255, 255, 255, 0.9);
     }
@@ -68,6 +112,26 @@
       background-color: rgba(231, 76, 60, 0.9) !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
+
+    .navbar-brand {
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+  }
+  
+  .navbar-brand img {
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solidrgb(211, 16, 16);
+  }
+  
+  .navbar-brand span:first-child {
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  
+  .navbar-brand span:last-child {
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  }
   </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -75,14 +139,20 @@
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
-        <a href="{% url 'home' %}" class="navbar-brand">Logo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center">
+          <img src="{% static 'images/chapa.jpeg' %}" alt="Logo Chapa Quente" class="me-2" style="height: 40px;">
+          <div class="d-flex flex-column">
+              <span class="text-white fw-bold" style="font-size: 1.2rem; line-height: 1;">HOT DOG</span>
+              <span class="text-warning fw-bold" style="font-size: 1rem; line-height: 1;">CHAPA QUENTE</span>
+          </div>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
-        </button>
+      </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'listar_produtos' %}">Cardápio</a>
+                <a class="nav-link" href="{% url 'home' %}">Cardápio</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'carrinho' %}">Carrinho (<span id="cart-count">0</span>)</a>
@@ -150,11 +220,59 @@
   </main>
 
   <!-- ====== Footer ====== -->
-  <footer class="footer mt-auto py-3">
-    <div class="container text-center">
-      <p class="mb-0">&copy; {% now "Y" %} Minha Empresa. Todos os direitos reservados.</p>
+  <footer class="footer mt-auto py-4 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+            <!-- Nome da Empresa e Slogan -->
+            
+<div class="col-md-4 mb-4 mb-md-0">
+    <h5 class="text-warning fw-bold">HOT DOG CHAPA QUENTE</h5>
+    <p class="small">O melhor hot dog da cidade, feito na hora com ingredientes de qualidade!</p>
+    <div class="social-icons">
+        
+        <a href="https://www.instagram.com/hot.dog1988?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="text-white me-2">
+            <img src="{% static 'images/instagram.png' %}" alt="Instagram" style="width: 20px; height: 20px;">
+        </a>
+        <a href="https://wa.me/5561982161937" class="text-white">
+            <img src="{% static 'img/whatsapp-icon.png' %}" alt="WhatsApp" style="width: 20px; height: 20px;">
+        </a>
     </div>
-  </footer>
+</div>
+
+          
+            
+            <!-- Horário de Funcionamento -->
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="text-warning">Horário de Atendimento</h5>
+                <ul class="list-unstyled small">
+                    <li>Segunda a Terça: 18h - 23h</li>
+                    <li>Quarta-feira: <span class="text-black">Fechado</span></li>
+                    <li>Quinta a Domingo: 18h - 23h</li>
+                </ul>
+            </div>
+            
+            <!-- Contatos -->
+            <div class="col-md-4">
+                <h5 class="text-warning">Contato & Suporte</h5>
+                <ul class="list-unstyled small">
+                    <li><i class="fas fa-phone-alt me-2"></i> (61) 9821-6193 (Loja)</li>
+                    <li><i class="fab fa-whatsapp me-2"></i> (61) 98628-6875 (Rodrigo)</li>
+                    <li><i class="fas fa-envelope me-2"></i> rodrigopereirasilva413@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt me-2"></i> Marajó - GO, Setor D, Quadra 06, Lote 26</li>
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="my-4 bg-secondary">
+        
+        <!-- Direitos autorais -->
+        <div class="text-center small">
+            <p class="mb-0">&copy; {% now "Y" %} Hot Dog Chapa Quente. Todos os direitos reservados.</p>
+            <p class="mb-0">Desenvolvido com <i class="fas fa-heart text-danger"></i> pela equipe Chapa Quente</p>
+        </div>
+    </div>
+</footer>
+
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

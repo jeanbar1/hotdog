@@ -21,7 +21,7 @@
                     <div>
                         <a href="{% url 'toggle_adicional_prod1uto' pa.id %}" 
                            class="btn btn-sm btn-{% if pa.ativo %}warning{% else %}success{% endif %}">
-                            {% if pa.ativo %}<i class="fas fa-toggle-off"></i>{% else %}<i class="fas fa-toggle-on"></i>{% endif %}
+                            {% if pa.ativo %} Ativo<i class="fas fa-toggle-off"></i>{% else %}Inativo<i class="fas fa-toggle-on"></i>{% endif %}
                         </a>
                     </div>
                 </div>

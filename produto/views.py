@@ -10,7 +10,7 @@ from .models import *
 from .forms import *
 
 
-@login_required(login_url='login')
+@login_required(login_url='loginRapido')
 def detalhes_produto(request, id):
     """
     Mostra os detalhes de um produto.
@@ -57,7 +57,7 @@ def listCategoria(request):
     })
 
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def create_produto(request):
     """
@@ -80,7 +80,7 @@ def create_produto(request):
         return render(request, "produto/addProduto.html", {"form" : form, 'titulo': 'Criar produto'})
     
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def edit_produto(request, id):
     """
@@ -113,7 +113,7 @@ def edit_produto(request, id):
     return render(request, 'produto/editProduto.html', context)
     
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def remove_produto(request, id):
     """
@@ -133,7 +133,7 @@ def remove_produto(request, id):
 
 
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def addCategoria(request):
     """
@@ -155,7 +155,7 @@ def addCategoria(request):
     return render(request, "produto/addCategoria.html", {"form": form, "titulo": "Criar Categoria"})
     
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def editCategoria(request, id):
     """
@@ -183,7 +183,7 @@ def editCategoria(request, id):
     return render(request, "produto/editCategoria.html", {'form' : form, 'titulo': 'Editar tipo de produto'})
 
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def deleteCategoria(request, id):
     categoria = get_object_or_404(CategoriaProduto, id=id)
@@ -269,7 +269,7 @@ def pesquisar_produtos(request):
 
 # VIEWS PARA ADICIONAIS (NOVAS) ------------------------------------------------
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def listar_adicionais(request):
     """
@@ -279,7 +279,7 @@ def listar_adicionais(request):
     adicionais = Adicional.objects.all()
     return render(request, 'produto/listar_adicionais.html', {'adicionais': adicionais})
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def criar_adicional(request):
     """
@@ -299,7 +299,7 @@ def criar_adicional(request):
         "titulo": "Criar Adicional"
     })
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def editar_adicional(request, id):
     """
@@ -321,7 +321,7 @@ def editar_adicional(request, id):
         "titulo": "Editar Adicional"
     })
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def remover_adicional(request, id):
     """
@@ -332,7 +332,7 @@ def remover_adicional(request, id):
     adicional.delete()
     return redirect('listar_adicionais')
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def gerenciar_adicionais_produto(request, produto_id):
     """
@@ -367,7 +367,7 @@ def gerenciar_adicionais_produto(request, produto_id):
         'adicionais_disponiveis': adicionais_disponiveis
     })
 
-@login_required
+@login_required(login_url='loginRapido')
 @group_required('Administradores')
 def toggle_adicional_produto(request, produto_adicional_id):
     """

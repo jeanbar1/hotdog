@@ -1,46 +1,154 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/pedido_form.css' %}">
+<style>
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .item-form {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        border-left: 4px solid #e74c3c;
+    }
+    .remove-item {
+        margin-bottom: 0.5rem;
+    }
+    .time-left {
+        font-size: 0.9rem;
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">{{ titulo }}</h2>
-    
-    <form method="post" id="pedidoForm">
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-edit me-2"></i>{{ titulo }}
+        </h2>
+        {% if pedido.pode_ser_editado or request.user.is_staff %}
+        <div class="time-left" data-pedido-id="{{ pedido.id }}" data-pedido-time="{{ pedido.data_pedido|date:'U' }}">
+            ⏳ Tempo para edição: <span class="countdown"></span>
+        </div>
+        {% endif %}
+    </div>
+
+    <form method="post" id="pedidoForm" novalidate>
         {% csrf_token %}
         
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Informações do Pedido</h4>
+        <!-- Informações Básicas -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informações do Pedido</h4>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        {{ form.cliente.label_tag }}
+                    <div class="col-md-6 form-group">
+                        <label for="{{ form.cliente.id_for_label }}" class="form-label">Cliente</label>
                         {{ form.cliente }}
-                        {{ form.cliente.errors }}
+                        {% if form.cliente.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.cliente.errors|first }}
+                        </div>
+                        {% endif %}
                     </div>
-                    <div class="col-md-6">
-                        {{ form.status.label_tag }}
-                        {{ form.status }}
-                        {{ form.status.errors }}
+                    <div class="col-md-6 form-group">
+                        <label for="{{ form.bairro_entrega.id_for_label }}" class="form-label">Bairro de Entrega</label>
+                        {{ form.bairro_entrega }}
+                        {% if form.bairro_entrega.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.bairro_entrega.errors|first }}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 
-                <div class="row mt-3">
-                    <div class="col-12">
-                        {{ form.observacoes.label_tag }}
-                        {{ form.observacoes }}
-                        {{ form.observacoes.errors }}
+                <div class="row">
+                    <div class="col-md-8 form-group">
+                        <label for="{{ form.endereco_entrega.id_for_label }}" class="form-label">Endereço Completo</label>
+                        {{ form.endereco_entrega }}
+                        {% if form.endereco_entrega.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.endereco_entrega.errors|first }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="{{ form.referencia_entrega.id_for_label }}" class="form-label">Ponto de Referência</label>
+                        {{ form.referencia_entrega }}
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Itens do Pedido</h4>
+        <!-- Pagamento -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Pagamento</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="{{ form.forma_pagamento.id_for_label }}" class="form-label">Forma de Pagamento</label>
+                        {{ form.forma_pagamento }}
+                        {% if form.forma_pagamento.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.forma_pagamento.errors|first }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6" id="troco-section" style="{% if form.forma_pagamento.value != 'DINHEIRO' %}display:none;{% endif %}">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Precisa de Troco?</label>
+                                <div class="form-check">
+                                    {{ form.precisa_troco }}
+                                    <label class="form-check-label" for="{{ form.precisa_troco.id_for_label }}">
+                                        Sim
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group" id="valor-troco" style="{% if not form.precisa_troco.value %}display:none;{% endif %}">
+                                <label for="{{ form.valor_troco_para.id_for_label }}" class="form-label">Troco para</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    {{ form.valor_troco_para }}
+                                </div>
+                                {% if form.valor_troco_para.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.valor_troco_para.errors|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Itens do Pedido -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-list-ul me-2"></i>Itens do Pedido</h4>
                 <button type="button" class="btn btn-sm btn-success" id="addItem">
-                    <i class="fas fa-plus"></i> Adicionar Item
+                    <i class="fas fa-plus me-1"></i>Adicionar Item
                 </button>
             </div>
             <div class="card-body">
@@ -48,30 +156,49 @@
                 
                 <div id="formset-container">
                     {% for form in formset %}
-                    <div class="item-form row mb-3 g-3 align-items-end">
+                    <div class="item-form row g-3 align-items-end" id="item-{{ forloop.counter0 }}">
                         {{ form.id }}
-                        <div class="col-md-5">
-                            {{ form.produto.label_tag }}
+                        <div class="col-md-5 form-group">
+                            <label for="{{ form.produto.id_for_label }}" class="form-label">Produto</label>
                             {{ form.produto }}
-                            {{ form.produto.errors }}
-                        </div>
-                        <div class="col-md-2">
-                            {{ form.quantidade.label_tag }}
-                            {{ form.quantidade }}
-                            {{ form.quantidade.errors }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.preco_unitario.label_tag }}
-                            {{ form.preco_unitario }}
-                            {{ form.preco_unitario.errors }}
-                        </div>
-                        <div class="col-md-1">
-                            {% if form.instance.pk %}
-                                {{ form.DELETE.label_tag }}
+                            {% if form.produto.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.produto.errors|first }}
+                            </div>
                             {% endif %}
-                            {{ form.DELETE }}
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2 form-group">
+                            <label for="{{ form.quantidade.id_for_label }}" class="form-label">Quantidade</label>
+                            {{ form.quantidade }}
+                            {% if form.quantidade.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.quantidade.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <label for="{{ form.preco_unitario.id_for_label }}" class="form-label">Preço Unitário</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.preco_unitario }}
+                            </div>
+                            {% if form.preco_unitario.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.preco_unitario.errors|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <label class="form-label">Adicionais</label>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" 
+                                    data-bs-target="#adicionaisModal" data-item-id="{{ forloop.counter0 }}">
+                                <i class="fas fa-plus-circle me-1"></i>Adicionais
+                            </button>
+                        </div>
+                        <div class="col-md-1 form-group">
+                            {% if form.instance.pk %}
+                                {{ form.DELETE }}
+                            {% endif %}
                             <button type="button" class="btn btn-danger btn-sm remove-item" {% if not form.instance.pk %}style="display:none;"{% endif %}>
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -82,66 +209,214 @@
             </div>
         </div>
 
+        <!-- Observações -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-comment me-2"></i>Observações</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    {{ form.observacoes }}
+                    {% if form.observacoes.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.observacoes.errors|first }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
         <div class="d-flex justify-content-between">
             <a href="{% if pedido %}{% url 'detalhe_pedido' pedido.id %}{% else %}{% url 'listar_pedidos' %}{% endif %}" 
                class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Cancelar
+                <i class="fas fa-arrow-left me-1"></i> Cancelar
             </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salvar Pedido
-            </button>
+            <div>
+                {% if pedido %}
+                <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-outline-danger me-2" id="remove-pedido-btn"
+                   onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
+                    <i class="fas fa-trash-alt me-1"></i> Excluir Pedido
+                </a>
+                {% endif %}
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <i class="fas fa-save me-1"></i> Salvar Pedido
+                </button>
+            </div>
         </div>
     </form>
 </div>
+
+<!-- Modal de Adicionais -->
+<div class="modal fade" id="adicionaisModal" tabindex="-1" aria-labelledby="adicionaisModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adicionaisModalLabel">Selecionar Adicionais</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="adicionaisModalBody">
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveAdicionais">Salvar Adicionais</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-{% block scripts %}
-<script src="{% static 'js/pedido_form.js' %}"></script>
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Atualiza preço quando produto é selecionado
-    $(document).on('change', 'select[id$="-produto"]', function() {
-        const $row = $(this).closest('.item-form');
-        const produtoId = $(this).val();
-        if (produtoId) {
-            $.getJSON(`/api/produto/${produtoId}/preco/`, function(data) {
-                $row.find('input[id$="-preco_unitario"]').val(data.preco);
-            });
+    // Contador regressivo para edição
+    function updateCountdown() {
+        const now = Math.floor(Date.now() / 1000);
+        const countdownElement = document.querySelector('.time-left');
+        
+        if (countdownElement) {
+            const pedidoTime = parseInt(countdownElement.getAttribute('data-pedido-time'));
+            const timeLeft = 300 - (now - pedidoTime); // 5 minutos = 300 segundos
+            
+            if (timeLeft > 0) {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.querySelector('.countdown').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                countdownElement.textContent = 'Tempo para edição expirado';
+                countdownElement.style.color = '#6c757d';
+                
+                // Desabilita o formulário se o usuário não for staff
+                if (!{{ request.user.is_staff|yesno:"true,false" }}) {
+                    document.getElementById('pedidoForm').querySelectorAll('input, select, textarea, button').forEach(el => {
+                        el.disabled = true;
+                    });
+                    document.getElementById('submit-btn').classList.add('disabled');
+                    document.getElementById('remove-pedido-btn').classList.add('disabled');
+                    
+                    alert('O tempo para editar este pedido expirou. Apenas administradores podem fazer alterações agora.');
+                }
+            }
+        }
+    }
+
+    // Atualiza a cada segundo
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Mostra/oculta seção de troco conforme forma de pagamento
+    const formaPagamento = document.getElementById('{{ form.forma_pagamento.id_for_label }}');
+    const trocoSection = document.getElementById('troco-section');
+    
+    formaPagamento.addEventListener('change', function() {
+        if (this.value === 'DINHEIRO') {
+            trocoSection.style.display = 'block';
+        } else {
+            trocoSection.style.display = 'none';
+        }
+    });
+
+    // Mostra/oculta campo de valor do troco
+    const precisaTroco = document.getElementById('{{ form.precisa_troco.id_for_label }}');
+    const valorTroco = document.getElementById('valor-troco');
+    
+    precisaTroco.addEventListener('change', function() {
+        if (this.checked) {
+            valorTroco.style.display = 'block';
+        } else {
+            valorTroco.style.display = 'none';
         }
     });
 
     // Adiciona novo item
-    $('#addItem').click(function() {
-        const totalForms = $('#id_form-TOTAL_FORMS');
-        const formIdx = parseInt(totalForms.val());
-        const newForm = $('.item-form:first').clone();
+    const addItemBtn = document.getElementById('addItem');
+    const formsetContainer = document.getElementById('formset-container');
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+    
+    addItemBtn.addEventListener('click', function() {
+        const formIdx = parseInt(totalForms.value);
+        const newForm = document.querySelector('.item-form').cloneNode(true);
         
-        newForm.find(':input').each(function() {
-            const name = $(this).attr('name').replace(/-\d+-/, `-${formIdx}-`);
-            const id = $(this).attr('id').replace(/-\d+-/, `-${formIdx}-`);
-            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+        // Atualiza IDs e names
+        newForm.id = `item-${formIdx}`;
+        newForm.querySelectorAll('input, select').forEach(el => {
+            if (el.name) el.name = el.name.replace(/-\d+-/, `-${formIdx}-`);
+            if (el.id) el.id = el.id.replace(/-\d+-/, `-${formIdx}-`);
+            el.value = '';
         });
         
-        newForm.find('.remove-item').show();
-        newForm.find('input[id$="-DELETE"]').hide();
-        newForm.find('label[for$="-DELETE"]').hide();
+        // Mostra botão de remover e esconde DELETE
+        newForm.querySelector('.remove-item').style.display = 'block';
+        const deleteInput = newForm.querySelector('input[id$="-DELETE"]');
+        if (deleteInput) deleteInput.style.display = 'none';
         
-        $('#formset-container').append(newForm);
-        totalForms.val(formIdx + 1);
+        formsetContainer.appendChild(newForm);
+        totalForms.value = formIdx + 1;
     });
 
     // Remove item
-    $(document).on('click', '.remove-item', function() {
-        const $row = $(this).closest('.item-form');
-        const deleteInput = $row.find('input[id$="-DELETE"]');
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-item')) {
+            const itemForm = e.target.closest('.item-form');
+            const deleteInput = itemForm.querySelector('input[id$="-DELETE"]');
+            
+            if (deleteInput) {
+                deleteInput.checked = true;
+                itemForm.style.display = 'none';
+            } else {
+                itemForm.remove();
+                totalForms.value = parseInt(totalForms.value) - 1;
+            }
+        }
+    });
+
+    // Modal de adicionais
+    const adicionaisModal = document.getElementById('adicionaisModal');
+    let currentItemId = null;
+    
+    adicionaisModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        currentItemId = button.getAttribute('data-item-id');
         
-        if (deleteInput.length) {
-            deleteInput.prop('checked', true);
-            $row.hide();
-        } else {
-            $row.remove();
-            const totalForms = $('#id_form-TOTAL_FORMS');
-            totalForms.val(parseInt(totalForms.val()) - 1;
+        // Aqui você pode carregar os adicionais via AJAX
+        // Exemplo simplificado:
+        const produtoSelect = document.getElementById(`id_form-${currentItemId}-produto`);
+        const produtoId = produtoSelect.value;
+        
+        if (produtoId) {
+            fetch(`/api/produto/${produtoId}/adicionais/`)
+                .then(response => response.json())
+                .then(data => {
+                    const modalBody = document.getElementById('adicionaisModalBody');
+                    modalBody.innerHTML = '<p>Carregando adicionais...</p>';
+                    // Implemente a renderização dos adicionais aqui
+                });
+        }
+    });
+
+    // Salvar adicionais
+    document.getElementById('saveAdicionais').addEventListener('click', function() {
+        // Implemente a lógica para salvar os adicionais selecionados
+        const modal = bootstrap.Modal.getInstance(adicionaisModal);
+        modal.hide();
+    });
+
+    // Atualiza preço quando produto é selecionado
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.matches('select[id$="-produto"]')) {
+            const itemId = e.target.id.split('-')[1];
+            const produtoId = e.target.value;
+            
+            if (produtoId) {
+                fetch(`/api/produto/${produtoId}/preco/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById(`id_form-${itemId}-preco_unitario`).value = data.preco;
+                    });
+            }
         }
     });
 });
