@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.shortcuts import render
@@ -6,6 +7,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from produto.models import CategoriaProduto, Produto
 from carrinho.models import Carrinho  # Importe o model Carrinho
+
+# principal/views.py
+from django.http import JsonResponse
+from produto.models import Produto
+from django.core.files.storage import default_storage
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
+
 
 def home(request):
     produtos = Produto.objects.all().order_by('nome')
@@ -85,5 +95,71 @@ def home(request):
 
 
 @login_required
-def settings(request):
+def user_settings(request):
     return render(request, 'principal/settings.html', {})
+
+
+
+
+
+
+
+
+
+
+
+
+
+@csrf_exempt
+def migrate_images(request):
+    # Garanta que está usando o settings do Django
+    from django.conf import settings
+    
+    expected_token = os.environ.get('MIGRATION_TOKEN', 'default_token_local')
+    
+    if request.GET.get('token') != expected_token:
+        return JsonResponse({'status': 'error', 'message': 'Token inválido'}, status=403)
+
+    if settings.DEBUG:
+        sample_data = []
+        for p in Produto.objects.all()[:5]:
+            sample_data.append({
+                'id': p.id,
+                'name': p.imagem.name if p.imagem else 'sem_imagem',
+                'status': 'simulated'
+            })
+        
+        print("\n" + "="*50)
+        print(f"Simulação de migração (DEBUG={settings.DEBUG})")
+        print(f"Total de produtos: {Produto.objects.count()}")
+        print("="*50 + "\n")
+        
+        return JsonResponse({
+            'status': 'simulation',
+            'count': Produto.objects.count(),
+            'sample': sample_data
+        })
+
+    results = []
+    for produto in Produto.objects.all():
+        if produto.imagem:
+            try:
+                file_info = {
+                    'id': produto.id,
+                    'name': produto.imagem.name,
+                    'status': 'migrated',
+                    'url': f"{settings.MEDIA_URL}{produto.imagem.name}"
+                }
+                results.append(file_info)
+            except Exception as e:
+                results.append({
+                    'id': produto.id,
+                    'error': str(e),
+                    'status': 'failed'
+                })
+
+    return JsonResponse({
+        'status': 'success',
+        'count': len(results),
+        'results': results
+    })
