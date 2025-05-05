@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,15 +23,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dc2dhg++don(+=s5#yg_x!8&&8knm%$sscpot)8*b%+of4k*=k'
+SECRET_KEY = config('SECRET_KEY', default= 'django-insecure-dc2dhg++don(+=s5#yg_x!8&&8knm%$sscpot)8*b%+of4k*=k')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
+# Configurações para Render
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.app"
+    "https://*.ngrok-free.app",
+    "https://*.onrender.com"
 ]
 
 # Application definition
@@ -46,13 +54,14 @@ INSTALLED_APPS = [
     'usuario',
     'carrinho',
     'principal',
+    'whitenoise.runserver_nostatic',
    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'cardapio.middleware.skip_ngrok_warning.SkipNgrokWarningMiddleware',  # ← AQUI
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # ← AQUI
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -85,11 +94,12 @@ WSGI_APPLICATION = 'cardapio.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default='postgresql://jean_user:12345@localhost:5432/cardapio'),
+        conn_max_age=600
+    )
 }
+
 
 
 # Password validation
@@ -125,9 +135,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# Configurações de arquivos estáticos
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type
@@ -151,21 +163,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'usuario.Usuario'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/usuario/user_login/'
 
+# Configurações de mídia
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 APPEND_SLASH = True
 
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "ronygleyson2@gmail.com"
+EMAIL_HOST_USER = "jeanb.santos404@gmail.com"
 EMAIL_HOST_PASSWORD = "usrbmgmwpeiocdgg"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-DEFAULT_FROM_EMAIL = 'ronygleyson2@gmail.com'
-EMAIL_SENDER_NAME = 'Luni'
+DEFAULT_FROM_EMAIL = 'jeanb.santos404@gmail.com'
+EMAIL_SENDER_NAME = 'Hotdog'
 
 ERROR_404_TEMPLATE_NAME = "404.html"
 ERROR_403_TEMPLATE_NAME = "403.html"

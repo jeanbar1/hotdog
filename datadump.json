@@ -1,0 +1,2902 @@
+[
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Administradores",
+    "permissions": []
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "Clientes",
+    "permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0gzf18gc9859152ri8ul2pktqu47arc4",
+  "fields": {
+    "session_data": "eyJ0ZWxlZm9uZV9jYWRhc3RybyI6Iig2MSkgOTgxMzUtODQ4NSJ9:1uBjP5:CgBmMyR6rwyNCcK_-b2yp8W8thXPpgk8qDIRfYPeeNY",
+    "expire_date": "2025-05-19T00:09:51.547Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0lnged4ibhf9frdanods549ngldsoy1j",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBMQ0:wtDXA0I6FkldusSuiJuq1KDlMx2G13WumCnL3s3W4Zs",
+    "expire_date": "2025-05-17T23:37:16.034Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0msao524lthspjuqhmt50rcuqoy7nu5y",
+  "fields": {
+    "session_data": "eyJ0ZWxlZm9uZV9jYWRhc3RybyI6Iig4OCkgODg4ODgtODg4OCJ9:1uAwPP:xxnxvxgyJtxkJQc5-kG7INEPTmlAJpm0rOBPy_M_AM0",
+    "expire_date": "2025-05-16T19:50:55.696Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "17fk2cuoi3g2pw93q4241k4ma5c4qq7c",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uB16G:EcUYU1m8WfNaPdYGfNnd1PUrPhe9uMNpUuEGFwW2rN0",
+    "expire_date": "2025-05-17T00:51:28.593Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "33vzl5uk7aqruosf0cs4wr0bzpll5qkt",
+  "fields": {
+    "session_data": ".eJxVzMsOgjAQheFXMV1poqQXWqhL9z4Dmc5MBSU0oWVlfHchYcP2_F_OVxQeOaaJOwSCXOYk7uLs1OXkvfPtzbXaiqvoYCl9t2Seu4FWYZrjGAA_PG2F3jC9UoVpKvMQqo1Ue83VMxGPj90eDnrI_fYLQLImilGyDNFzo2rUFJw2Fi2yR8lOIcrAJlprZFN7qNtVG2qtVuL3B4nZQ5o:1uBh62:hPPgPZNp_YXOGtbNiUuC5xX2Q2g20jCgTFeYFpF7iiU",
+    "expire_date": "2025-05-18T21:42:02.452Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "43tcvij8i1kjjnfthjvr7u0cc3h14tip",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBdaf:5rbZ2VNnb3Av_T-iVz7LcONVgothFKGwyeflv70MYwM",
+    "expire_date": "2025-05-18T17:57:25.049Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "4mtkh1ofrirdba06svoqilwvjol1kdo5",
+  "fields": {
+    "session_data": ".eJxVjMEOgjAQRH_F9KSJNtDS0vXo3W8g2-5WUNImUE7GfxcSLpwmmfdmvqLwyDEn7gISzmXK4i7Ozl1O4GpwN1sbJ66iw6X03TLz1A20GkYdS4_hw2kj9Mb0yjLkVKbBy02RO53lMxOPj909HPQ49-saiMmSB1AuWm2pAdRtW6nGQ3A6NqrSra-1j3VrwITAFNaIxEBKGYzi9wdchkNr:1uBkNq:oZsWnqE4FzmojNFGWGAN-uZADvbsnyeiEwVK_OYhCZU",
+    "expire_date": "2025-05-19T01:12:38.354Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "67ieo0hxjulo7hwl91ihg67ldsgbv7ks",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAUBX_FsNJECc8CLt37Dc2FC7baQFLoyvjvtkk33Z6ZOV_S4hRTybEPgFDbXMidnDt-OTnbMXtTwjByJT0sbeiXGud-xNVQ9jh6CJ-YN4JvyK9CQ8ltHj3dFLrTSp8F4_TY3cPBAHVYa9klHoxXSTOrkUkXgudSaojeWW2NMmi185xhMGBcQiO4ElIJDC5qycnvD0HBQlo:1uBiTY:urBjdHFvrVbFkcI88_7hFFZny-b-06THOJJFuzBp44A",
+    "expire_date": "2025-05-18T23:10:24.450Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "6wo0nmssc3i2lkpoo7mxmqp1apw8z8vp",
+  "fields": {
+    "session_data": "eyJ0ZWxlZm9uZV9jYWRhc3RybyI6IigzOCkgOTkxMzEtNjY3MiJ9:1uBgst:62cHzOLCEvPcVA1JanVcUpwnXhIs6090SgRbbwCuy9w",
+    "expire_date": "2025-05-18T21:28:27.200Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7be8pn9wkjqvj9p9dh3xozg5e6s6g3ea",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBM4d:rDzspnW1oKdjsNGEQaCeBFNH2wqbh6HQ9tUHxQofgPY",
+    "expire_date": "2025-05-17T23:15:11.357Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "85uy8l5g7ulprkcafu19g2oac2jq9tc8",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRX_FsNJEGxkYBJfu_QbCY7DVBpJCV8Z_t0266faec-6XNRoplUw2uOhqmwq7s6Pip4PRHM1FI0p2ZtbNrbdzpckOcTGk2o_ehQ_llcS3y6_ShZLbNPhuVbqN1u5ZIo2Pzd0d9K72S01AxghjtEIKKYEWhOYWPL8poQBBxwhXiQm8FIAedcBIwIUMEVMKhv3-QcFCqA:1uBiHV:ZPWSCZlcAiXfBbifI3QHhO1JbAy6-IWR-TFlCdNPKSU",
+    "expire_date": "2025-05-18T22:57:57.190Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "8w34qjac1i8pmz4cmebvtdid59jrqqlj",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQRK-CXIEEln_4Q0nPGay1d0MCUSwlToW4O0ZKk3Jm3psPqzRSVyaKGRCWOhd2Y0crT4fgrTIXZYRjZxZhrX1cF5rjgI3QYV8myG-a_gu-YHoWnstU5yHxP8K3deGPgjTeN3Z30MPSN9sHzKgSeGEcXpVWJgfXCQsgvRSAZMmi1EomlzrfYpA6OFIuKdc0ZN8fT2BDBw:1uBhT7:i9sw8q0-d2hCTJVTTa0VwclyM0zI7iZ33VRR6yMi-LQ",
+    "expire_date": "2025-05-18T22:05:53.919Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "9qy1pzukapckc90eseyte4gan4d52uvi",
+  "fields": {
+    "session_data": ".eJxdjMsOwiAQRX_FsNJECUx5FJfu_QYywNRWG0hKuzL-u23SjW7vOee-2UwjdSWTj5iwzlNhV3Zs29PBtdKKCygF7Mw8LnPvl0qTH9Jq_I8B44vyRtIT86PwWPI8DYFvCt9p5feSaLzt7s9Bj7Vf6whgk250BJkcIATZBWuMQI1AEJ1pEKwJEbVooIsKUbkgZUhAQinl2OcLRg5CsQ:1uBhzu:LqoS6EaLSMJnYCGIJvXo_QwfNBCn8tDXqWAPpFvtkG8",
+    "expire_date": "2025-05-18T22:39:46.617Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ae1mkn92efnheypdm4y4kt3hyowvr4ud",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBdag:imP0O0Vx4Hjno0PYndSRseekgF-x4vu9hszMkPidRAI",
+    "expire_date": "2025-05-18T17:57:26.285Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "bvyfznrtk83nq8oj0mv68cihdeibvi28",
+  "fields": {
+    "session_data": ".eJxVjEsKgzAUAO-SdQnP6DOky-57Bnm_VNsSwehKevciuGi3M8PsbqBtHYet2jJM6q6uQ3f5hUzysnIYfVJ5zF7msi4T-yPxp63-Pqu9b2f7NxipjseXxUg1cw8BARJHIsKmb4OpJJAQM0OjXQTDlFpgQ1WQHkkAQLL7fAEtazjO:1uBiEG:uC4Ot6l42IK-ZsIEMm4fIarwciBRBYFhIvp6bwrt2cw",
+    "expire_date": "2025-05-18T22:54:36.886Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ea0epia1chn6tu2dlahotljuze02siij",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBa-CXIEEUfzDNiU9Z7DW610SiGIpcSrE3QlSmrRvZt5HVBqIy0gRIcNcpyJu4niVp0PwpvUXZ6QVZxFhqV1cZppin1dD-_2YAN80_kl-wfgsDZaxTn1q_kqz0bl5lEzDfXN3Bx3M3VorapmDptYDs80BQCtMCFazRXRIBlAmDk4lJmc8B2W01pLR2oDeie8PjHhEDQ:1uBhSA:guz79PgC57enNPAGJGQA3HBJFevXMk5-o2f0Oq2NnZI",
+    "expire_date": "2025-05-18T22:04:54.112Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fgaaf53sfam8pjv3e9xbam2b95i47eno",
+  "fields": {
+    "session_data": "e30:1uAvLs:b8HCAVNx4blDIAv8nFxKGIVTUdvw8FeFnN_h_AOBDE0",
+    "expire_date": "2025-05-16T18:43:12.190Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fok1spbubxvo7atzkoa9u0xpfjefewgc",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBdVB:GRlx-aAVcj-mhk9SY4Y4uKuu2SkF0F_Qvl_2Et55OIE",
+    "expire_date": "2025-05-18T17:51:45.886Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "g533m8e7x9levmuof9uvgrwgc6zdzt94",
+  "fields": {
+    "session_data": "e30:1uAvKW:GNkHgZwzIkU3TMBC6wYrumIEKafVmBhpm4pCHVI1sCg",
+    "expire_date": "2025-05-16T18:41:48.490Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gf9n87r1o3fon2ct2drxi0d6mg6jvb72",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAURH_FsNJEG95Ql-79BnKBi602kBS6Mv67bdJNM7s5Z-ZLGk6YSkYXIEJtcyF3ctbscuqtZuymlWHkShwsbXBLxdmNcTUEPZYewgfzRuIb8qt0oeQ2j77blG6ntXuWiNNjdw8HA9RhXYNfE6nxCoW0kSdpeOLR-F72RmkVomJcmiQ9VyBCsDShZRpoSoDCUvL7A2O4Q18:1uBMB5:MZEyAXP74trFMUG-_MxG-YhfL76iBXzwsXx7kH2bu5A",
+    "expire_date": "2025-05-17T23:21:51.492Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h3g17hrsltp9fscn9vexapqhvx6ijpl5",
+  "fields": {
+    "session_data": ".eJxdjMEOwiAQBX_FcNJECWwpBY_e_QaywNZWG0gKPRn_3TbpRa9vZt6bVZqoz4lcwIilzpld2VHL08EaKe1FgZXszBwudXBLodmNcTXU3-gxvChtJD4xPTIPOdV59HxT-E4Lv-dI0213fw4GLMNai9haRTaErpVCKqGUhp7QNADexEb1EAwAkjSN1d4gom4FRC06L0iYjn2-K2NCBw:1uBhxW:vISYDfpwi6q7n4rU8JtLt9mcadSGonw6qGIJxWHq5zE",
+    "expire_date": "2025-05-18T22:37:18.376Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h6ogn1hxs4t293oabeiwga341ckbv1zf",
+  "fields": {
+    "session_data": ".eJxVjLEOwiAURX_FMGmiDTxKC47ufgMB3sNWG0gKnYz_bpt06XKHe07Ol1WaKOZENjh0pc6Z3dm5E5eT0ULAbR3Orsy6pQ52KTTbEVdDiuPpXfhQ2gi-XXrlJuRU59E3m9LstDTPjDQ9dvcQGFwZtm4LURkgVCiM6lEqzQMJFF6DV1pB18qAsePUSg4ovTCRwPfkjQF0kf3-LNRCzA:1uBNgM:V4jXRQshtD-cVTP4czX_ZtSPuP6Qw8AytLnPkaUtay8",
+    "expire_date": "2025-05-18T00:58:14.148Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hnuqslogpr59jfd8657ye3usttdolbzv",
+  "fields": {
+    "session_data": "eyJ0ZWxlZm9uZV9jYWRhc3RybyI6Iig2MSkgOTg2MTctMTUwOCJ9:1uBkkC:dqGBCvyzo4tFnAAR8jMN90r9tit6cWD-fNTUQTaichQ",
+    "expire_date": "2025-05-19T01:35:44.337Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hv468xhxhit9dotroly7ykuqpdat2ny5",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBj2M:wxCovocZDflwAd5LSLylx-13qMUqi7KqQJTX8egSepU",
+    "expire_date": "2025-05-18T23:46:22.507Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hvm4wqshr0c5fd4ay0elr7w3yf80ui3l",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAplCku3fcMzQzMSNVAUtqV8e7apAvd_vfef6kJtzVPW-NlmpO6KKtOvxthfHDZQbpjuVUda1mXmfSu6IM2PdbEz-vh_h1kbPlbQ-cMUOrJcSTDkQMCBxFksc4Hz0Rg2Hsj3cB4DjI4xAhCtrcCQOr9ARVsOTk:1uAUvi:KMoyqw5L93mRE91PUkakua8abgWsQIbb12qQ5itfLW0",
+    "expire_date": "2025-05-15T14:30:26.941Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "i7ndrc0siela0evn8l2hrkosyify1ap1",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAQRX_FdKWJkrYUmLp07zeQmc5UUNImPFbGfxcSNmzvOed-1SyDxJykDcg4zWNWd3UGuJw8GOdu3ltQV9XiMnftMsnY9rwarjyOhOEjaSP8xvTKRchpHnsqNqXY6VQ8M8vw2N3DQYdTt9amjLrSNmpHTJX1WFnrAxksGYiaBmxNFsBHMd64EAmImWPDWmorTVS_P1N7Q30:1uBi2X:2wAxL5lBeHYlVuJSWJ1Jv5dcNgtZ4cf8wJW-B6PqrXw",
+    "expire_date": "2025-05-18T22:42:29.000Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "iml7kcsf9bzoz1pt2bj4b2q8u54tq8vl",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAUBX_FsNJECdDycunebyAXuLXVBhKgK-O_2ybddHtm5nxJwxmHnNAFiFBbyeROzopfTtYoqW6MWUauxMHSRrdULG6KqyHEcfQQPpg2Et-QXpmGnFqZPN0UutNKnzni_Njdw8EIdVxryRCZCANIgYxHsKrvQFodogeGOoCRQQ4aPBgNptMee8W5QqPRyo4r8vsDZApDNQ:1uB1I0:c9Kvtfr9zhyeJF5aLgv6M9U3kL2XPcc_8E_dxavfCeY",
+    "expire_date": "2025-05-17T01:03:36.608Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jj54828cp222iz1ft9ibwzdvku1lkze8",
+  "fields": {
+    "session_data": ".eJxdjMsOwiAUBX_FsNJECVAuD5fu_QZyedRWG0gKXRn_3TbpRrdnZs6btDSlvuTkAkasbS7kSo6Knw7WKBAXpkCSM3G4tMEtNc1ujKsh_0aP4ZXyRuIT86PQUHKbR083he600nuJabrt7s_BgHVY69Ala4CLPugIWiZuOWgtvEIuLVMKICKLzIMwkoER0nbSdExoEUCvmHy-HENA1w:1uBi8B:ZnvOj13F2CYQtsGQxnKkDKDnhTtcx_UgJzrofN09KpE",
+    "expire_date": "2025-05-18T22:48:19.767Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jvw50ga9lwh863y8cgs9d35sq4pfuoui",
+  "fields": {
+    "session_data": "eyJ0ZWxlZm9uZV9jYWRhc3RybyI6Iig2MSkgOTk4MjktNDEyOSJ9:1uBNqZ:nXVsdr2lmZqAHTumglgsFEJWryZ2M2moRAncBBIA3G8",
+    "expire_date": "2025-05-18T01:08:47.947Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "kmib0i3lu2q2dwzsjqlt8bkkoo9g3gd8",
+  "fields": {
+    "session_data": ".eJxVjLEOAiEQRP-F2hBANhyW9n4Dgd1FTg0kx11l_He55AotpnnzZt4ixG0tYeu8hJnERRglTr8wRXxy3Rt6xHpvEltdlznJXZFH2-WtEb-uh_t3UGIvY33GSTNz1mAcegD2xnmTyEGyiiAjgSXr1IiFwW3WmSalyRMwoRafLwyxOHA:1uB09A:wqGeK45Z0eBF6TSBD9qfDTQmNnvTrRPzkx_Fc1JF08E",
+    "expire_date": "2025-05-16T23:50:24.940Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "mna88cnhjyo6724ugk219yqls6eil7o8",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAQRX_FdKWJNvRBaV269xuaaWcQlLQJLSvjvwsJG7b3nHO_rNJEfU7kIyCUOmd2Z2cjLidnjVW3RivLrszDUge_FJr9iKvRiuMYIH4obQTfkF6Zx5zqPAa-KXynhT8z0vTY3cPBAGVYaxVcZ5ooG9QGLVIE0Jo6GYLsgAxR1IJEJ9sge6etMMaCImG162WLEdnvD110Q0A:1uBjrf:NsW2SV3xshXDYbI6zIne1cnW_GQH2wBpgO_6VhlWmqc",
+    "expire_date": "2025-05-19T00:39:23.839Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "n5grcoxgce578khpip1zvvhtue680634",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSFleLt07zeQAQapGkhKuzL-uzbpQrf3nHNfLOC21rANWsKc2ZmBZKffMWJ6UNtJvmO7dZ56W5c58l3hBx382jM9L4f7d1Bx1G-tjCqJAJwBiU579FYJKo6KBi08JgEeI05URMqmGKu1nFyMVjsPlAR7fwD-PTfm:1uB3Cw:jc4DT2z8yYLvpwldkRhih-tCvZmpXOkpCYOePXCBziU",
+    "expire_date": "2025-05-17T03:06:30.354Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ne19tcnea4jlyr9qpy1yhx30vudi85x2",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRa9iutJECdNSdFy69wzNtJ0RlNCElpXx7kLChu1_7_2vKjywpJFdoEi5TEnd1bGF0wFv0NiLBtTqrBzNpXNz5sn1cTGs2Y-ewofHlcQ3ja9UhTSWqffVqlQbzdUzRR4em7s76Ch3S41QW5YWA2j2YpoaIRj0rI336KmtLQHYQCRBrrpBlggCLDXrq5YG1e8PV7tDjA:1uBkhx:IBo95wJ0AER0qhy2lbelac3fOTpo8bSzqxGMZ3iUFcU",
+    "expire_date": "2025-05-19T01:33:25.538Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "rhk41tdp8hhqqm28732mvjadehdfg4dd",
+  "fields": {
+    "session_data": "e30:1uAu0p:Kyo59eH3FyvxCAf3CLtK8OUGzhhz-Xd2bujMc-Ozkq8",
+    "expire_date": "2025-05-16T17:17:23.912Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "t1mu819iopb3zftexlbw4gqwijoryn79",
+  "fields": {
+    "session_data": ".eJxdjMsOwiAUBX_FsNJECY8CvS7d-w3k8rLVBpJCV8Z_t0260e2ZmfMmLU4xlRytx4C1zYVcyVHz0wEAjLoopTU5E4tLG-xS42zHsBryb3ToXzFvJDwxPwr1Jbd5dHRT6E4rvZcQp9vu_hwMWIe1Zug6znySDARIyU3ojAOQzDnTQRIiMhmwx8BRCd5LnZgyGhzjDCByTj5fNMdBtw:1uBh5o:bUtVCjIN61tMZtGbHaEnxSN5wKIto_VIME0n3IqZfgw",
+    "expire_date": "2025-05-18T21:41:48.632Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tgwy6r87htce6gtsy2es6fw2ogvec4z2",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQAL9iOGmihBYWikfvvoEssNraBpJCT8a_2ya99DozmS-rNNErJ3IBI5Y6Z3ZnZ91cTtZ22t6UFA27ModL7d1SaHZDXAtljtBjGCltJn4wvTMPOdV58HxL-G4Lf-ZI02NvD4MeS799oZMI0LYNKI_kNUURsPU6yKhBQmeUJQGGjI92dRQkKhBGeymMtYH9_kfQQrI:1uBiMd:RcXllyE81mdBnm5rrqIgnI8pCmpQdxxMLmZRbw1GleI",
+    "expire_date": "2025-05-18T23:03:15.155Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tq6g0subgdypmh2a8j9dx9vo22v9xf62",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBhkAFduvcMZAZQqoYmpV0Z726bdKHb_977bxV5mWtcepnikNVZYVCH31E4PUvbSH5wu486jW2eBtGbonfa9XXM5XXZ3b-Dyr2udUCPIunkmXJmMkdwAmi8iKOACJ6EwBdvE9uSIBuzujdy1rGzJKA-X_d7N2Q:1uBGjp:f7nwjLPKV-NdmnnhMgAbMqEojAYVsCXSEeBaWZPhfFk",
+    "expire_date": "2025-05-17T17:33:21.164Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ttrbj6tc8zzd5mrrh4y1ymyr77a08wsd",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAZKFCX7j0DmRlGqRpISrsy3l2bdKHb_977L5VwXUpau8xpyuqkvDr8boT8kLqBfMd6a5pbXeaJ9KbonXZ9aVme5939OyjYy7d2gTEjATlvDFsGGyJEsoEye0MCIMFEN0RmOAoMEEYEEwDhShFHVu8P5Ww3vw:1uAXJD:-ETYcmPl4hT2hdMMyHAtTXXqjX1It3zx4soTKLmkSAU",
+    "expire_date": "2025-05-15T17:02:51.318Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tu1xud9tpkbha2hh7w2e19i8b89ef900",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlm28WdDSZ8zWOvdNQmgRIqTCnF3iJQC2jcz76UybuuQtyZLHlldlEvq9DsWpIdMO-E7TrdZ0zyty1j0ruiDNt3PLM_r4f4dDNiGb93FhCKOSgSqAmi5VM_BuRqEg-_E2FogMQWoHh1EY6rleLYAxIa8en8AN_041Q:1uBGQn:vYAjjEUjxgGFqpT4Vjj7WSN390doCC1PsMYNc1xKYlA",
+    "expire_date": "2025-05-17T17:13:41.062Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "u37ssubuesfovtcxkfthm8um6h2hqrii",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQBX_FcNJECQhuwaN3v4EssNhqA0mhJ-O_2ya99Ppm5n1Zo5FSyeQCRqxtKuzOjiBPB2tA2osCK9mZOZxb7-ZKkxviYmi7Hz2GD-WVxDfmV-Gh5DYNnq8K32jlzxJpfGzu7qDH2i_1zXulfDI-JmGDvuqIBgUqAR0KhUQSokyGfJcgkPIAkgImbSQGiUqz3x9-ukQY:1uBihS:x-dsPS8z87wiT_irTGEnZatEtOG2Jir2U2dzGVArTiw",
+    "expire_date": "2025-05-18T23:24:46.764Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "uoj8vpx820jubidrryk2uon9ot9hsr3v",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBcSy:TkG0aEKcXKiv75C2CWWUvCfm1dZFr2_NGWQkCvH8pbg",
+    "expire_date": "2025-05-18T16:45:24.643Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "urdsi0pb6gr2psk734n9kxvu7ts273ip",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uAXMz:L8p1sSLenyMRBEnuuyW_k6mmBfQAv4lw5C0odbp6vgY",
+    "expire_date": "2025-05-15T17:06:45.145Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "v2ybj2elcselomclyn6z29f05z7xbese",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAURK9iWGmiBChQcOneM5Bf_q-tNpAUujLe3TbppptZzHszX1Zpoj4nChEQSp0zu7OzlZeT99a0Nye0Z1cWYKlDWArNYcTVaMyx7CB-KG0E35Bemcec6jx2fFP4Tgt_ZqTpsbuHgwHKsK6VICRwCnXnwFha07emR9FbUL1AKQVYgd53NhqptVNtY9AIJN8IT4r9_mnCQuI:1uBh5g:OBLdINnXb90MIGobqJC_-WsfBryyS1BNrnXtcrqTIEg",
+    "expire_date": "2025-05-18T21:41:40.346Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "vbay2yn9t0tc1j1imdic6z8mswofkm8g",
+  "fields": {
+    "session_data": "e30:1uAuku:Vgmse4iAGt9lFZNYmPTcEG_NJJ3DZ6EXEo_Y4OcSV9o",
+    "expire_date": "2025-05-16T18:05:00.407Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "wiofpxtxjf0qdn94hq10yy96cyk40r31",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pAAA0NcuvcMZKYDUjWQlHZlvLs26UK3_733XyrRtta0jbykWdRZGXX63ZimR247kDu1W9dTb-sys94VfdChr13y83K4fweVRv3WmQtKtM6gAXHeFADOno1H7wiiUGRbgByjLyEAWuswREG2VMiTUe8P2lo3ng:1uBGI6:JL9gPlxH6ndqpQ5scLIYWsq-g5icKiN-8yXN1ArIHMM",
+    "expire_date": "2025-05-17T17:04:42.203Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "wrkks8o11l26znvljbfi5u3fz90qddlj",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQRH_FcNJEGyh0tR69-w1kYRdbbSAp9GT8d2nSS48z7818ReGJQ4psPRLmMidxF0dQp0Pfw7W9KGmUOAuLSxnsknm2I1VDm33p0H84roTeGF-p8SmWeXTNqjQbzc0zEU-Pzd0dDJiHuu4IpATwBnoGZVpEH7y5EaLT2sga0VDHCjsXdGg5BG3QEVXEGkiK3x9iB0Qq:1uBgWo:MYtmJsG1Pvyls6k43cMMkMlLpoB3ik8AMpR6SlNGwFI",
+    "expire_date": "2025-05-18T21:05:38.093Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "zxxcj71z6oeiqq0743fjjnupb1r8zs0y",
+  "fields": {
+    "session_data": ".eJxdzE0OwiAUBOCrGFaaKIHy79K9ZyA8eLXVBpJCV8a72ybd6Hbmm3mThhP2JaOPIYXa5kKu5Kj56eCsNPbClGDkTHxY2uCXirMf0yrkXwghvjBvTXqG_Cg0ltzmEehG6N5Wei8Jp9tufw6GUId1zZiTRutknQFpY-oEUxZE7CGZoDvoIloewK7GJS6VUlFwMICoFJMOyecLNL9ChA:1uBhvD:e1jVlPCORMmbx-JdybI_Zxle_atpiWZPN1zuouJzcG4",
+    "expire_date": "2025-05-18T22:34:55.183Z"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 1,
+  "fields": {
+    "nome": "Pastéis"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 2,
+  "fields": {
+    "nome": "HOT DOGs"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 3,
+  "fields": {
+    "nome": "Bebidas"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 4,
+  "fields": {
+    "nome": "Doces"
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 1,
+  "fields": {
+    "nome": "pastel de Carne",
+    "descricao": "Recheio, de carne bem temperada e queijo",
+    "preco": "10.00",
+    "imagem": "produtos/download_urQb12d_MfDEUX3.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 2,
+  "fields": {
+    "nome": "Pastel de Queijo",
+    "descricao": "Recheio, de mussarela, com orégano",
+    "preco": "10.00",
+    "imagem": "produtos/download_urQb12d.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 3,
+  "fields": {
+    "nome": "Pastel de Calabresa",
+    "descricao": "Recheio, de calabresa, cebola, queijo cremoso",
+    "preco": "10.00",
+    "imagem": "produtos/download_Ir5WNlK.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 4,
+  "fields": {
+    "nome": "Pastel de Pizza",
+    "descricao": "Recheio, de presunto, mussarela, calabresa, milho, azeitona, cebola, pimentão, tomate e orégano",
+    "preco": "13.00",
+    "imagem": "produtos/download_8aK2FUn.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 5,
+  "fields": {
+    "nome": "Pastel de Presunto",
+    "descricao": "Recheio, de presunto, queijo cremoso",
+    "preco": "10.00",
+    "imagem": "produtos/download_1xjTdcT.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 6,
+  "fields": {
+    "nome": "Pastel de HOT DOG",
+    "descricao": "Recheio, de salsicha, azeitona, ketchup, maionese, queijo cremoso, milho e batata palha",
+    "preco": "10.00",
+    "imagem": "produtos/download_NOVyQFV.jpeg",
+    "ativo": true,
+    "categorias": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 7,
+  "fields": {
+    "nome": "Pastel de Doce",
+    "descricao": "Recheio, de banana, canela, açúcar e queijo",
+    "preco": "13.00",
+    "imagem": "produtos/download_raRBSRc.jpeg",
+    "ativo": true,
+    "categorias": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 8,
+  "fields": {
+    "nome": "Hot Dog tradicional",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, milho e batata palha",
+    "preco": "9.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 9,
+  "fields": {
+    "nome": "Hot Dog Bacon",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, bacon, milho e batata palha",
+    "preco": "10.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516_RBBJr9Y.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 10,
+  "fields": {
+    "nome": "Hot Dog Calabresa",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, calabresa, milho e batata palha",
+    "preco": "11.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516_Pmd5X96.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 11,
+  "fields": {
+    "nome": "Hot Dogão",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, dobro de presunto, dobro de mussarela, milho e batata palha",
+    "preco": "12.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516_60c89mj.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 12,
+  "fields": {
+    "nome": "Hot Dog da Casa",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, presunto, mussarela, cebola, azeitona, milho e batata palha",
+    "preco": "14.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516_OS0yMFY.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 13,
+  "fields": {
+    "nome": "Hot Dog de Frango",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, mussarela, frango desfiado, ervilha, milho e batata palha",
+    "preco": "16.99",
+    "imagem": "produtos/7de3f736-7c36-40cc-80c3-f5a624ada516_gJn6z9x.jpg.320x180_q75_box-014690402_crop_detail.jpg",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 14,
+  "fields": {
+    "nome": "Refrigerante COCA-COLA",
+    "descricao": "Refrigerante coca-cola 1,5 L",
+    "preco": "10.00",
+    "imagem": "produtos/download_1.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 15,
+  "fields": {
+    "nome": "Refrigerante KUAT-GUARANÁ",
+    "descricao": "Refrigerante kuat guaraná 1,5 L",
+    "preco": "10.00",
+    "imagem": "produtos/download_2.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 16,
+  "fields": {
+    "nome": "Refrigerante MINEIRO",
+    "descricao": "Refrigerante mineiro 2L",
+    "preco": "10.00",
+    "imagem": "produtos/download_3.jpeg",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 17,
+  "fields": {
+    "nome": "Refrigerante MINEIRO",
+    "descricao": "Refrigerante mineiro 600 ML",
+    "preco": "6.00",
+    "imagem": "produtos/download_3_1UZXJWi.jpeg",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 18,
+  "fields": {
+    "nome": "Refrigerante COCA-COLA  LATA",
+    "descricao": "Refrigerante coca-lata",
+    "preco": "5.00",
+    "imagem": "produtos/download_4.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 19,
+  "fields": {
+    "nome": "Refrigerante FANTA GUARANÁ LATA",
+    "descricao": "Refrigerante fanta guaraná lata",
+    "preco": "5.00",
+    "imagem": "produtos/download_5.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 20,
+  "fields": {
+    "nome": "Refrigerante FANTA LARANJA LATA",
+    "descricao": "Refrigerante fanta laranja lata",
+    "preco": "5.00",
+    "imagem": "produtos/download_6.jpeg",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 21,
+  "fields": {
+    "nome": "Refrigerante FANTA UVA LATA",
+    "descricao": "Refrigerante fanta uva lata",
+    "preco": "5.00",
+    "imagem": "produtos/download_7.jpeg",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 22,
+  "fields": {
+    "nome": "Refrigerante GUARANÁ LATA",
+    "descricao": "Refrigerante guaraná lata",
+    "preco": "5.00",
+    "imagem": "produtos/images.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 23,
+  "fields": {
+    "nome": "Refrigerante PEPSI LATA",
+    "descricao": "Refrigerante pepsi lata",
+    "preco": "5.00",
+    "imagem": "produtos/download_8.jpeg",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 24,
+  "fields": {
+    "nome": "Água MINERAL",
+    "descricao": "Água mineral 500ML",
+    "preco": "2.50",
+    "imagem": "produtos/download_9.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 25,
+  "fields": {
+    "nome": "Água COM GÁS",
+    "descricao": "Água com gás 500ML",
+    "preco": "3.50",
+    "imagem": "produtos/download_10.jpeg",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 26,
+  "fields": {
+    "nome": "Pastel de Frango e Catupiry",
+    "descricao": "Rechio, de frango desfiado e catupiry",
+    "preco": "13.00",
+    "imagem": "produtos/download_PVKQ8vU.jpeg",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 27,
+  "fields": {
+    "nome": "Hot dog Goiano",
+    "descricao": "Pão 2x salsicha, bacon, presunto, calabresa, mussarela batata palha",
+    "preco": "18.00",
+    "imagem": "produtos/1000009529.png",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 31,
+  "fields": {
+    "nome": "Suco Nutri 1L",
+    "descricao": "Suco Nutri 1L",
+    "preco": "8.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 32,
+  "fields": {
+    "nome": "Suco Nutri 200ML",
+    "descricao": "Suco Nutri 200ML",
+    "preco": "3.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 1,
+  "fields": {
+    "nome": "Catupiry",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 3,
+  "fields": {
+    "nome": "Calabresa",
+    "preco_extra": "5.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 6,
+  "fields": {
+    "nome": "Bacon",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 7,
+  "fields": {
+    "nome": "Queijo cremoso",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 1,
+  "fields": {
+    "produto": 1,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 3,
+  "fields": {
+    "produto": 1,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 4,
+  "fields": {
+    "produto": 2,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 6,
+  "fields": {
+    "produto": 3,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 8,
+  "fields": {
+    "produto": 3,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 9,
+  "fields": {
+    "produto": 4,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 11,
+  "fields": {
+    "produto": 4,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 12,
+  "fields": {
+    "produto": 5,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 14,
+  "fields": {
+    "produto": 6,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 16,
+  "fields": {
+    "produto": 6,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 17,
+  "fields": {
+    "produto": 8,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 18,
+  "fields": {
+    "produto": 9,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 20,
+  "fields": {
+    "produto": 10,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 22,
+  "fields": {
+    "produto": 10,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 23,
+  "fields": {
+    "produto": 11,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 25,
+  "fields": {
+    "produto": 11,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 26,
+  "fields": {
+    "produto": 12,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 28,
+  "fields": {
+    "produto": 12,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 29,
+  "fields": {
+    "produto": 9,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 31,
+  "fields": {
+    "produto": 1,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 32,
+  "fields": {
+    "produto": 1,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 33,
+  "fields": {
+    "produto": 2,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 34,
+  "fields": {
+    "produto": 2,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 35,
+  "fields": {
+    "produto": 2,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 36,
+  "fields": {
+    "produto": 3,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 37,
+  "fields": {
+    "produto": 3,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 38,
+  "fields": {
+    "produto": 4,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 39,
+  "fields": {
+    "produto": 4,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 40,
+  "fields": {
+    "produto": 5,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 41,
+  "fields": {
+    "produto": 5,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 42,
+  "fields": {
+    "produto": 5,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 43,
+  "fields": {
+    "produto": 6,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 44,
+  "fields": {
+    "produto": 6,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 45,
+  "fields": {
+    "produto": 12,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 46,
+  "fields": {
+    "produto": 12,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 47,
+  "fields": {
+    "produto": 8,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 48,
+  "fields": {
+    "produto": 8,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 49,
+  "fields": {
+    "produto": 8,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 50,
+  "fields": {
+    "produto": 9,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 51,
+  "fields": {
+    "produto": 9,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 52,
+  "fields": {
+    "produto": 10,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 53,
+  "fields": {
+    "produto": 10,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 54,
+  "fields": {
+    "produto": 11,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 55,
+  "fields": {
+    "produto": 11,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 6,
+  "fields": {
+    "nome": "Setor A",
+    "taxa": "5.00",
+    "tempo": "30 - 45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 8,
+  "fields": {
+    "nome": "Setor B",
+    "taxa": "5.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 9,
+  "fields": {
+    "nome": "Setor C",
+    "taxa": "5.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 10,
+  "fields": {
+    "nome": "Setor D",
+    "taxa": "5.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 11,
+  "fields": {
+    "nome": "Setor E",
+    "taxa": "6.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 12,
+  "fields": {
+    "nome": "ALPHAVILLE",
+    "taxa": "10.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 13,
+  "fields": {
+    "nome": "Dois Marcos",
+    "taxa": "7.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 14,
+  "fields": {
+    "nome": "Setor R",
+    "taxa": "6.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 15,
+  "fields": {
+    "nome": "Setor S",
+    "taxa": "6.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.bairro",
+  "pk": 16,
+  "fields": {
+    "nome": "Setor Casinhas",
+    "taxa": "6.00",
+    "tempo": "30-45 min",
+    "ativo": true
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 45,
+  "fields": {
+    "cliente": 30,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Quadra 09 Lote 07",
+    "referencia_entrega": "",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-03T23:28:19.236Z",
+    "data_atualizacao": "2025-05-03T23:28:19.263Z",
+    "preco_total": "42.98",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 1,
+    "data_referencia": "2025-05-03"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 68,
+  "fields": {
+    "cliente": 34,
+    "bairro_entrega": 6,
+    "endereco_entrega": "Setor A Quadra 02 Casa 53",
+    "referencia_entrega": "Ao lado do Lucas Variedades ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T21:08:44.295Z",
+    "data_atualizacao": "2025-05-04T21:08:44.326Z",
+    "preco_total": "41.98",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 1,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 69,
+  "fields": {
+    "cliente": 37,
+    "bairro_entrega": 10,
+    "endereco_entrega": "Quadra 05 Lote 20 Setor D",
+    "referencia_entrega": "Lado da congregação ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T21:45:13.869Z",
+    "data_atualizacao": "2025-05-04T21:45:13.891Z",
+    "preco_total": "36.97",
+    "forma_pagamento": "CREDITO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 2,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 70,
+  "fields": {
+    "cliente": 36,
+    "bairro_entrega": 9,
+    "endereco_entrega": "24 lote 4",
+    "referencia_entrega": "",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T21:47:49.095Z",
+    "data_atualizacao": "2025-05-04T21:47:49.116Z",
+    "preco_total": "35.00",
+    "forma_pagamento": "DEBITO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 3,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 71,
+  "fields": {
+    "cliente": 39,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Quadra 06 lote 06",
+    "referencia_entrega": "Rua da igreja Deus é amor, casa em frente a uma lanchonete ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T22:09:22.615Z",
+    "data_atualizacao": "2025-05-04T22:09:22.620Z",
+    "preco_total": "26.00",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 4,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 72,
+  "fields": {
+    "cliente": 38,
+    "bairro_entrega": 11,
+    "endereco_entrega": "Quadra 20 lote 2",
+    "referencia_entrega": "2 ruas acima do top 10. 2 rua baixo pizzaria 3 irmã ",
+    "taxa_entrega": "6.00",
+    "data_pedido": "2025-05-04T22:10:33.402Z",
+    "data_atualizacao": "2025-05-04T22:10:33.416Z",
+    "preco_total": "23.98",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 5,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 73,
+  "fields": {
+    "cliente": 40,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Q01 lote 04",
+    "referencia_entrega": "Ao lado do mercado fortaleza ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T22:41:36.440Z",
+    "data_atualizacao": "2025-05-04T22:41:36.457Z",
+    "preco_total": "40.00",
+    "forma_pagamento": "DINHEIRO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 6,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 74,
+  "fields": {
+    "cliente": 43,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Quadra 02 lote 22",
+    "referencia_entrega": "Perto do peladeiros ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T22:44:36.367Z",
+    "data_atualizacao": "2025-05-04T22:44:36.389Z",
+    "preco_total": "20.99",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 7,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 75,
+  "fields": {
+    "cliente": 44,
+    "bairro_entrega": 6,
+    "endereco_entrega": "Setor A Quadra 11 lote 8",
+    "referencia_entrega": "Na rua da pizzaria forno de ouro ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T22:50:57.398Z",
+    "data_atualizacao": "2025-05-04T22:50:57.406Z",
+    "preco_total": "10.00",
+    "forma_pagamento": "DINHEIRO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 8,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 76,
+  "fields": {
+    "cliente": 45,
+    "bairro_entrega": 10,
+    "endereco_entrega": "04 Lot 06",
+    "referencia_entrega": "Por trás da administração ",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T22:57:19.254Z",
+    "data_atualizacao": "2025-05-04T22:57:19.265Z",
+    "preco_total": "20.00",
+    "forma_pagamento": "DINHEIRO",
+    "precisa_troco": true,
+    "valor_troco_para": "25.00",
+    "numero_diario": 9,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 77,
+  "fields": {
+    "cliente": 47,
+    "bairro_entrega": 16,
+    "endereco_entrega": "Quadra 04 rua 04 casa 28A",
+    "referencia_entrega": "Segunda rua ",
+    "taxa_entrega": "6.00",
+    "data_pedido": "2025-05-04T23:08:01.927Z",
+    "data_atualizacao": "2025-05-04T23:08:01.944Z",
+    "preco_total": "30.00",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 10,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 78,
+  "fields": {
+    "cliente": 48,
+    "bairro_entrega": 6,
+    "endereco_entrega": "Quadra 13 Lote 08",
+    "referencia_entrega": "",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T23:12:23.575Z",
+    "data_atualizacao": "2025-05-04T23:12:23.597Z",
+    "preco_total": "19.99",
+    "forma_pagamento": "CREDITO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 11,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 79,
+  "fields": {
+    "cliente": 49,
+    "bairro_entrega": 8,
+    "endereco_entrega": "Cetor c quadra 8 lote 11",
+    "referencia_entrega": "Saneagua",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T23:28:00.370Z",
+    "data_atualizacao": "2025-05-04T23:28:00.392Z",
+    "preco_total": "23.00",
+    "forma_pagamento": "DEBITO",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 12,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 80,
+  "fields": {
+    "cliente": 33,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Quadra 05, casa 20",
+    "referencia_entrega": "Lote de dezão",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-04T23:45:57.238Z",
+    "data_atualizacao": "2025-05-04T23:45:57.246Z",
+    "preco_total": "13.00",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 13,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 81,
+  "fields": {
+    "cliente": 52,
+    "bairro_entrega": 9,
+    "endereco_entrega": "Quadra 17 lote 15",
+    "referencia_entrega": "",
+    "taxa_entrega": "5.00",
+    "data_pedido": "2025-05-05T01:17:29.559Z",
+    "data_atualizacao": "2025-05-05T01:17:29.568Z",
+    "preco_total": "20.00",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 14,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.pedido",
+  "pk": 82,
+  "fields": {
+    "cliente": 53,
+    "bairro_entrega": 13,
+    "endereco_entrega": "Marajó setor A",
+    "referencia_entrega": "Dois Marcos sementes ",
+    "taxa_entrega": "7.00",
+    "data_pedido": "2025-05-05T01:39:46.103Z",
+    "data_atualizacao": "2025-05-05T01:39:46.131Z",
+    "preco_total": "43.00",
+    "forma_pagamento": "PIX",
+    "precisa_troco": false,
+    "valor_troco_para": null,
+    "numero_diario": 15,
+    "data_referencia": "2025-05-04"
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 64,
+  "fields": {
+    "pedido": 45,
+    "produto": 8,
+    "quantidade": 2,
+    "preco_unitario": "9.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 65,
+  "fields": {
+    "pedido": 45,
+    "produto": 26,
+    "quantidade": 1,
+    "preco_unitario": "13.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 66,
+  "fields": {
+    "pedido": 45,
+    "produto": 5,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 89,
+  "fields": {
+    "pedido": 68,
+    "produto": 9,
+    "quantidade": 2,
+    "preco_unitario": "10.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 90,
+  "fields": {
+    "pedido": 68,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 91,
+  "fields": {
+    "pedido": 68,
+    "produto": 5,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 92,
+  "fields": {
+    "pedido": 69,
+    "produto": 9,
+    "quantidade": 1,
+    "preco_unitario": "10.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 93,
+  "fields": {
+    "pedido": 69,
+    "produto": 11,
+    "quantidade": 2,
+    "preco_unitario": "12.99",
+    "observacoes": "Sem cebola ",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 94,
+  "fields": {
+    "pedido": 70,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 95,
+  "fields": {
+    "pedido": 70,
+    "produto": 2,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 96,
+  "fields": {
+    "pedido": 70,
+    "produto": 5,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 97,
+  "fields": {
+    "pedido": 70,
+    "produto": 18,
+    "quantidade": 1,
+    "preco_unitario": "5.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 98,
+  "fields": {
+    "pedido": 71,
+    "produto": 4,
+    "quantidade": 2,
+    "preco_unitario": "13.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 99,
+  "fields": {
+    "pedido": 72,
+    "produto": 9,
+    "quantidade": 1,
+    "preco_unitario": "10.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 100,
+  "fields": {
+    "pedido": 72,
+    "produto": 11,
+    "quantidade": 1,
+    "preco_unitario": "12.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 101,
+  "fields": {
+    "pedido": 73,
+    "produto": 5,
+    "quantidade": 3,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 102,
+  "fields": {
+    "pedido": 73,
+    "produto": 2,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 103,
+  "fields": {
+    "pedido": 74,
+    "produto": 10,
+    "quantidade": 1,
+    "preco_unitario": "11.99",
+    "observacoes": "",
+    "adicionais": [
+      7
+    ]
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 104,
+  "fields": {
+    "pedido": 74,
+    "produto": 18,
+    "quantidade": 1,
+    "preco_unitario": "5.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 105,
+  "fields": {
+    "pedido": 75,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 106,
+  "fields": {
+    "pedido": 76,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 107,
+  "fields": {
+    "pedido": 76,
+    "produto": 5,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 108,
+  "fields": {
+    "pedido": 77,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 109,
+  "fields": {
+    "pedido": 77,
+    "produto": 5,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 110,
+  "fields": {
+    "pedido": 77,
+    "produto": 16,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 111,
+  "fields": {
+    "pedido": 78,
+    "produto": 8,
+    "quantidade": 1,
+    "preco_unitario": "9.99",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 112,
+  "fields": {
+    "pedido": 78,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 113,
+  "fields": {
+    "pedido": 79,
+    "produto": 26,
+    "quantidade": 1,
+    "preco_unitario": "13.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 114,
+  "fields": {
+    "pedido": 79,
+    "produto": 1,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 115,
+  "fields": {
+    "pedido": 80,
+    "produto": 26,
+    "quantidade": 1,
+    "preco_unitario": "13.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 116,
+  "fields": {
+    "pedido": 81,
+    "produto": 22,
+    "quantidade": 2,
+    "preco_unitario": "5.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 117,
+  "fields": {
+    "pedido": 81,
+    "produto": 6,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 118,
+  "fields": {
+    "pedido": 82,
+    "produto": 26,
+    "quantidade": 1,
+    "preco_unitario": "13.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 119,
+  "fields": {
+    "pedido": 82,
+    "produto": 1,
+    "quantidade": 2,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "pedido.itempedido",
+  "pk": 120,
+  "fields": {
+    "pedido": 82,
+    "produto": 15,
+    "quantidade": 1,
+    "preco_unitario": "10.00",
+    "observacoes": "",
+    "adicionais": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$YxynAYPj4qgv1m3Tfu2wF4$8Aron2+I6gH0zMM2/lofg3q32hEHwbe8+8qXRBlOl8Y=",
+    "last_login": "2025-05-04T23:46:22.501Z",
+    "is_superuser": true,
+    "username": "user",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-05-01T04:38:14.656Z",
+    "telefone": "",
+    "email": "jean@gmail.com",
+    "nome_completo": "",
+    "tipo_usuario": "ADMINISTRADOR",
+    "imagem": "",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 27,
+  "fields": {
+    "password": "!7NhngwfDntlFZwhWhjRW7lRsfmPIAFHCzpunCxdE",
+    "last_login": "2025-05-03T17:13:41.047Z",
+    "is_superuser": false,
+    "username": "cliente_61982161937",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-03T17:13:40.977Z",
+    "telefone": "(61) 98216-1937",
+    "email": "cliente_61982161937@dominio.com",
+    "nome_completo": "Rodrigo Pereira",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 30,
+  "fields": {
+    "password": "!L2GHayFPbwoCV8jGeT1yj04omssvXHbzPOqpiGyb",
+    "last_login": "2025-05-03T23:21:51.481Z",
+    "is_superuser": false,
+    "username": "cliente_61986116571",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-03T23:21:51.433Z",
+    "telefone": "(61) 98611-6571",
+    "email": "cliente_61986116571@dominio.com",
+    "nome_completo": "Erica Lopes Ferreira",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 33,
+  "fields": {
+    "password": "!1qkwYaQk9wYryb7gy4QYnD74w3ksenH2OAi2YZXM",
+    "last_login": "2025-05-04T23:44:55.693Z",
+    "is_superuser": false,
+    "username": "cliente_61985159494",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T16:21:23.148Z",
+    "telefone": "(77) 99829-3776",
+    "email": "cliente_61985159494@dominio.com",
+    "nome_completo": "Jean Barbosa santos",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 34,
+  "fields": {
+    "password": "!cKS2O089D6rTLlx6uYd2sXr8IFpCq8YT5WLuvh2D",
+    "last_login": "2025-05-04T21:05:38.082Z",
+    "is_superuser": false,
+    "username": "cliente_61996721041",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T21:05:38.008Z",
+    "telefone": "(61) 99672-1041",
+    "email": "cliente_61996721041@dominio.com",
+    "nome_completo": "Leandro Volpato",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 35,
+  "fields": {
+    "password": "!iq8cLJfr8ngaJL3GQZoFZWCKOxaUFceDKV2cssZw",
+    "last_login": "2025-05-04T21:41:40.334Z",
+    "is_superuser": false,
+    "username": "cliente_61996578049",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T21:41:40.254Z",
+    "telefone": "(61) 99657-8049",
+    "email": "cliente_61996578049@dominio.com",
+    "nome_completo": "Arnaldo pereira da luz",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 36,
+  "fields": {
+    "password": "!WqcFNIwNtxZTlD1wDJhPVZmJq7Q2mBYx0wBEP3M4",
+    "last_login": "2025-05-04T21:41:48.620Z",
+    "is_superuser": false,
+    "username": "cliente_61999755566",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T21:41:48.544Z",
+    "telefone": "(61) 99975-5566",
+    "email": "cliente_61999755566@dominio.com",
+    "nome_completo": "Cleciane",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 37,
+  "fields": {
+    "password": "!2tlH2jRi5xPAf570qGvKI0SUaFJxLRB0nmzSiO4m",
+    "last_login": "2025-05-04T21:42:02.440Z",
+    "is_superuser": false,
+    "username": "cliente_61996986825",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T21:42:02.366Z",
+    "telefone": "(61) 99698-6825",
+    "email": "cliente_61996986825@dominio.com",
+    "nome_completo": "Beatriz",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 38,
+  "fields": {
+    "password": "!XXhCcJtpLDmfhok8k9UdJeDA70QrmBts692DU72A",
+    "last_login": "2025-05-04T22:04:54.101Z",
+    "is_superuser": false,
+    "username": "cliente_61984087415",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:04:54.019Z",
+    "telefone": "(61) 98408-7415",
+    "email": "cliente_61984087415@dominio.com",
+    "nome_completo": "Alessandra",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 39,
+  "fields": {
+    "password": "!A6nwSH9hOjVxmmUS8dBdQ0m9IP2ItBQhyXiNKS8G",
+    "last_login": "2025-05-04T22:05:53.907Z",
+    "is_superuser": false,
+    "username": "cliente_61986242407",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:05:53.827Z",
+    "telefone": "(61) 98624-2407",
+    "email": "cliente_61986242407@dominio.com",
+    "nome_completo": "Karoliny souza",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 40,
+  "fields": {
+    "password": "!HAnk6YxOviXzOzdrsylqsUrKpRzylXSUUdkQHckO",
+    "last_login": "2025-05-04T22:34:55.178Z",
+    "is_superuser": false,
+    "username": "cliente_61984780530",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:34:55.123Z",
+    "telefone": "(61) 98478-0530",
+    "email": "cliente_61984780530@dominio.com",
+    "nome_completo": "Marina Miranda Da Silva",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 41,
+  "fields": {
+    "password": "!p6y2YOC81d3BNvn0DrXbjN7t1wIFS11Z2almyuY8",
+    "last_login": "2025-05-04T22:37:18.365Z",
+    "is_superuser": false,
+    "username": "cliente_61981194291",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:37:18.283Z",
+    "telefone": "(61) 98119-4291",
+    "email": "cliente_61981194291@dominio.com",
+    "nome_completo": "Maria Verônica Farias Pontes",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 42,
+  "fields": {
+    "password": "!GdNrUADpAVdQhxjnFOijIFuXMycr3SfcqygBV8z2",
+    "last_login": "2025-05-04T22:39:46.609Z",
+    "is_superuser": false,
+    "username": "cliente_88981702442",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:39:46.562Z",
+    "telefone": "(88) 98170-2442",
+    "email": "cliente_88981702442@dominio.com",
+    "nome_completo": "Anderson Izidro",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 43,
+  "fields": {
+    "password": "!tATFF4le1lZPzBZz0a1J5TA281MXfi86jiiRlOyw",
+    "last_login": "2025-05-04T22:42:28.995Z",
+    "is_superuser": false,
+    "username": "cliente_88981449928",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:42:28.966Z",
+    "telefone": "(88) 98144-9928",
+    "email": "cliente_88981449928@dominio.com",
+    "nome_completo": "Eduardo",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 44,
+  "fields": {
+    "password": "!kebJXsgMEdSlKiKVaFQmndcutt364aSSUcsx83f3",
+    "last_login": "2025-05-04T22:48:19.756Z",
+    "is_superuser": false,
+    "username": "cliente_61986520654",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:48:19.694Z",
+    "telefone": "(61) 98652-0654",
+    "email": "cliente_61986520654@dominio.com",
+    "nome_completo": "Edna souza",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 45,
+  "fields": {
+    "password": "!76WsWIGktVp1DiwmSfZ6xv3Gt0Qx49uN5wJ2veB9",
+    "last_login": "2025-05-04T22:54:36.873Z",
+    "is_superuser": false,
+    "username": "cliente_99984303922",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:54:36.841Z",
+    "telefone": "(99) 98430-3922",
+    "email": "cliente_99984303922@dominio.com",
+    "nome_completo": "Erika",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 46,
+  "fields": {
+    "password": "!CHZesLDyAVtNNWS5B2eAS1URl7CN6Nc1vuNZCNhA",
+    "last_login": "2025-05-04T22:57:57.177Z",
+    "is_superuser": false,
+    "username": "cliente_61981598554",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T22:57:57.139Z",
+    "telefone": "(61) 98159-8554",
+    "email": "cliente_61981598554@dominio.com",
+    "nome_completo": "Tiana Carla",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 47,
+  "fields": {
+    "password": "!QzKchDIDLuI017y7iMeLwnbcTXbyUvPT2hsVBdja",
+    "last_login": "2025-05-04T23:03:15.144Z",
+    "is_superuser": false,
+    "username": "cliente_61998694301",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T23:03:15.100Z",
+    "telefone": "(61) 99869-4301",
+    "email": "cliente_61998694301@dominio.com",
+    "nome_completo": "Helio Matheus Souza Ribeiro",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 48,
+  "fields": {
+    "password": "!sO0Mf337rpcsYm52OI15n7DLh4mxBCgIEihRK4Cr",
+    "last_login": "2025-05-04T23:10:24.438Z",
+    "is_superuser": false,
+    "username": "cliente_61986084270",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T23:10:24.363Z",
+    "telefone": "(61) 98608-4270",
+    "email": "cliente_61986084270@dominio.com",
+    "nome_completo": "Ester",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 49,
+  "fields": {
+    "password": "!bPiV8OAwGN6UW6F6zgVbvsWrjXV6Ft3Jl3kurj43",
+    "last_login": "2025-05-04T23:24:46.758Z",
+    "is_superuser": false,
+    "username": "cliente_61986193691",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T23:24:46.723Z",
+    "telefone": "(61) 98619-3691",
+    "email": "cliente_61986193691@dominio.com",
+    "nome_completo": "Alaide",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 50,
+  "fields": {
+    "password": "!uiyzZYRHGQpcR1v9eG9JADUAJzizKVRF2vBnlfvV",
+    "last_login": "2025-05-04T23:39:48.037Z",
+    "is_superuser": false,
+    "username": "cliente_77999141339",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-04T23:39:47.966Z",
+    "telefone": "(77) 99914-1339",
+    "email": "cliente_77999141339@dominio.com",
+    "nome_completo": "Sara",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 51,
+  "fields": {
+    "password": "!IfEbbiCH6g6Ock2t1d4LqLhW4Dx3bvn5lPQxvFdE",
+    "last_login": "2025-05-05T00:39:23.828Z",
+    "is_superuser": false,
+    "username": "cliente_61986830438",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-05T00:39:23.751Z",
+    "telefone": "(61) 98683-0438",
+    "email": "cliente_61986830438@dominio.com",
+    "nome_completo": "Eduarda ❤️",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 52,
+  "fields": {
+    "password": "!bjnYf24DRfacalOKmDTKdaFUvHgx1C7jmpwxEJf2",
+    "last_login": "2025-05-05T01:12:38.345Z",
+    "is_superuser": false,
+    "username": "cliente_88981985168",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-05T01:12:38.308Z",
+    "telefone": "(88) 98198-5168",
+    "email": "cliente_88981985168@dominio.com",
+    "nome_completo": "Wagner dos Santos Ferreira",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 53,
+  "fields": {
+    "password": "!TTRWVaCXhchYlofOaOizKj3Ncu4sQGJ3D8tgElhO",
+    "last_login": "2025-05-05T01:33:25.528Z",
+    "is_superuser": false,
+    "username": "cliente_61981452192",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-05-05T01:33:25.481Z",
+    "telefone": "(61) 98145-2192",
+    "email": "cliente_61981452192@dominio.com",
+    "nome_completo": "Matheus",
+    "tipo_usuario": "CLIENTE",
+    "imagem": "",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 1,
+  "fields": {
+    "usuario": 1
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 15,
+  "fields": {
+    "usuario": 27
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 17,
+  "fields": {
+    "usuario": 30
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 19,
+  "fields": {
+    "usuario": 33
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 20,
+  "fields": {
+    "usuario": 34
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 21,
+  "fields": {
+    "usuario": 35
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 22,
+  "fields": {
+    "usuario": 37
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 23,
+  "fields": {
+    "usuario": 36
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 24,
+  "fields": {
+    "usuario": 39
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 25,
+  "fields": {
+    "usuario": 38
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 26,
+  "fields": {
+    "usuario": 41
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 27,
+  "fields": {
+    "usuario": 40
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 28,
+  "fields": {
+    "usuario": 42
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 29,
+  "fields": {
+    "usuario": 43
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 30,
+  "fields": {
+    "usuario": 44
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 31,
+  "fields": {
+    "usuario": 45
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 32,
+  "fields": {
+    "usuario": 46
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 33,
+  "fields": {
+    "usuario": 47
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 34,
+  "fields": {
+    "usuario": 48
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 35,
+  "fields": {
+    "usuario": 49
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 36,
+  "fields": {
+    "usuario": 51
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 37,
+  "fields": {
+    "usuario": 52
+  }
+},
+{
+  "model": "carrinho.carrinho",
+  "pk": 38,
+  "fields": {
+    "usuario": 53
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 106,
+  "fields": {
+    "carrinho": 21,
+    "produto": 4,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 116,
+  "fields": {
+    "carrinho": 26,
+    "produto": 9,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 117,
+  "fields": {
+    "carrinho": 26,
+    "produto": 12,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 125,
+  "fields": {
+    "carrinho": 32,
+    "produto": 3,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 126,
+  "fields": {
+    "carrinho": 32,
+    "produto": 4,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 136,
+  "fields": {
+    "carrinho": 36,
+    "produto": 8,
+    "observacao": "",
+    "quantidade": 3,
+    "adicionais": []
+  }
+},
+{
+  "model": "carrinho.itemcarrinho",
+  "pk": 137,
+  "fields": {
+    "carrinho": 36,
+    "produto": 15,
+    "observacao": "",
+    "quantidade": 1,
+    "adicionais": []
+  }
+}
+]

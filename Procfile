@@ -1,1 +1,1 @@
-web: gunicorn cardapio.wsgi
+web: gunicorn cardapio.wsgi:application
