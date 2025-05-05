@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro {{ status_code }} - HotDog Chapa Quente</title>
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #f39c12;
+            --light: #f5f5f5;
+            --dark: #333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle, #f5d7d7 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .error-container {
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            border-top: 5px solid var(--primary);
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin: 1rem 0;
+        }
+        
+        .error-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .hotdog-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .error-details {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f8f8;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            text-align: left;
+            display: {{ exception|yesno:"block,none" }};
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="hotdog-icon">🌭</div>
+        <h1 class="error-code">{{ status_code }}</h1>
+        <h2 class="error-title">
+            {% if status_code == 400 %}
+                Pedido Inválido!
+            {% elif status_code == 403 %}
+                Acesso Negado!
+            {% elif status_code == 404 %}
+                Página Não Encontrada!
+            {% else %}
+                Erro no Servidor!
+            {% endif %}
+        </h2>
+        
+        <p class="error-message">
+            {% if status_code == 400 %}
+                Ops! Seu pedido parece estar mal formatado.
+            {% elif status_code == 403 %}
+                Você não tem permissão para acessar esta área quente!
+            {% elif status_code == 404 %}
+                O hotdog que você procura fugiu da chapa!
+            {% else %}
+                Nossa chapa esquentou demais! Estamos consertando.
+            {% endif %}
+        </p>
+        
+        <a href="{% url 'home' %}" class="btn">Voltar para o Cardápio</a>
+        
+        {% if exception %}
+        <div class="error-details">
+            <strong>Detalhes:</strong><br>
+            {{ exception }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

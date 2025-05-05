@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-3 mt-md-5">
     <h2 class="mb-4">{{ titulo }}</h2>
 
     <form method="post" novalidate id="form-pedido">
@@ -19,7 +19,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <label for="bairro" class="form-label">Selecione seu setor *</label>
                         <select class="form-select" id="bairro" name="bairro" required>
                             <option value="">Escolha um setor</option>
@@ -38,13 +38,12 @@
                         </select>
 
                         {% if user.is_superuser %}
-<div class="mt-2">
-    <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
-        <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
-    </a>
-</div>
-{% endif %}
-
+                        <div class="mt-2">
+                            <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
+                            </a>
+                        </div>
+                        {% endif %}
 
                         <div class="mt-2">
                             <small class="text-muted">
@@ -53,7 +52,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <label for="endereco" class="form-label">Endereço Completo *</label>
                         <input type="text" class="form-control" id="endereco" name="endereco" 
                                value="{{ endereco|default:'' }}" placeholder="Quadra e número" required>
@@ -68,14 +67,14 @@
             </div>
         </div>
 
-        <!-- Seção de Pagamento (NOVA) -->
+        <!-- Seção de Pagamento -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Forma de Pagamento</h5>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <label for="forma_pagamento" class="form-label">Método de Pagamento *</label>
                         <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
                             <option value="">Selecione a forma de pagamento</option>
@@ -87,7 +86,7 @@
                     </div>
                     
                     <!-- Campos condicionais para pagamento em dinheiro -->
-                    <div class="col-md-6 mb-3" id="troco-container" style="display: none;">
+                    <div class="col-12 col-md-6 mb-3" id="troco-container" style="display: none;">
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="precisa_troco" name="precisa_troco">
                             <label class="form-check-label" for="precisa_troco">
@@ -176,9 +175,9 @@
                     </table>
                 </div>
 
-                <div class="p-4 border-top">
+                <div class="p-3 p-md-4 border-top">
                     <div class="row">
-                        <div class="col-md-6 offset-md-3">
+                        <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal ({{ itens|length }} itens):</span>
                                 <span>R$ <span id="subtotal">{{ total_geral|floatformat:2 }}</span></span>
@@ -199,11 +198,11 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between">
-            <a href="{% url 'carrinho' %}" class="btn btn-outline-secondary">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+            <a href="{% url 'carrinho' %}" class="btn btn-outline-secondary order-md-1">
                 <i class="bi bi-arrow-left me-2"></i>Voltar ao Carrinho
             </a>
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success order-md-2">
                 <i class="bi bi-check-circle me-2"></i>Confirmar Pedido
             </button>
         </div>
@@ -316,6 +315,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     .card-header {
         font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .img-thumbnail {
+            width: 40px !important;
+            height: 40px !important;
+        }
     }
 </style>
 {% endblock %}

@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>{{ titulo }}</h1>
             {% if user.is_superuser %}
-            <a href="{% url 'create_usuario' %}" class="btn btn-primary">
+            <a href="{% url 'acesso_rapido' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Adicionar Usuário
             </a>
             {% endif %}
@@ -42,16 +42,6 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Ações do usuário">
-                                        <a href="{% url 'remove_usuario' usuario.id %}" 
-                                           class="btn btn-sm btn-outline-primary rounded shadow-sm" 
-                                           title="Visualizar">
-                                            <i class="fas fa-eye">Detalhes</i>
-                                        </a>
-                                        <a href="{% url 'edit_usuario' usuario.id %}" 
-                                           class="btn btn-sm btn-outline-warning rounded shadow-sm" 
-                                           title="Editar">
-                                            <i class="fas fa-edit">Editar</i>
-                                        </a>
                                         {% if user.is_superuser and usuario != user %}
                                         <a href="{% url 'remove_usuario' usuario.id %}" 
                                            class="btn btn-sm btn-outline-danger rounded shadow-sm" 

@@ -91,48 +91,8 @@ def create_usuario(request):
         'titulo': 'Criar Conta'
     })
 
-@login_required(login_url='loginRapido')
-def edit_usuario(request, id):
-    """View para edição de usuários"""
-    if not request.user.is_superuser and id != request.user.id:
-        messages.error(request, "Você não tem permissão para editar este usuário.")
-        return redirect('perfil_usuario')
 
-    usuario = get_object_or_404(Usuario, pk=id)
-    is_admin_editing = request.user.is_admin and request.user != usuario
 
-    if request.method == "POST":
-        form = UsuarioAdminForm(request.POST, request.FILES, instance=usuario) if is_admin_editing \
-              else UsuarioClienteForm(request.POST, request.FILES, instance=usuario)
-              
-        if form.is_valid():
-            user = form.save()
-            
-            # Se a senha foi fornecida, atualiza
-            if 'password1' in form.cleaned_data and form.cleaned_data['password1']:
-                user.set_password(form.cleaned_data['password1'])
-                user.save()
-
-            # Se o usuário for o mesmo que está editando, faz login novamente
-            if request.user.id == usuario.id:
-                login(request, user)
-                
-            messages.success(request, "Perfil atualizado com sucesso!")
-            return redirect('perfil_usuario')
-    else:
-        form = UsuarioAdminForm(instance=usuario) if is_admin_editing \
-              else UsuarioClienteForm(instance=usuario)
-
-    context = {
-        'form': form,
-        'titulo': 'Editar Perfil',
-        'usuario': usuario,
-    }
-
-    if usuario.imagem and hasattr(usuario.imagem, 'url'):
-        context['current_image_url'] = usuario.imagem.url
-
-    return render(request, 'usuario/editUser.html', context)
 
 @login_required(login_url='loginRapido')
 @group_required('Administradores')
@@ -311,15 +271,35 @@ def loginRapido(request):
 
 @login_required(login_url='loginRapido')
 def editar_perfil_simples(request):
-    """
-    Edição simplificada do perfil - apenas nome e telefone
-    """
     usuario = request.user
     
     if request.method == "POST":
         form = EditarPerfilSimplesForm(request.POST, instance=usuario)
+        
         if form.is_valid():
-            form.save()
+            novo_telefone = form.cleaned_data.get('telefone')
+            novo_nome = form.cleaned_data.get('nome_completo')
+            
+            # Verifica se o telefone foi alterado
+            telefone_alterado = novo_telefone != usuario.telefone
+            
+            # Só valida se o telefone foi modificado
+            if telefone_alterado:
+                if Usuario.objects.filter(telefone=novo_telefone).exclude(pk=usuario.pk).exists():
+                    form.add_error('telefone', 'Este telefone já está cadastrado')
+                    return render(request, 'usuario/editar_perfil_simples.html', {
+                        'form': form,
+                        'titulo': 'Editar Meus Dados'
+                    })
+            
+            # Atualiza apenas os campos que foram modificados
+            if novo_nome != usuario.nome_completo:
+                usuario.nome_completo = novo_nome
+                
+            if telefone_alterado:
+                usuario.telefone = novo_telefone
+            
+            usuario.save()
             messages.success(request, "Perfil atualizado com sucesso!")
             return redirect('perfil_simples')
     else:
@@ -329,7 +309,6 @@ def editar_perfil_simples(request):
         'form': form,
         'titulo': 'Editar Meus Dados'
     })
-    
     
 @login_required(login_url='loginRapido')
 def perfil_simples(request):

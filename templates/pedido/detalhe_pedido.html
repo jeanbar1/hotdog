@@ -40,16 +40,84 @@
         color: #e74c3c;
         font-weight: bold;
     }
+
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .img-thumbnail {
+            width: 40px !important;
+            height: 40px !important;
+            margin-right: 10px !important;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .time-left {
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+        
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        
+        /* Estilos específicos para itens do pedido em mobile */
+        .table td, .table th {
+            padding: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .product-info {
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+        }
+        
+        .product-name {
+            font-size: 0.9rem;
+        }
+        
+        .mobile-price {
+            display: none;
+        }
+        
+        @media (max-width: 576px) {
+            .desktop-price {
+                display: none;
+            }
+            
+            .mobile-price {
+                display: block;
+                font-size: 0.8rem;
+                margin-top: 5px;
+            }
+            
+            .table th, .table td {
+                font-size: 0.8rem;
+            }
+        }
+    }
 </style>
 {% endblock %}
 
 {% block title %}Detalhes do Pedido #{{ pedido.numero_diario }}{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-3 py-md-4">
     <!-- Cabeçalho do Pedido -->
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h2 class="mb-0 text-black">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 mb-md-4 border-bottom pb-2 pb-md-3">
+        <h2 class="mb-2 mb-md-0 text-black">
             <i class="fas fa-shopping-bag me-2"></i>Pedido #{{ pedido.numero_diario }}
         </h2>
         {% if pedido.pode_ser_editado or request.user.is_staff %}
@@ -61,9 +129,9 @@
 
     <div class="row">
         <!-- Coluna Principal -->
-        <div class="col-lg-8">
+        <div class="col-12">
             <!-- Seção de Informações do Cliente -->
-            <div class="card mb-4 border-danger">
+            <div class="card mb-3 mb-md-4 border-danger">
                 <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-user me-2"></i>Informações do Cliente
@@ -71,7 +139,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-id-card me-2"></i>Cliente</h6>
                                 <p class="ps-3">
@@ -83,7 +151,7 @@
                                 <p class="ps-3">{{ pedido.cliente.telefone|default:"Não informado" }}</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-calendar-day me-2"></i>Data do Pedido</h6>
                                 <p class="ps-3">{{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
@@ -96,8 +164,9 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Seção de Pagamento -->
-            <div class="card mb-4 border-danger">
+            <div class="card mb-3 mb-md-4 border-danger">
                 <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-money-bill-wave me-2"></i>Informações de Pagamento
@@ -105,7 +174,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-credit-card me-2"></i>Forma de Pagamento</h6>
                                 <p class="ps-3">
@@ -115,7 +184,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             {% if pedido.forma_pagamento == 'DINHEIRO' %}
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-exchange-alt me-2"></i>Troco</h6>
@@ -138,7 +207,7 @@
             </div>
 
             <!-- Seção de Entrega -->
-            <div class="card mb-4 border-danger">
+            <div class="card mb-3 mb-md-4 border-danger">
                 <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-truck me-2"></i>Informações de Entrega
@@ -146,7 +215,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-map-marker-alt me-2"></i>Bairro</h6>
                                 <p class="ps-3">{{ pedido.bairro_entrega.nome }}</p>
@@ -156,7 +225,7 @@
                                 <p class="ps-3">{{ pedido.bairro_entrega.tempo }}</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-home me-2"></i>Endereço</h6>
                                 <p class="ps-3">{{ pedido.endereco_entrega }}</p>
@@ -174,7 +243,7 @@
             </div>
 
             <!-- Itens do Pedido -->
-            <div class="card border-danger">
+            <div class="card mb-3 mb-md-4 border-danger">
                 <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-list-alt me-2"></i>Itens do Pedido
@@ -187,8 +256,8 @@
                                 <tr>
                                     <th class="border-danger">Produto</th>
                                     <th class="text-center border-danger">Qtd</th>
-                                    <th class="text-end border-danger">Unitário</th>
-                                    <th class="text-end border-danger">Adicionais</th>
+                                    <th class="text-end border-danger desktop-price">Unitário</th>
+                                    <th class="text-end border-danger desktop-price">Adicionais</th>
                                     <th class="text-end border-danger">Subtotal</th>
                                 </tr>
                             </thead>
@@ -196,29 +265,36 @@
                                 {% for item in pedido.itens_pedido.all %}
                                 <tr>
                                     <td class="border-danger">
-                                        <div class="d-flex align-items-center">
+                                        <div class="product-info">
                                             {% if item.produto.imagem %}
                                             <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}" 
-                                                 class="img-thumbnail me-3 border-danger" style="width: 60px; height: 60px; object-fit: cover;">
+                                                 class="img-thumbnail me-3 border-danger">
                                             {% else %}
-                                            <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center border-danger" 
-                                                 style="width: 60px; height: 60px; background-color: #f8f9fa;">
+                                            <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center border-danger">
                                                 <i class="fas fa-image text-danger"></i>
                                             </div>
                                             {% endif %}
                                             <div>
-                                                <strong>{{ item.produto.nome }}</strong>
+                                                <strong class="product-name">{{ item.produto.nome }}</strong>
                                                 {% if item.observacoes %}
                                                 <div class="text-muted small mt-1">
                                                     <i class="fas fa-info-circle text-danger"></i> {{ item.observacoes }}
                                                 </div>
                                                 {% endif %}
+                                                <div class="mobile-price">
+                                                    <div>R$ {{ item.preco_unitario|floatformat:2 }} × {{ item.quantidade }}</div>
+                                                    {% if item.adicionais.all %}
+                                                    <div class="text-danger small">
+                                                        + R$ {{ item.adicionais_total|floatformat:2 }} (adicionais)
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center align-middle border-danger">{{ item.quantidade }}</td>
-                                    <td class="text-end align-middle border-danger">R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                                    <td class="text-end align-middle border-danger">
+                                    <td class="text-end align-middle border-danger desktop-price">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                                    <td class="text-end align-middle border-danger desktop-price">
                                         <span class="badge bg-danger-bg-opacity-10 text-danger">+R$ {{ item.adicionais_total|floatformat:2 }}</span>
                                     </td>
                                     <td class="text-end align-middle fw-bold border-danger">R$ {{ item.subtotal|floatformat:2 }}</td>
@@ -226,7 +302,7 @@
                                 {% if item.adicionais.all %}
                                 <tr>
                                     <td colspan="5" class="bg-danger-bg-opacity-10 pt-0 pb-2 border-danger">
-                                        <div class="ps-5 py-2 small">
+                                        <div class="ps-3 ps-md-5 py-2 small">
                                             <strong class="text-danger">Adicionais:</strong>
                                             {% for adicional in item.adicionais.all %}
                                             <span class="badge bg-white text-danger border border-danger ms-2">
@@ -243,11 +319,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Resumo do Pedido -->
-        <div class="col-lg-4">
-            <div class="card border-danger sticky-top" style="top: 20px;">
+            
+            <!-- Resumo do Pedido (movido para baixo) -->
+            <div class="card border-danger">
                 <div class="card-header text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice me-2"></i>Resumo do Pedido
@@ -307,7 +381,6 @@
                             <i class="fas fa-arrow-left me-2"></i>Voltar
                         </a>
                         {% if pedido.pode_ser_editado or request.user.is_staff %}
-                     
                         <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-danger" id="remove-pedido-btn"
                            onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
                             <i class="fas fa-edit me-2"></i>Remover Pedido
@@ -362,8 +435,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!{{ request.user.is_staff|yesno:"true,false" }}) {
                     const editBtn = document.getElementById('edit-pedido-btn');
                     const removeBtn = document.getElementById('remove-pedido-btn');
-                    
-                    
                     
                     if (removeBtn) {
                         removeBtn.classList.add('disabled');

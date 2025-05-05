@@ -106,7 +106,8 @@ class AcessoRapidoForm(forms.Form):
             raise ValidationError("Formato inválido. Use (DDD) XXXXX-XXXX")
         return telefone
     
-    
+
+
 class EditarPerfilSimplesForm(forms.ModelForm):
     class Meta:
         model = Usuario
@@ -121,6 +122,12 @@ class EditarPerfilSimplesForm(forms.ModelForm):
                 'placeholder': '(DDD) 99999-9999'
             })
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['nome_completo'].widget.attrs['value'] = self.instance.nome_completo
+            self.fields['telefone'].widget.attrs['value'] = self.instance.telefone
 
     def clean_telefone(self):
         telefone = self.cleaned_data.get('telefone')

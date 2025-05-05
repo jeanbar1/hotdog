@@ -176,7 +176,6 @@ def atualizar_carrinho(request):
     
     
     
-    
 @require_http_methods(["GET", "POST"])
 @login_required
 @transaction.atomic
@@ -212,7 +211,7 @@ def confirmar_compra(request):
             with transaction.atomic():
                 bairro = get_object_or_404(Bairro, id=bairro_id)
                 
-                # Criar pedido com os novos campos de pagamento
+                # Criar pedido - o número diário será gerado automaticamente no save()
                 pedido = Pedido.objects.create(
                     cliente=request.user,
                     preco_total=0,  # Será atualizado após criar os itens
@@ -227,11 +226,9 @@ def confirmar_compra(request):
 
                 # Criar itens do pedido e calcular totais
                 for item in itens_carrinho:
-                    # Calcular preço unitário com adicionais
                     preco_adicionais = sum(adicional.preco_extra for adicional in item.adicionais.all())
                     preco_unitario = item.produto.preco + preco_adicionais
                     
-                    # Criar item do pedido
                     item_pedido = ItemPedido.objects.create(
                         pedido=pedido,
                         produto=item.produto,
@@ -240,10 +237,9 @@ def confirmar_compra(request):
                         observacoes=item.observacao or ""
                     )
                     
-                    # Adicionar os adicionais ao item do pedido
                     item_pedido.adicionais.set(item.adicionais.all())
                 
-                # Atualizar total do pedido (incluindo adicionais e taxa)
+                # Atualizar total do pedido
                 pedido.atualizar_total()
                                 
                 # Limpar carrinho
@@ -252,7 +248,7 @@ def confirmar_compra(request):
             messages.success(request, f'Pedido #{pedido.numero_diario} criado com sucesso!')
             return redirect('detalhe_pedido', id=pedido.id)
 
-        # Para GET - calcular totais corretamente para exibição
+        # Para GET - calcular totais para exibição
         total_produtos = sum(item.produto.preco * item.quantidade for item in itens_carrinho)
         total_adicionais = sum(
             sum(adicional.preco_extra for adicional in item.adicionais.all()) * item.quantidade
@@ -266,14 +262,13 @@ def confirmar_compra(request):
             'total_adicionais': total_adicionais,
             'total_geral': total_geral,
             'bairros': bairros,
-            'formas_pagamento': Pedido.FORMA_PAGAMENTO,  # Adicionado para o template
+            'formas_pagamento': Pedido.FORMA_PAGAMENTO,
         })
 
     except Exception as e:
         logger.error(f"Erro na confirmação: {str(e)}", exc_info=True)
         messages.error(request, 'Erro ao processar seu pedido')
         return redirect('carrinho')
-    
     
     
     

@@ -19,6 +19,48 @@
         pointer-events: none;
         cursor: not-allowed;
     }
+    .date-header {
+        background-color: #f8f9fa;
+        padding: 8px 15px;
+        font-weight: bold;
+        border-bottom: 1px solid #dee2e6;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .new-pedido {
+        animation: highlight 2s ease-out;
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    @keyframes highlight {
+        from { background-color: rgba(40, 167, 69, 0.3); }
+        to { background-color: rgba(40, 167, 69, 0.1); }
+    }
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        transform: translateX(150%);
+        transition: transform 0.3s ease-out;
+    }
+    .notification.show {
+        transform: translateX(0);
+    }
+    .notification i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+    }
+    .notification.hide {
+        transform: translateX(150%);
+    }
 </style>
 {% endblock %}
 
@@ -39,6 +81,12 @@
         </div>
     </div>
 
+    <!-- Elemento de notificação -->
+    <div id="newOrderNotification" class="notification">
+        <i class="fas fa-bell"></i>
+        <span id="notificationText">Novo pedido recebido!</span>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -48,14 +96,21 @@
                             <th>Nº Pedido</th>
                             <th>Cliente</th>
                             <th>Telefone</th>
-                            <th>Data</th>
+                            <th>Hora</th>
                             <th>Total</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for pedido in page_obj %}
-                        <tr>
+                        {% regroup page_obj by data_pedido|date:"d/m/Y" as pedidos_por_data %}
+                        {% for data in pedidos_por_data %}
+                        <tr class="date-header">
+                            <td colspan="6">
+                                <i class="fas fa-calendar-day me-2"></i>{{ data.grouper }}
+                            </td>
+                        </tr>
+                        {% for pedido in data.list %}
+                        <tr class="pedido-row {% if forloop.first and data.grouper == hoje %}new-pedido{% endif %}" id="pedido-{{ pedido.id }}">
                             <td><strong>#{{ pedido.numero_diario }}</strong></td>
                             <td>
                                 <div class="d-flex align-items-center">
@@ -69,8 +124,7 @@
                                 {{ pedido.cliente.telefone|default:"-" }}
                             </td>
                             <td>
-                                {{ pedido.data_pedido|date:"d/m/Y" }}<br>
-                                <small class="text-muted">{{ pedido.data_pedido|date:"H:i" }}</small>
+                                {{ pedido.data_pedido|date:"H:i" }}
                                 {% if pedido.pode_ser_editado %}
                                 <div class="time-left" data-pedido-id="{{ pedido.id }}" data-pedido-time="{{ pedido.data_pedido|date:'U' }}">
                                     ⏳ Tempo para remoção: <span class="countdown"></span>
@@ -84,16 +138,18 @@
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     
-                                    
-                                    {% if pedido.pode_ser_editado or request.user.is_staff %}
-                                    <a href="{% url 'remove_pedido' pedido.id %}" class="btn btn-sm btn-danger btn-action {% if not pedido.pode_ser_editado and not request.user.is_staff %}btn-disabled{% endif %}" title="Excluir" 
-                                       onclick="return confirm('Tem certeza que deseja excluir este pedido?');">
+                                    {% if pedido.pode_ser_editado or request.user.is_staff or request.user.is_superuser %}
+                                    <a href="{% if pedido.pode_ser_editado or request.user.is_staff or request.user.is_superuser %}{% url 'remove_pedido' pedido.id %}{% else %}#{% endif %}" 
+                                       class="btn btn-sm btn-danger btn-action {% if not pedido.pode_ser_editado and not request.user.is_staff and not request.user.is_superuser %}disabled{% endif %}" 
+                                       title="{% if not pedido.pode_ser_editado and not request.user.is_staff and not request.user.is_superuser %}Tempo limite para exclusão expirou{% else %}Excluir{% endif %}"
+                                       onclick="{% if pedido.pode_ser_editado or request.user.is_staff or request.user.is_superuser %}return confirm('Tem certeza que deseja excluir este pedido?');{% else %}return false;{% endif %}">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                     {% endif %}
                                 </div>
                             </td>
                         </tr>
+                        {% endfor %}
                         {% empty %}
                         <tr>
                             <td colspan="6" class="text-center py-4">
@@ -176,6 +232,27 @@
         // Variável para armazenar o último ID de pedido conhecido
         let ultimoPedidoId = {% if page_obj.0 %}{{ page_obj.0.id }}{% else %}0{% endif %};
         
+        // Elementos da notificação
+        const notification = document.getElementById('newOrderNotification');
+        const notificationText = document.getElementById('notificationText');
+        
+        // Função para mostrar notificação
+        function showNotification(pedidoNumero) {
+            notificationText.textContent = `Novo pedido #${pedidoNumero} recebido!`;
+            notification.classList.add('show');
+            
+            // Esconde a notificação após 5 segundos
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.classList.add('hide');
+                
+                // Remove a classe hide após a animação terminar
+                setTimeout(() => {
+                    notification.classList.remove('hide');
+                }, 300);
+            }, 5000);
+        }
+        
         // Contador regressivo para edição/remoção de pedidos
         function updateCountdowns() {
             const now = Math.floor(Date.now() / 1000);
@@ -217,10 +294,24 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.novo_pedido) {
+                        // Mostra a notificação
+                        showNotification(data.numero_pedido);
+                        
                         // Atualiza o último ID conhecido
                         ultimoPedidoId = data.ultimo_id;
-                        // Recarrega a página para mostrar o novo pedido
-                        window.location.reload();
+                        
+                        // Adiciona classe de destaque para o novo pedido
+                        const newPedidoRow = document.getElementById(`pedido-${data.ultimo_id}`);
+                        if (newPedidoRow) {
+                            newPedidoRow.classList.add('new-pedido');
+                            // Rola a página até o novo pedido
+                            newPedidoRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                        
+                        // Recarrega a página após 8 segundos para garantir consistência
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 8000);
                     }
                 })
                 .catch(error => console.error('Erro ao verificar novos pedidos:', error));

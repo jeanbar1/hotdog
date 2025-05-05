@@ -1,3 +1,4 @@
+from datetime import timezone
 from venv import logger
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
@@ -151,13 +152,14 @@ def edit_pedido(request, id):
 @login_required
 def remove_pedido(request, id):
     """
-    Remove um pedido (apenas para administradores).
+    Remove um pedido (usuários comuns dentro do prazo, administradores a qualquer momento)
     """
     pedido = get_object_or_404(Pedido, pk=id)
     
     try:
         with transaction.atomic():
-            if not pedido.pode_ser_editado():
+            # Verifica se o usuário é admin OU se está dentro do prazo de edição
+            if not (request.user.is_staff or request.user.is_superuser or pedido.pode_ser_removido()):
                 messages.error(request, 'Este pedido não pode mais ser removido.')
                 return redirect('detalhe_pedido', id=pedido.id)
                 
@@ -165,9 +167,14 @@ def remove_pedido(request, id):
             messages.success(request, 'Pedido removido com sucesso!')
             
     except Exception as e:
+        logger.error(f"Erro ao remover pedido {id}: {str(e)}", exc_info=True)
         messages.error(request, f'Erro ao remover pedido: {str(e)}')
         
     return redirect('listar_pedidos')
+
+
+
+
 
 @login_required(login_url='loginRapido')
 def detalhe_pedido(request, id):
@@ -280,7 +287,6 @@ def remover_endereco(request, endereco_id):
 def criar_pedido_do_carrinho(request):
     """
     Cria um pedido a partir do carrinho de compras.
-    Agora atribui automaticamente um número diário reiniciado por dia.
     """
     try:
         carrinho = Carrinho.objects.get(usuario=request.user)
@@ -293,14 +299,9 @@ def criar_pedido_do_carrinho(request):
                     with transaction.atomic():
                         pedido = form.save(commit=False)
                         pedido.cliente = request.user
-
-                        # Gerar número diário
-                        hoje = timezone.now().date()
-                        ultimo_pedido_hoje = Pedido.objects.filter(data_criacao=hoje).order_by('-numero_diario').first()
-                        proximo_numero = 1 if not ultimo_pedido_hoje else ultimo_pedido_hoje.numero_diario + 1
-                        pedido.numero_diario = proximo_numero
-
-                        pedido.save()
+                        
+                        # Não defina numero_diario aqui - será gerado automaticamente no save()
+                        pedido.save()  # O save() vai gerar o numero_diario automaticamente
 
                         for item_carrinho in itens_carrinho:
                             adicionais = item_carrinho.adicionais.all()
@@ -319,7 +320,7 @@ def criar_pedido_do_carrinho(request):
                         carrinho.itens.all().delete()
 
                         messages.success(request, f'Pedido #{pedido.numero_diario} criado com sucesso!')
-                        return redirect('detalhe_pedido', id=pedido.numero_diario)
+                        return redirect('detalhe_pedido', id=pedido.id)
 
                 except Exception as e:
                     messages.error(request, f'Erro ao criar pedido: {str(e)}')
@@ -335,7 +336,7 @@ def criar_pedido_do_carrinho(request):
 
     except Carrinho.DoesNotExist:
         messages.warning(request, 'Seu carrinho está vazio.')
-        return redirect('listar_produtos')
+        return redirect('carrinho')
     
     
     

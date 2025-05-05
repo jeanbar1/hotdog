@@ -76,34 +76,23 @@ class Pedido(models.Model):
             self.taxa_entrega = self.bairro_entrega.taxa
         self.save()
         
-    def pode_ser_editado(self):
-        """Verifica se o pedido pode ser editado/removido (dentro de 5 minutos da criação)"""
+    def usuario_eh_admin(self, user):
+        """Verifica se o usuário é um administrador"""
+        return user.is_authenticated and (user.is_superuser or user.is_staff)
+    
+    def pode_ser_editado(self, user=None):
+        """Permite edição se estiver no prazo ou se for admin"""
         tempo_decorrido = (timezone.now() - self.data_pedido).total_seconds()
+        if user and self.usuario_eh_admin(user):
+            return True
         return tempo_decorrido < 300  # 5 minutos = 300 segundos
     
-    def pode_ser_removido(self):
-        """Verifica se o pedido pode ser removido (dentro de 5 minutos da criação)"""
+    def pode_ser_removido(self, user=None):
+        """Permite remoção se estiver no prazo ou se for admin"""
         tempo_decorrido = (timezone.now() - self.data_pedido).total_seconds()
+        if user and self.usuario_eh_admin(user):
+            return True
         return tempo_decorrido < 300  # 5 minutos = 300 segundos
-    
-    def save(self, *args, **kwargs):
-        if not self.numero_diario:
-            self.numero_diario = self.get_next_numero_diario()
-        super().save(*args, **kwargs)
-
-    @classmethod
-    def get_next_numero_diario(cls):
-        agora = timezone.localtime()
-        
-        # Define o horário de corte como meio-dia (12:00)
-        if agora.hour < 12:
-            inicio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0) - timedelta(days=1)
-        else:
-            inicio_dia = agora.replace(hour=12, minute=0, second=0, microsecond=0)
-
-        # Conta quantos pedidos existem a partir do início do "dia lógico"
-        count = cls.objects.filter(data_criacao__gte=inicio_dia).count()
-        return count + 1
 
     @property
     def subtotal_produtos(self):
