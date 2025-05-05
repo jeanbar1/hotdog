@@ -1,4 +1,7 @@
+from re import DEBUG
 from django.db import models
+from django.conf import settings  # Corrigido para importar de forma correta
+from storages.backends.s3boto3 import S3Boto3Storage 
 
 class CategoriaProduto(models.Model):
     nome = models.CharField(max_length=20, unique=True)
@@ -11,7 +14,12 @@ class Produto(models.Model):
     descricao = models.TextField(blank=True, null=True)
     categorias = models.ManyToManyField(CategoriaProduto, related_name='produtos')
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
+    imagem = models.ImageField(
+        upload_to='produtos/',
+        blank=True,
+        null=True,
+        storage=None if settings.DEBUG else S3Boto3Storage()
+    )
     ativo = models.BooleanField(default=True)  # Para habilitar/desabilitar por produto
 
     def __str__(self):

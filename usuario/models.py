@@ -26,7 +26,7 @@ class Usuario(AbstractUser):
     
     # Imagem de perfil
     imagem = models.ImageField(
-        upload_to='usuarios/',
+        upload_to='pasta/para/imagens',
         blank=True,
         null=True,
         verbose_name='Imagem de Perfil',

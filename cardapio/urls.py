@@ -1,3 +1,4 @@
+import os
 from django.contrib import admin
 from django.shortcuts import render
 from django.urls import path, include
@@ -28,6 +29,6 @@ handler403 = error_handler
 handler404 = error_handler
 handler500 = error_handler
 
+# Em vez disso, use apenas para DEBUG:
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
