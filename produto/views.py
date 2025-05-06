@@ -378,3 +378,6 @@ def toggle_adicional_produto(request, produto_adicional_id):
     produto_adicional.ativo = not produto_adicional.ativo
     produto_adicional.save()
     return redirect('gerenciar_adicionais_produto', produto_id=produto_adicional.produto.id)
+
+
+
