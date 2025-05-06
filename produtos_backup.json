@@ -1,0 +1,870 @@
+[
+{
+  "model": "produto.categoriaproduto",
+  "pk": 1,
+  "fields": {
+    "nome": "Pastéis"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 2,
+  "fields": {
+    "nome": "HOT DOGs"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 3,
+  "fields": {
+    "nome": "Bebidas"
+  }
+},
+{
+  "model": "produto.categoriaproduto",
+  "pk": 4,
+  "fields": {
+    "nome": "Doces"
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 1,
+  "fields": {
+    "nome": "pastel de Carne",
+    "descricao": "Recheio, de carne bem temperada e queijo",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 2,
+  "fields": {
+    "nome": "Pastel de Queijo",
+    "descricao": "Recheio, de mussarela, com orégano",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 3,
+  "fields": {
+    "nome": "Pastel de Calabresa",
+    "descricao": "Recheio, de calabresa, cebola, queijo cremoso",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 4,
+  "fields": {
+    "nome": "Pastel de Pizza",
+    "descricao": "Recheio, de presunto, mussarela, calabresa, milho, azeitona, cebola, pimentão, tomate e orégano",
+    "preco": "13.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 5,
+  "fields": {
+    "nome": "Pastel de Presunto",
+    "descricao": "Recheio, de presunto, queijo cremoso",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 6,
+  "fields": {
+    "nome": "Pastel de HOT DOG",
+    "descricao": "Recheio, de salsicha, azeitona, ketchup, maionese, queijo cremoso, milho e batata palha",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 7,
+  "fields": {
+    "nome": "Pastel de Doce",
+    "descricao": "Recheio, de banana, canela, açúcar e queijo",
+    "preco": "13.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 8,
+  "fields": {
+    "nome": "Hot Dog tradicional",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, milho e batata palha",
+    "preco": "9.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 9,
+  "fields": {
+    "nome": "Hot Dog Bacon",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, bacon, milho e batata palha",
+    "preco": "10.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 10,
+  "fields": {
+    "nome": "Hot Dog Calabresa",
+    "descricao": "Pão, salsicha, ketchup, maionese especial, presunto mussarela, calabresa, milho e batata palha",
+    "preco": "11.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 11,
+  "fields": {
+    "nome": "Hot Dogão",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, dobro de presunto, dobro de mussarela, milho e batata palha",
+    "preco": "12.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 12,
+  "fields": {
+    "nome": "Hot Dog da Casa",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, presunto, mussarela, cebola, azeitona, milho e batata palha",
+    "preco": "14.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 13,
+  "fields": {
+    "nome": "Hot Dog de Frango",
+    "descricao": "Pão, 2x salsicha, ketchup, maionese especial, mussarela, frango desfiado, ervilha, milho e batata palha",
+    "preco": "16.99",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 14,
+  "fields": {
+    "nome": "Refrigerante COCA-COLA",
+    "descricao": "Refrigerante coca-cola 1,5 L",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 15,
+  "fields": {
+    "nome": "Refrigerante KUAT-GUARANÁ",
+    "descricao": "Refrigerante kuat guaraná 1,5 L",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 16,
+  "fields": {
+    "nome": "Refrigerante MINEIRO",
+    "descricao": "Refrigerante mineiro 2L",
+    "preco": "10.00",
+    "imagem": "",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 17,
+  "fields": {
+    "nome": "Refrigerante MINEIRO",
+    "descricao": "Refrigerante mineiro 600 ML",
+    "preco": "6.00",
+    "imagem": "",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 18,
+  "fields": {
+    "nome": "Refrigerante COCA-COLA  LATA",
+    "descricao": "Refrigerante coca-lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 19,
+  "fields": {
+    "nome": "Refrigerante FANTA GUARANÁ LATA",
+    "descricao": "Refrigerante fanta guaraná lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 20,
+  "fields": {
+    "nome": "Refrigerante FANTA LARANJA LATA",
+    "descricao": "Refrigerante fanta laranja lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 21,
+  "fields": {
+    "nome": "Refrigerante FANTA UVA LATA",
+    "descricao": "Refrigerante fanta uva lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 22,
+  "fields": {
+    "nome": "Refrigerante GUARANÁ LATA",
+    "descricao": "Refrigerante guaraná lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 23,
+  "fields": {
+    "nome": "Refrigerante PEPSI LATA",
+    "descricao": "Refrigerante pepsi lata",
+    "preco": "5.00",
+    "imagem": "",
+    "ativo": false,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 24,
+  "fields": {
+    "nome": "Água MINERAL",
+    "descricao": "Água mineral 500ML",
+    "preco": "2.50",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 25,
+  "fields": {
+    "nome": "Água COM GÁS",
+    "descricao": "Água com gás 500ML",
+    "preco": "3.50",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 26,
+  "fields": {
+    "nome": "Pastel de Frango e Catupiry",
+    "descricao": "Rechio, de frango desfiado e catupiry",
+    "preco": "13.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      1
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 27,
+  "fields": {
+    "nome": "Hot dog Goiano",
+    "descricao": "Pão 2x salsicha, bacon, presunto, calabresa, mussarela batata palha",
+    "preco": "18.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      2
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 31,
+  "fields": {
+    "nome": "Suco Nutri 1L",
+    "descricao": "Suco Nutri 1L",
+    "preco": "8.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.produto",
+  "pk": 32,
+  "fields": {
+    "nome": "Suco Nutri 200ML",
+    "descricao": "Suco Nutri 200ML",
+    "preco": "3.00",
+    "imagem": "",
+    "ativo": true,
+    "categorias": [
+      3
+    ]
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 1,
+  "fields": {
+    "nome": "Catupiry",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 3,
+  "fields": {
+    "nome": "Calabresa",
+    "preco_extra": "5.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 6,
+  "fields": {
+    "nome": "Bacon",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.adicional",
+  "pk": 7,
+  "fields": {
+    "nome": "Queijo cremoso",
+    "preco_extra": "4.00",
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 1,
+  "fields": {
+    "produto": 1,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 3,
+  "fields": {
+    "produto": 1,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 4,
+  "fields": {
+    "produto": 2,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 6,
+  "fields": {
+    "produto": 3,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 8,
+  "fields": {
+    "produto": 3,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 9,
+  "fields": {
+    "produto": 4,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 11,
+  "fields": {
+    "produto": 4,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 12,
+  "fields": {
+    "produto": 5,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 14,
+  "fields": {
+    "produto": 6,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 16,
+  "fields": {
+    "produto": 6,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 17,
+  "fields": {
+    "produto": 8,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 18,
+  "fields": {
+    "produto": 9,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 20,
+  "fields": {
+    "produto": 10,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 22,
+  "fields": {
+    "produto": 10,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 23,
+  "fields": {
+    "produto": 11,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 25,
+  "fields": {
+    "produto": 11,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 26,
+  "fields": {
+    "produto": 12,
+    "adicional": 1,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 28,
+  "fields": {
+    "produto": 12,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 29,
+  "fields": {
+    "produto": 9,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 31,
+  "fields": {
+    "produto": 1,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 32,
+  "fields": {
+    "produto": 1,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 33,
+  "fields": {
+    "produto": 2,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 34,
+  "fields": {
+    "produto": 2,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 35,
+  "fields": {
+    "produto": 2,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 36,
+  "fields": {
+    "produto": 3,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 37,
+  "fields": {
+    "produto": 3,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 38,
+  "fields": {
+    "produto": 4,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 39,
+  "fields": {
+    "produto": 4,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 40,
+  "fields": {
+    "produto": 5,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 41,
+  "fields": {
+    "produto": 5,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 42,
+  "fields": {
+    "produto": 5,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 43,
+  "fields": {
+    "produto": 6,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 44,
+  "fields": {
+    "produto": 6,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 45,
+  "fields": {
+    "produto": 12,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 46,
+  "fields": {
+    "produto": 12,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 47,
+  "fields": {
+    "produto": 8,
+    "adicional": 3,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 48,
+  "fields": {
+    "produto": 8,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 49,
+  "fields": {
+    "produto": 8,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 50,
+  "fields": {
+    "produto": 9,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 51,
+  "fields": {
+    "produto": 9,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 52,
+  "fields": {
+    "produto": 10,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 53,
+  "fields": {
+    "produto": 10,
+    "adicional": 7,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 54,
+  "fields": {
+    "produto": 11,
+    "adicional": 6,
+    "ativo": true
+  }
+},
+{
+  "model": "produto.produtoadicional",
+  "pk": 55,
+  "fields": {
+    "produto": 11,
+    "adicional": 7,
+    "ativo": true
+  }
+}
+]

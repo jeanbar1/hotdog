@@ -1,0 +1,28 @@
+                       List of relations
+ Schema |               Name               | Type  |   Owner   
+--------+----------------------------------+-------+-----------
+ public | auth_group                       | table | jean_user
+ public | auth_group_permissions           | table | jean_user
+ public | auth_permission                  | table | jean_user
+ public | carrinho_carrinho                | table | jean_user
+ public | carrinho_itemcarrinho            | table | jean_user
+ public | carrinho_itemcarrinho_adicionais | table | jean_user
+ public | django_admin_log                 | table | jean_user
+ public | django_content_type              | table | jean_user
+ public | django_migrations                | table | jean_user
+ public | django_session                   | table | jean_user
+ public | pedido_bairro                    | table | jean_user
+ public | pedido_itempedido                | table | jean_user
+ public | pedido_itempedido_adicionais     | table | jean_user
+ public | pedido_localentrega              | table | jean_user
+ public | pedido_pedido                    | table | jean_user
+ public | produto_adicional                | table | jean_user
+ public | produto_categoriaproduto         | table | jean_user
+ public | produto_produto                  | table | jean_user
+ public | produto_produto_categorias       | table | jean_user
+ public | produto_produtoadicional         | table | jean_user
+ public | usuario_usuario                  | table | jean_user
+ public | usuario_usuario_groups           | table | jean_user
+ public | usuario_usuario_user_permissions | table | jean_user
+(23 rows)
+
