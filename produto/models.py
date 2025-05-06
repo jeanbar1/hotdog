@@ -1,7 +1,7 @@
-from re import DEBUG
 from django.db import models
-from django.conf import settings  # Corrigido para importar de forma correta
-from storages.backends.s3boto3 import S3Boto3Storage 
+from django.conf import settings
+from storages.backends.s3boto3 import S3Boto3Storage
+from django.core.files.storage import default_storage
 
 class CategoriaProduto(models.Model):
     nome = models.CharField(max_length=20, unique=True)
@@ -18,9 +18,9 @@ class Produto(models.Model):
         upload_to='produtos/',
         blank=True,
         null=True,
-        storage=None if settings.DEBUG else S3Boto3Storage()
+        storage=default_storage if settings.DEBUG else S3Boto3Storage()
     )
-    ativo = models.BooleanField(default=True)  # Para habilitar/desabilitar por produto
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
         tipos_str = ", ".join([tipo.nome for tipo in self.categorias.all()])
@@ -29,7 +29,7 @@ class Produto(models.Model):
 class Adicional(models.Model):
     nome = models.CharField(max_length=50)
     preco_extra = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    ativo = models.BooleanField(default=True)  # Para o admin controlar se está disponível
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.nome} (+ R${self.preco_extra})"
@@ -37,10 +37,10 @@ class Adicional(models.Model):
 class ProdutoAdicional(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='adicionais')
     adicional = models.ForeignKey(Adicional, on_delete=models.CASCADE)
-    ativo = models.BooleanField(default=True)  # Para habilitar/desabilitar por produto
+    ativo = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ('produto', 'adicional')  # Evita duplicatas
+        unique_together = ('produto', 'adicional')
 
     def __str__(self):
         return f"{self.produto.nome} - {self.adicional.nome}"
