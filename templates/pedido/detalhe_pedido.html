@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pedidoD.css' %}" />
 <style>
@@ -39,6 +41,16 @@
         font-size: 0.8rem;
         color: #e74c3c;
         font-weight: bold;
+    }
+
+    /* ADICIONEI ESTE BLOCO PARA AJUSTAR AS IMAGENS NO DESKTOP */
+    @media (min-width: 769px) {
+        .img-thumbnail {
+            width: 60px !important;
+            height: 60px !important;
+            max-width: 60px !important;
+            object-fit: cover;
+        }
     }
 
     @media (max-width: 768px) {
@@ -109,12 +121,198 @@
         }
     }
 </style>
+<style>
+    #printContent {
+        white-space: pre;
+        font-family: monospace;
+        line-height: 1.2;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+        text-align: left; /* Garante alinhamento à esquerda */
+    }
+</style>
 {% endblock %}
 
 {% block title %}Detalhes do Pedido #{{ pedido.numero_diario }}{% endblock %}
 
 {% block content %}
 <div class="container py-3 py-md-4">
+
+    {% if user.is_superuser %}
+<div class="card mb-4 border-primary">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-printer me-2"></i>Impressão do Pedido</h5>
+    </div>
+    <div class="card-body">
+
+        
+<textarea id="printContent" class="form-control font-monospace" rows="40" readonly>
+    ********************************
+    *   HOT DOG CHAPA QUENTE *
+    ********************************
+    PEDIDO: #{{ pedido.numero_diario }}
+    DATA: {{ pedido.data_pedido|date:"d/m H:i" }}
+    --------------------------------
+    {% for item in pedido.itens_pedido.all %}
+    {{ item.quantidade }}x {{ item.produto.nome|upper|truncatechars:30 }}
+     R$ {{ item.preco_unitario|floatformat:2 }}
+    {% if item.adicionais.all %}
+    ADIC: {% for adicional in item.adicionais.all %}{{ adicional.nome|upper|truncatechars:28 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+    +R$ {{ item.adicionais_total|floatformat:2 }}
+    {% endif %}
+    {% if item.observacoes %}
+    OBS: {{ item.observacoes|upper|truncatechars:30 }}
+    {% endif %}
+    --------------------------------
+    {% endfor %}
+    SUBTOTAL:     R$ {{ pedido.subtotal_produtos|floatformat:2 }}
+    ADICIONAIS:   R$ {{ pedido.total_adicionais|floatformat:2 }}
+    ENTREGA:      R$ {{ pedido.taxa_entrega|floatformat:2 }}
+    TOTAL:        R$ {{ pedido.total_final|floatformat:2 }}
+    --------------------------------
+    PAGAMENTO: {{ pedido.get_forma_pagamento_display|upper|truncatechars:30 }}
+    {% if pedido.precisa_troco %}
+    TROCO PARA:   R$ {{ pedido.valor_troco_para|floatformat:2 }}
+    {% endif %}
+    --------------------------------
+    CLIENTE: {{ pedido.cliente.nome_completo|default:pedido.cliente.username|upper|truncatechars:30 }}
+    TEL: {{ pedido.cliente.telefone|default:"-" }}
+    --------------------------------
+    ENTREGA:
+    BAIRRO: {{ pedido.bairro_entrega.nome|upper|truncatechars:30 }}
+    END: {{ pedido.endereco_entrega|upper|truncatechars:30 }}
+    {% if pedido.referencia_entrega %}
+    REF: {{ pedido.referencia_entrega|upper|truncatechars:30 }}
+    {% endif %}
+    TEMPO: {{ pedido.bairro_entrega.tempo }}
+    ********************************
+    </textarea>
+            
+            
+
+        <div class="d-flex gap-2 mt-3">
+            <button onclick="sendToRawBT()" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-printer-fill me-1"></i> Imprimir no RawBT
+            </button>
+        </div>
+
+        <a id="rawbtLink" href="#" style="display: none;" target="_blank">Imprimir</a>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function formatForPrint(text) {
+            const lines = text.split('\n');
+            const formattedLines = [];
+            const maxLength = 32; // Largura máxima da impressora (ajustado para 32 caracteres)
+            
+            lines.forEach(line => {
+                if (line.length <= maxLength) {
+                    formattedLines.push(line);
+                } else {
+                    // Quebra a linha em partes sem cortar palavras
+                    let currentLine = '';
+                    const words = line.split(' ');
+                    
+                    for (let i = 0; i < words.length; i++) {
+                        const word = words[i];
+                        
+                        // Se a palavra sozinha ultrapassa o limite, quebra ela
+                        if (word.length > maxLength) {
+                            if (currentLine) {
+                                formattedLines.push(currentLine.trim());
+                                currentLine = '';
+                            }
+                            
+                            // Quebra a palavra grande em partes
+                            for (let j = 0; j < word.length; j += maxLength) {
+                                const chunk = word.substr(j, maxLength);
+                                formattedLines.push(chunk);
+                            }
+                        } else {
+                            if (currentLine.length + word.length + 1 <= maxLength) {
+                                currentLine += (currentLine ? ' ' : '') + word;
+                            } else {
+                                if (currentLine) formattedLines.push(currentLine.trim());
+                                currentLine = word;
+                            }
+                        }
+                    }
+                    
+                    if (currentLine) {
+                        formattedLines.push(currentLine.trim());
+                    }
+                }
+            });
+            
+            return formattedLines.join('\n');
+        }
+    
+        const printContent = document.getElementById('printContent');
+        printContent.value = formatForPrint(printContent.value);
+    });
+    </script>
+<script>
+function copyToClipboard() {
+    const content = document.getElementById('printContent').value;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('Conteúdo copiado para a área de transferência!');
+    });
+}
+
+function sendToRawBT() {
+    let content = document.getElementById('printContent').value;
+
+    // Remove espaços em branco à direita das linhas
+    content = content.replace(/\s+$/gm, "");
+
+    const base64Text = btoa(unescape(encodeURIComponent(content)));
+    const rawbtLink = document.getElementById("rawbtLink");
+    rawbtLink.href = `rawbt:base64,${base64Text}`;
+    rawbtLink.click();
+}
+</script>
+
+<script>
+function copyToPrintApp() {
+    const content = document.getElementById('printContent').value;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('Conteúdo copiado para a área de transferência!');
+    }).catch(err => {
+        console.error('Falha ao copiar: ', err);
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Conteúdo copiado para a área de transferência!');
+    });
+}
+
+// Função para enviar o conteúdo para o RawBT via Base64 (modo local)
+function sendToRawBT() {
+    const content = document.getElementById('printContent').value;
+
+    // Codifica o conteúdo para Base64
+    const base64Text = btoa(unescape(encodeURIComponent(content)));
+
+    // Monta o link com o esquema rawbt:
+    const link = document.getElementById('rawbtLink');
+    link.href = `rawbt:base64,${base64Text}`;
+
+    // Dispara o clique para abrir no RawBT
+    link.click();
+}
+</script>
+{% endif %}
+
+
+
+
     <!-- Cabeçalho do Pedido -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 mb-md-4 border-bottom pb-2 pb-md-3">
         <h2 class="mb-2 mb-md-0 text-black">
@@ -127,6 +325,7 @@
         {% endif %}
     </div>
 
+    <!-- Restante do seu código existente... -->
     <div class="row">
         <!-- Coluna Principal -->
         <div class="col-12">
@@ -156,10 +355,7 @@
                                 <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-calendar-day me-2"></i>Data do Pedido</h6>
                                 <p class="ps-3">{{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
                             </div>
-                            <div class="mb-3">
-                                <h6 class="text-danger mb-2 fw-bold"><i class="fas fa-sync-alt me-2"></i>Última Atualização</h6>
-                                <p class="ps-3">{{ pedido.data_atualizacao|date:"d/m/Y H:i" }}</p>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

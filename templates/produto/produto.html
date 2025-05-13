@@ -201,16 +201,21 @@
                 <span class="fw-bold me-2">Preço:</span>
                 <span class="product-price fs-4">R$ <span id="base-price">{{ produto.preco|floatformat:2 }}</span></span>
             </div>
+            
+
+            {% if user.is_superuser %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="{% url 'gerenciar_adicionais_produto' produto.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-cog me-1"></i> Gerenciar Adicionais
+                </a>
+            </div>
+            {% endif %}
 
             {% if produto.adicionais.exists %}
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5>Adicionais</h5>
-        {% if user.is_superuser %}
-        <a href="{% url 'gerenciar_adicionais_produto' produto.id %}" class="btn btn-sm btn-outline-primary">
-            <i class="fas fa-cog me-1"></i> Gerenciar
-        </a>
-        {% endif %}
+        
     </div>
 
     <!-- Mensagem explicando como adicionais funcionam -->

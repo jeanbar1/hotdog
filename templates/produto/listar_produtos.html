@@ -81,9 +81,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Lista de Produtos</h1>
         {% if user.is_staff %}
-        <a href="{% url 'addProduto' %}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Adicionar Produto
-        </a>
+        
         {% endif %}
     </div>
 
@@ -176,14 +174,7 @@
                                     <span> Excluir</span>
                                 </a>
                             {% else %}
-                                <!-- Botão de Adicionar ao Carrinho -->
-                                <form method="post" action="{% url 'adicionar_ao_carrinho' produto.id %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="quantidade" value="1">
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-cart-plus me-1"></i> Add
-                                    </button>
-                                </form>
+                               
                             {% endif %}
                         </div>
                     </div>

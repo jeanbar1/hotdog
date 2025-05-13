@@ -15,3 +15,9 @@ services:
         value: "False"
       - key: WEB_CONCURRENCY
         value: "4"
+      - key: PRINT_MODE
+        value: "impressao"  # APP, WEBHOOK ou TEST
+      - key: PRINT_APP_DEEPLINK
+        value: "bluetoothprinter://print?text="
+      - key: PRINT_WEBHOOK_URL
+        value: "https://api.seuappimpressora.com/print"

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h4>Impressão do Pedido #{{ impressao.pedido.numero_diario }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Status:</h5>
+                {% if impressao.impresso %}
+                    <span class="badge bg-success">Impresso em {{ impressao.data_impressao|date:"d/m/Y H:i" }}</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Pendente ({{ impressao.tentativas }} tentativas)</span>
+                    {% if impressao.ultimo_erro %}
+                        <div class="alert alert-danger mt-2">
+                            <strong>Último erro:</strong> {{ impressao.ultimo_erro }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <h5>Pré-visualização:</h5>
+                <div class="p-3 bg-light border rounded">
+                    <pre style="font-family: 'Courier New', monospace;">{{ impressao.conteudo }}</pre>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" onclick="imprimirAgora()">
+                    <i class="bi bi-printer"></i> Imprimir Agora
+                </button>
+                
+                <a href="{% url 'admin:impressao_impressao_change' impressao.id %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-gear"></i> Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function imprimirAgora() {
+        fetch("{% url 'imprimir_pedido' impressao.pedido.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Impressão enviada com sucesso!');
+                window.location.reload();
+            } else if (data.deeplink) {
+                // Abre o app da impressora
+                window.location.href = data.deeplink;
+                // Fallback após 500ms
+                setTimeout(() => {
+                    window.location.href = "https://play.google.com/store/apps/details?id=com.app.impressora";
+                }, 500);
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        });
+    }
+</script>
+{% endblock %}

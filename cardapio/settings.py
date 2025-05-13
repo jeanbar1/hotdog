@@ -60,6 +60,22 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+# settings.py
+import os
+from decouple import config
+
+PRINT_MODE = config('PRINT_MODE', default='impressao')  # APP, WEBHOOK ou TEST
+PRINT_APP_DEEPLINK = config('PRINT_APP_DEEPLINK', default='')
+PRINT_WEBHOOK_URL = config('PRINT_WEBHOOK_URL', default='')  # A URL do Webhook a ser configurada via variável de ambiente
+
+# No final do arquivo:
+if os.getenv('RENDER'):
+    DEBUG = False
+    # Configurações específicas para Render
+    PRINT_MODE = 'WEBHOOK'  # Forçar modo webhook no Render
+
+
+
 # ==================== CONFIGURAÇÕES DE ARMAZENAMENTO ====================
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -79,6 +95,7 @@ INSTALLED_APPS = [
     'usuario',
     'carrinho',
     'principal',
+    'impressao.apps.ImpressaoConfig',
 ]
 
 MIDDLEWARE = [

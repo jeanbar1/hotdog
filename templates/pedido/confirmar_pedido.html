@@ -9,6 +9,7 @@
 <div class="container mt-3 mt-md-5">
     <h2 class="mb-4">{{ titulo }}</h2>
 
+    <!-- Restante do seu template original -->
     <form method="post" novalidate id="form-pedido">
         {% csrf_token %}
         
@@ -301,6 +302,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Funções para impressão
+function copyToPrintApp() {
+    const content = document.getElementById('printContent');
+    content.select();
+    document.execCommand('copy');
+    alert('Conteúdo copiado! Agora cole no POSPrinter-BT');
+}
+
+function printWithPOSPrinter() {
+    const content = document.getElementById('printContent').value;
+    
+    // Tentativa de abrir o app diretamente via intent (Android)
+    if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+        try {
+            window.location.href = `intent://print?text=${encodeURIComponent(content)}#Intent;package=com.posprinter.bt;scheme=posprinter;end`;
+            return;
+        } catch (e) {
+            console.error("Erro ao tentar abrir o app via intent:", e);
+        }
+    }
+    
+    // Fallback: copiar para área de transferência
+    copyToPrintApp();
+}
 </script>
 
 <style>
@@ -315,6 +341,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     .card-header {
         font-size: 1.1rem;
+    }
+
+    /* Estilo para a área de impressão */
+    #printContent {
+        font-family: monospace;
+        white-space: pre;
+        line-height: 1.2;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f8f9fa;
     }
 
     @media (max-width: 768px) {

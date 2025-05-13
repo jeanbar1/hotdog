@@ -90,20 +90,14 @@
                 
                 <div class="card-footer bg-white border-top-0">
                     <div class="d-flex justify-content-between">
+                        {% if user.is_authenticated %}
                         <!-- Botão de Detalhes -->
                         <a href="{% url 'detalhes_produto' produto.id %}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-eye me-1"></i> Detalhes
+                            <i class="fas fa-eye me-1"></i> Ver Produto
                         </a>
                         
                         <!-- Botão de Adicionar ao Carrinho -->
-                        {% if user.is_authenticated %}
-                        <form method="post" action="{% url 'adicionar_ao_carrinho' produto.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="quantidade" value="1">
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fas fa-cart-plus me-1"></i> Adicionar
-                            </button>
-                        </form>
+                        
                         {% else %}
                         <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-cart-plus me-1"></i> Adicionar
