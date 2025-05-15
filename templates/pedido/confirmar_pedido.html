@@ -9,12 +9,30 @@
 <div class="container mt-3 mt-md-5">
     <h2 class="mb-4">{{ titulo }}</h2>
 
-    <!-- Restante do seu template original -->
     <form method="post" novalidate id="form-pedido">
         {% csrf_token %}
         
-        <!-- Seção de Dados de Entrega -->
+        <!-- INÍCIO DAS ALTERAÇÕES - Seção de Tipo de Entrega -->
         <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Tipo de Entrega</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <select class="form-select" id="tipo-entrega" name="tipo_entrega" required>
+                            <option value="">Selecione o tipo de entrega</option>
+                            <option value="entrega">Entrega</option>
+                            <option value="retirada">Retirada no Local</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIM DAS ALTERAÇÕES -->
+
+        <!-- Seção de Dados de Entrega (modificada para aparecer apenas quando selecionado "Entrega") -->
+        <div class="card mb-4" id="entrega-section" style="display: none;">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Informações de Entrega</h5>
             </div>
@@ -22,7 +40,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label for="bairro" class="form-label">Selecione seu setor *</label>
-                        <select class="form-select" id="bairro" name="bairro" required>
+                        <select class="form-select" id="bairro" name="bairro">
                             <option value="">Escolha um setor</option>
                             {% for bairro in bairros %}
                                 <option 
@@ -56,7 +74,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="endereco" class="form-label">Endereço Completo *</label>
                         <input type="text" class="form-control" id="endereco" name="endereco" 
-                               value="{{ endereco|default:'' }}" placeholder="Quadra e número" required>
+                               value="{{ endereco|default:'' }}" placeholder="Quadra e número">
                     </div>
                 </div>
 
@@ -67,6 +85,21 @@
                 </div>
             </div>
         </div>
+
+        <!-- INÍCIO DAS ALTERAÇÕES - Seção de Retirada no Local (aparece apenas quando selecionado "Retirada") -->
+        <div class="card mb-4" id="retirada-section" style="display: none;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-shop me-2"></i>Informações para Retirada</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">Você irá retirar seu pedido no endereço:</p>
+                <div class="alert alert-info">
+                    <strong>Setor D, Quadra 06, Lote 26</strong>
+                </div>
+                <p class="text-muted small">Taxa: <strong>Grátis</strong></p>
+            </div>
+        </div>
+        <!-- FIM DAS ALTERAÇÕES -->
 
         <!-- Seção de Pagamento -->
         <div class="card mb-4">
@@ -186,7 +219,7 @@
   
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Taxa de Entrega:</span>
-                                <span>R$ <span id="taxa-entrega">{{ taxa_entrega|default:"0.00" }}</span></span>
+                                <span>R$ <span id="taxa-entrega">0.00</span></span>
                             </div>
                             
                             <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2 mt-2">
@@ -222,6 +255,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const subtotalSpan = document.getElementById('subtotal');
     const totalPedidoSpan = document.getElementById('total-pedido');
     const formPedido = document.getElementById('form-pedido');
+    
+    // INÍCIO DAS ALTERAÇÕES - Variáveis para controle de tipo de entrega
+    const tipoEntregaSelect = document.getElementById('tipo-entrega');
+    const entregaSection = document.getElementById('entrega-section');
+    const retiradaSection = document.getElementById('retirada-section');
+    // FIM DAS ALTERAÇÕES
 
     // Atualiza os valores quando a página carrega
     updateTotals();
@@ -230,11 +269,47 @@ document.addEventListener('DOMContentLoaded', function() {
     bairroSelect.addEventListener('change', updateTotals);
     formaPagamentoSelect.addEventListener('change', toggleTrocoFields);
     precisaTrocoCheckbox.addEventListener('change', toggleValorTrocoField);
+    
+    // INÍCIO DAS ALTERAÇÕES - Listener para tipo de entrega
+    tipoEntregaSelect.addEventListener('change', function() {
+        if (this.value === 'entrega') {
+            entregaSection.style.display = 'block';
+            retiradaSection.style.display = 'none';
+            
+            // Tornar campos obrigatórios
+            bairroSelect.required = true;
+            document.getElementById('endereco').required = true;
+            
+            // Atualizar taxas
+            updateTotals();
+        } 
+        else if (this.value === 'retirada') {
+            entregaSection.style.display = 'none';
+            retiradaSection.style.display = 'block';
+            
+            // Remover obrigatoriedade dos campos de entrega
+            bairroSelect.required = false;
+            document.getElementById('endereco').required = false;
+            
+            // Definir taxa de entrega como grátis
+            taxaEntregaSpan.textContent = '0.00';
+            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
+            totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        } 
+        else {
+            entregaSection.style.display = 'none';
+            retiradaSection.style.display = 'none';
+        }
+    });
+    // FIM DAS ALTERAÇÕES
 
     function updateTotals() {
         const selectedOption = bairroSelect.options[bairroSelect.selectedIndex];
         
-        if (selectedOption.value) {
+        if (selectedOption.value && tipoEntregaSelect.value === 'entrega') {
             const tempo = selectedOption.getAttribute('data-tempo') || "30-45 min";
             tempoEntrega.textContent = tempo;
             
@@ -249,7 +324,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             tempoEntrega.textContent = '---';
-            taxaEntregaSpan.textContent = '0.00';
+            if (tipoEntregaSelect.value !== 'retirada') {
+                taxaEntregaSpan.textContent = '0.00';
+            }
             const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
             totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
@@ -279,12 +356,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     formPedido.addEventListener('submit', function(e) {
-        if (!bairroSelect.value) {
+        // INÍCIO DAS ALTERAÇÕES - Validação do tipo de entrega
+        if (!tipoEntregaSelect.value) {
             e.preventDefault();
-            alert('Por favor, selecione um bairro para entrega.');
-            bairroSelect.focus();
+            alert('Por favor, selecione o tipo de entrega.');
+            tipoEntregaSelect.focus();
             return;
         }
+        
+        if (tipoEntregaSelect.value === 'entrega') {
+            if (!bairroSelect.value) {
+                e.preventDefault();
+                alert('Por favor, selecione um bairro para entrega.');
+                bairroSelect.focus();
+                return;
+            }
+            
+            if (!document.getElementById('endereco').value) {
+                e.preventDefault();
+                alert('Por favor, informe o endereço para entrega.');
+                document.getElementById('endereco').focus();
+                return;
+            }
+        }
+        // FIM DAS ALTERAÇÕES
 
         if (!formaPagamentoSelect.value) {
             e.preventDefault();
@@ -303,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Funções para impressão
+// Funções para impressão (mantidas iguais)
 function copyToPrintApp() {
     const content = document.getElementById('printContent');
     content.select();
@@ -314,7 +409,6 @@ function copyToPrintApp() {
 function printWithPOSPrinter() {
     const content = document.getElementById('printContent').value;
     
-    // Tentativa de abrir o app diretamente via intent (Android)
     if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
         try {
             window.location.href = `intent://print?text=${encodeURIComponent(content)}#Intent;package=com.posprinter.bt;scheme=posprinter;end`;
@@ -324,7 +418,6 @@ function printWithPOSPrinter() {
         }
     }
     
-    // Fallback: copiar para área de transferência
     copyToPrintApp();
 }
 </script>
@@ -343,15 +436,11 @@ function printWithPOSPrinter() {
         font-size: 1.1rem;
     }
 
-    /* Estilo para a área de impressão */
-    #printContent {
-        font-family: monospace;
-        white-space: pre;
-        line-height: 1.2;
-        border: 1px solid #ddd;
-        padding: 10px;
-        background-color: #f8f9fa;
+    /* INÍCIO DAS ALTERAÇÕES - Estilos para seção de retirada */
+    #retirada-section .alert {
+        margin-bottom: 0;
     }
+    /* FIM DAS ALTERAÇÕES */
 
     @media (max-width: 768px) {
         .container {

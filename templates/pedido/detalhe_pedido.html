@@ -129,7 +129,7 @@
         overflow-wrap: break-word;
         word-wrap: break-word;
         hyphens: auto;
-        text-align: left; /* Garante alinhamento à esquerda */
+        text-align: left;
     }
 </style>
 {% endblock %}
@@ -140,54 +140,52 @@
 <div class="container py-3 py-md-4">
 
     {% if user.is_superuser %}
-<div class="card mb-4 border-primary">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="bi bi-printer me-2"></i>Impressão do Pedido</h5>
-    </div>
-    <div class="card-body">
-
-        
-<textarea id="printContent" class="form-control font-monospace" rows="40" readonly>
-    ********************************
-    *   HOT DOG CHAPA QUENTE *
-    ********************************
-    PEDIDO: #{{ pedido.numero_diario }}
-    DATA: {{ pedido.data_pedido|date:"d/m H:i" }}
-    --------------------------------
-    {% for item in pedido.itens_pedido.all %}
-    {{ item.quantidade }}x {{ item.produto.nome|upper|truncatechars:30 }}
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-printer me-2"></i>Impressão do Pedido</h5>
+        </div>
+        <div class="card-body">
+            <textarea id="printContent" class="form-control font-monospace" rows="40" readonly>
+********************************
+*   HOT DOG CHAPA QUENTE *
+********************************
+PEDIDO: #{{ pedido.numero_diario }}
+DATA: {{ pedido.data_pedido|date:"d/m H:i" }}
+--------------------------------
+{% for item in pedido.itens_pedido.all %}
+{{ item.quantidade }}x {{ item.produto.nome|upper }}
      R$ {{ item.preco_unitario|floatformat:2 }}
-    {% if item.adicionais.all %}
-    ADIC: {% for adicional in item.adicionais.all %}{{ adicional.nome|upper|truncatechars:28 }}{% if not forloop.last %}, {% endif %}{% endfor %}
-    +R$ {{ item.adicionais_total|floatformat:2 }}
-    {% endif %}
-    {% if item.observacoes %}
-    OBS: {{ item.observacoes|upper|truncatechars:30 }}
-    {% endif %}
-    --------------------------------
-    {% endfor %}
-    SUBTOTAL:     R$ {{ pedido.subtotal_produtos|floatformat:2 }}
-    ADICIONAIS:   R$ {{ pedido.total_adicionais|floatformat:2 }}
-    ENTREGA:      R$ {{ pedido.taxa_entrega|floatformat:2 }}
-    TOTAL:        R$ {{ pedido.total_final|floatformat:2 }}
-    --------------------------------
-    PAGAMENTO: {{ pedido.get_forma_pagamento_display|upper|truncatechars:30 }}
-    {% if pedido.precisa_troco %}
-    TROCO PARA:   R$ {{ pedido.valor_troco_para|floatformat:2 }}
-    {% endif %}
-    --------------------------------
-    CLIENTE: {{ pedido.cliente.nome_completo|default:pedido.cliente.username|upper|truncatechars:30 }}
-    TEL: {{ pedido.cliente.telefone|default:"-" }}
-    --------------------------------
-    ENTREGA:
-    BAIRRO: {{ pedido.bairro_entrega.nome|upper|truncatechars:30 }}
-    END: {{ pedido.endereco_entrega|upper|truncatechars:30 }}
-    {% if pedido.referencia_entrega %}
-    REF: {{ pedido.referencia_entrega|upper|truncatechars:30 }}
-    {% endif %}
-    TEMPO: {{ pedido.bairro_entrega.tempo }}
-    ********************************
-    </textarea>
+{% if item.adicionais.all %}
+ADIC: {% for adicional in item.adicionais.all %}{{ adicional.nome|upper }}{% if not forloop.last %}, {% endif %}{% endfor %}
++R$ {{ item.adicionais_total|floatformat:2 }}
+{% endif %}
+{% if item.observacoes %}
+OBS: {{ item.observacoes|upper }}
+{% endif %}
+--------------------------------
+{% endfor %}
+SUBTOTAL:     R$ {{ pedido.subtotal_produtos|floatformat:2 }}
+ADICIONAIS:   R$ {{ pedido.total_adicionais|floatformat:2 }}
+ENTREGA:      R$ {{ pedido.taxa_entrega|floatformat:2 }}
+TOTAL:        R$ {{ pedido.total_final|floatformat:2 }}
+--------------------------------
+PAGAMENTO: {{ pedido.get_forma_pagamento_display|upper }}
+{% if pedido.precisa_troco %}
+TROCO PARA:   R$ {{ pedido.valor_troco_para|floatformat:2 }}
+{% endif %}
+--------------------------------
+CLIENTE: {{ pedido.cliente.nome_completo|default:pedido.cliente.username|upper }}
+TEL: {{ pedido.cliente.telefone|default:"-" }}
+--------------------------------
+ENTREGA:
+BAIRRO: {{ pedido.bairro_entrega.nome|upper }}
+END: {{ pedido.endereco_entrega|upper }}
+{% if pedido.referencia_entrega %}
+REF: {{ pedido.referencia_entrega|upper }}
+{% endif %}
+TEMPO: {{ pedido.bairro_entrega.tempo }}
+********************************
+            </textarea>
             
             
 
