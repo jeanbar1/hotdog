@@ -39,67 +39,74 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="bairro" class="form-label">Selecione seu setor *</label>
-                        <select class="form-select" id="bairro" name="bairro">
-                            <option value="">Escolha um setor</option>
-                            {% for bairro in bairros %}
-                                <option 
-                                    value="{{ bairro.id }}"
-                                    data-taxa="{{ bairro.taxa }}"
-                                    data-tempo="{{ bairro.tempo }}"
-                                    {% if bairro.id == bairro_selecionado %}selected{% endif %}
-                                >
-                                    {{ bairro.nome }} (Taxa: R$ {{ bairro.taxa|floatformat:2 }})
-                                </option>
-                            {% empty %}
-                                <option value="">Nenhum bairro disponível</option>
-                            {% endfor %}
-                        </select>
+           <label for="bairro" class="form-label">Selecione seu setor *</label>
+<select class="form-select" id="bairro" name="bairro">
+    <option value="">Escolha um setor</option>
+    {% for bairro in bairros %}
+        <option 
+            value="{{ bairro.id }}"
+            data-taxa="{{ bairro.taxa }}"
+            data-tempo="{{ bairro.tempo }}"
+            {% if bairro.id == bairro_selecionado %}selected{% endif %}
+        >
+            {{ bairro.nome }} (Taxa: R$ {{ bairro.taxa|floatformat:2 }})
+        </option>
+    {% empty %}
+        <option value="">Nenhum bairro disponível</option>
+    {% endfor %}
+    <!-- Opção fixa para retirada no local -->
+    <option value="retirada" data-taxa="0" data-tempo="0" style="display: none;">
+        Retirada no Local
+    </option>
+</select>
 
-                        {% if user.is_superuser %}
-                        <div class="mt-2">
-                            <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
-                            </a>
-                        </div>
-                        {% endif %}
+{% if user.is_superuser %}
+<div class="mt-2">
+    <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
+    </a>
+</div>
+{% endif %}
 
-                        <div class="mt-2">
-                            <small class="text-muted">
-                                Tempo estimado: <span id="tempo-entrega" class="fw-bold">---</span>
-                            </small>
-                        </div>
-                    </div>
+<div class="mt-2">
+    <small class="text-muted">
+        Tempo estimado: <span id="tempo-entrega" class="fw-bold">---</span>
+    </small>
+</div>
+</div>
 
-                    <div class="col-12 col-md-6 mb-3">
-                        <label for="endereco" class="form-label">Endereço Completo *</label>
-                        <input type="text" class="form-control" id="endereco" name="endereco" 
-                               value="{{ endereco|default:'' }}" placeholder="Quadra e número">
-                    </div>
-                </div>
+<div class="col-12 col-md-6 mb-3">
+    <label for="endereco" class="form-label">Endereço Completo *</label>
+    <input type="text" class="form-control" id="endereco" name="endereco" 
+           value="{{ endereco|default:'' }}" placeholder="Quadra e número">
+</div>
+</div>
 
-                <div class="mb-3">
-                    <label for="referencia" class="form-label">Ponto de Referência</label>
-                    <input type="text" class="form-control" id="referencia" name="referencia" 
-                           value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
-                </div>
-            </div>
+<div class="mb-3">
+    <label for="referencia" class="form-label">Ponto de Referência</label>
+    <input type="text" class="form-control" id="referencia" name="referencia" 
+           value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
+</div>
+</div>
+</div>
+
+<!-- Seção de Retirada no Local -->
+<div class="card mb-4" id="retirada-section" style="display: none;">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-shop me-2"></i>Informações para Retirada</h5>
+    </div>
+    <div class="card-body">
+        <p class="mb-3">Você irá retirar seu pedido no endereço:</p>
+        <div class="alert alert-info">
+            <strong>Setor D, Quadra 06, Lote 26</strong>
         </div>
-
-        <!-- INÍCIO DAS ALTERAÇÕES - Seção de Retirada no Local (aparece apenas quando selecionado "Retirada") -->
-        <div class="card mb-4" id="retirada-section" style="display: none;">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-shop me-2"></i>Informações para Retirada</h5>
-            </div>
-            <div class="card-body">
-                <p class="mb-3">Você irá retirar seu pedido no endereço:</p>
-                <div class="alert alert-info">
-                    <strong>Setor D, Quadra 06, Lote 26</strong>
-                </div>
-                <p class="text-muted small">Taxa: <strong>Grátis</strong></p>
-            </div>
-        </div>
-        <!-- FIM DAS ALTERAÇÕES -->
+        <p class="text-muted small">Taxa: <strong>Grátis</strong></p>
+        <!-- Campos ocultos com valores fixos para retirada -->
+        <input type="hidden" name="bairro_retirada" value="retirada">
+        <input type="hidden" name="endereco_retirada" value="Setor D, Quadra 06, Lote 26">
+        <input type="hidden" name="taxa_retirada" value="0">
+    </div>
+</div>
 
         <!-- Seção de Pagamento -->
         <div class="card mb-4">
