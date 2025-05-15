@@ -282,17 +282,15 @@ def remover_endereco(request, endereco_id):
     messages.success(request, 'Endereço removido com sucesso!')
     return redirect('listar_enderecos')
 
+
 @login_required
 def criar_pedido_do_carrinho(request):
     """
-    Cria um pedido a partir do carrinho de compras com opção de retirada no local.
+    Cria um pedido a partir do carrinho de compras.
     """
     try:
         carrinho = Carrinho.objects.get(usuario=request.user)
         itens_carrinho = ItemCarrinho.objects.filter(carrinho=carrinho).prefetch_related('adicionais')
-        
-        # Obtém o bairro de retirada (deve existir no banco)
-        bairro_retirada = Bairro.objects.filter(nome__icontains="Retirada").first()
 
         if request.method == 'POST':
             form = PedidoForm(request.POST)
@@ -302,15 +300,9 @@ def criar_pedido_do_carrinho(request):
                         pedido = form.save(commit=False)
                         pedido.cliente = request.user
                         
-                        # Verifica se é retirada no local
-                        if request.POST.get('tipo_entrega') == 'retirada' and bairro_retirada:
-                            pedido.bairro_entrega = bairro_retirada
-                            pedido.endereco_entrega = "Retirada no Local - Setor D, Quadra 06, Lote 26"
-                            pedido.taxa_entrega = 0
-                        
-                        pedido.save()
+                        # Não defina numero_diario aqui - será gerado automaticamente no save()
+                        pedido.save()  # O save() vai gerar o numero_diario automaticamente
 
-                        # Cria os itens do pedido
                         for item_carrinho in itens_carrinho:
                             adicionais = item_carrinho.adicionais.all()
                             preco_adicionais = sum(a.preco_extra for a in adicionais)
@@ -320,8 +312,7 @@ def criar_pedido_do_carrinho(request):
                                 pedido=pedido,
                                 produto=item_carrinho.produto,
                                 quantidade=item_carrinho.quantidade,
-                                preco_unitario=preco_unitario,
-                                observacoes=item_carrinho.observacao
+                                preco_unitario=preco_unitario
                             )
                             item_pedido.adicionais.set(adicionais)
 
@@ -333,7 +324,6 @@ def criar_pedido_do_carrinho(request):
 
                 except Exception as e:
                     messages.error(request, f'Erro ao criar pedido: {str(e)}')
-                    return redirect('carrinho_confirmar')
 
         else:
             form = PedidoForm()
@@ -341,13 +331,13 @@ def criar_pedido_do_carrinho(request):
         return render(request, 'pedido/pedido_form.html', {
             'form': form,
             'itens_carrinho': itens_carrinho,
-            'bairro_retirada': bairro_retirada,
             'titulo': 'Finalizar Pedido'
         })
 
     except Carrinho.DoesNotExist:
         messages.warning(request, 'Seu carrinho está vazio.')
-        return redirect('carrinho')    
+        return redirect('carrinho')
+    
     
     
     

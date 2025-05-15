@@ -3,6 +3,24 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pedido1.css' %}" />
+<style>
+    /* Estilos para a opção de retirada */
+    .tipo-pedido-options {
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+    }
+    .form-check-inline {
+        margin-right: 1.5rem;
+    }
+    .disabled-field {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
+    #taxa-retirada {
+        font-weight: bold;
+        color: #28a745;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -12,126 +30,83 @@
     <form method="post" novalidate id="form-pedido">
         {% csrf_token %}
         
-        <!-- INÍCIO DAS ALTERAÇÕES - Seção de Tipo de Entrega -->
+        <!-- Seção de Tipo de Pedido -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Tipo de Entrega</h5>
+                <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Tipo de Pedido</h5>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <select class="form-select" id="tipo-entrega" name="tipo_entrega" required>
-                            <option value="">Selecione o tipo de entrega</option>
-                            <option value="entrega">Entrega</option>
-                            <option value="retirada">Retirada no Local</option>
-                        </select>
+                <div class="tipo-pedido-options">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipo_pedido" id="tipo_entrega" value="entrega" checked>
+                        <label class="form-check-label" for="tipo_entrega">
+                            Entrega
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipo_pedido" id="tipo_retirada" value="retirada">
+                        <label class="form-check-label" for="tipo_retirada">
+                            Retirar no local
+                        </label>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- FIM DAS ALTERAÇÕES -->
 
-        <!-- Seção de Dados de Entrega (modificada para aparecer apenas quando selecionado "Entrega") -->
-        <div class="card mb-4" id="entrega-section" style="display: none;">
+        <!-- Seção de Dados de Entrega/Retirada (ALTERAÇÃO: Removi a seção duplicada) -->
+        <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Informações de Entrega</h5>
+                <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Informações de Entrega/Retirada</h5>
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="col-12 col-md-6 mb-3" id="bairro-container">
+                        <label for="bairro" class="form-label">Selecione seu setor *</label>
+                        <select class="form-select" id="bairro" name="bairro" required>
+                            <option value="">Escolha um setor</option>
+                            {% for bairro in bairros %}
+                                <option 
+                                    value="{{ bairro.id }}"
+                                    data-taxa="{{ bairro.taxa }}"
+                                    data-tempo="{{ bairro.tempo }}"
+                                    {% if bairro.id == bairro_selecionado %}selected{% endif %}
+                                    {% if 'retirada' in bairro.nome.lower %}id="retirada-option"{% endif %}
+                                >
+                                    {{ bairro.nome }} (Taxa: R$ {{ bairro.taxa|floatformat:2 }})
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        {% if user.is_superuser %}
+                        <div class="mt-2">
+                            <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                Tempo estimado: <span id="tempo-entrega" class="fw-bold">---</span>
+                            </small>
+                        </div>
+                    </div>
+
                     <div class="col-12 col-md-6 mb-3">
-           <label for="bairro" class="form-label">Selecione seu setor *</label>
-<select class="form-select" id="bairro" name="bairro">
-    <option value="">Escolha um setor</option>
-    {% for bairro in bairros %}
-        <option 
-            value="{{ bairro.id }}"
-            data-taxa="{{ bairro.taxa }}"
-            data-tempo="{{ bairro.tempo }}"
-            {% if bairro.id == bairro_selecionado %}selected{% endif %}
-        >
-            {{ bairro.nome }} (Taxa: R$ {{ bairro.taxa|floatformat:2 }})
-        </option>
-    {% empty %}
-        <option value="">Nenhum bairro disponível</option>
-    {% endfor %}
-    <!-- Opção fixa para retirada no local -->
-    <option value="retirada" data-taxa="0" data-tempo="0" style="display: none;">
-        Retirada no Local
-    </option>
-</select>
+                        <label for="endereco" class="form-label">Endereço Completo *</label>
+                        <input type="text" class="form-control" id="endereco" name="endereco" 
+                               value="{{ endereco|default:'' }}" placeholder="Quadra e número" required>
+                    </div>
+                </div>
 
-{% if user.is_superuser %}
-<div class="mt-2">
-    <a href="{% url 'adicionar_bairro' %}" class="btn btn-sm btn-outline-primary">
-        <i class="bi bi-plus-circle me-1"></i> Adicionar novo bairro
-    </a>
-</div>
-{% endif %}
-
-<div class="mt-2">
-    <small class="text-muted">
-        Tempo estimado: <span id="tempo-entrega" class="fw-bold">---</span>
-    </small>
-</div>
-</div>
-
-<div class="col-12 col-md-6 mb-3">
-    <label for="endereco" class="form-label">Endereço Completo *</label>
-    <input type="text" class="form-control" id="endereco" name="endereco" 
-           value="{{ endereco|default:'' }}" placeholder="Quadra e número">
-</div>
-</div>
-
-<div class="mb-3">
-    <label for="referencia" class="form-label">Ponto de Referência</label>
-    <input type="text" class="form-control" id="referencia" name="referencia" 
-           value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
-</div>
-</div>
-</div>
-
-<!-- No seu template, modifique a seção de retirada para: -->
-<div class="card mb-4" id="retirada-section" style="display: none;">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="bi bi-shop me-2"></i>Informações para Retirada</h5>
-    </div>
-    <div class="card-body">
-        <p class="mb-3">Você irá retirar seu pedido no endereço:</p>
-        <div class="alert alert-info">
-            <strong>Setor D, Quadra 06, Lote 26</strong>
+                <div class="mb-3">
+                    <label for="referencia" class="form-label">Ponto de Referência</label>
+                    <input type="text" class="form-control" id="referencia" name="referencia" 
+                           value="{{ referencia|default:'' }}" placeholder="Ex: próximo ao mercado X">
+                </div>
+            </div>
         </div>
-        <p class="text-muted small">Taxa: <strong>Grátis</strong></p>
-        
-        <!-- Preenche automaticamente os campos do formulário -->
-        <script>
-            // No listener do tipo_entrega
-tipoEntregaSelect.addEventListener('change', function() {
-    if (this.value === 'retirada') {
-        // Preenche automaticamente os campos
-        document.getElementById('bairro').value = "{{ bairro_retirada.id }}";
-        document.getElementById('endereco').value = "Retirada no Local - Setor D, Quadra 06, Lote 26";
-        
-        // Atualiza a exibição
-        entregaSection.style.display = 'none';
-        retiradaSection.style.display = 'block';
-        taxaEntregaSpan.textContent = '0.00';
-        
-        // Atualiza o total
-        const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-        totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    } else {
-        entregaSection.style.display = 'block';
-        retiradaSection.style.display = 'none';
-        document.getElementById('endereco').value = '';
-        updateTotals();
-    }
-});
-        </script>
-    </div>
-</div>
+
         <!-- Seção de Pagamento -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
@@ -143,14 +118,12 @@ tipoEntregaSelect.addEventListener('change', function() {
                         <label for="forma_pagamento" class="form-label">Método de Pagamento *</label>
                         <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
                             <option value="">Selecione a forma de pagamento</option>
-                            <option value="CREDITO">Cartão de Crédito</option>
-                            <option value="DEBITO">Cartão de Débito</option>
-                            <option value="PIX">PIX</option>
-                            <option value="DINHEIRO">Dinheiro</option>
+                            {% for valor, nome in formas_pagamento %}
+                                <option value="{{ valor }}">{{ nome }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     
-                    <!-- Campos condicionais para pagamento em dinheiro -->
                     <div class="col-12 col-md-6 mb-3" id="troco-container" style="display: none;">
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="precisa_troco" name="precisa_troco">
@@ -250,7 +223,7 @@ tipoEntregaSelect.addEventListener('change', function() {
   
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Taxa de Entrega:</span>
-                                <span>R$ <span id="taxa-entrega">0.00</span></span>
+                                <span>R$ <span id="taxa-entrega">{{ taxa_entrega|default:"0.00" }}</span></span>
                             </div>
                             
                             <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2 mt-2">
@@ -276,7 +249,13 @@ tipoEntregaSelect.addEventListener('change', function() {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Elementos do DOM
+    const formPedido = document.getElementById('form-pedido');
+    const tipoEntregaRadio = document.getElementById('tipo_entrega');
+    const tipoRetiradaRadio = document.getElementById('tipo_retirada');
     const bairroSelect = document.getElementById('bairro');
+    const enderecoInput = document.getElementById('endereco');
+    const referenciaInput = document.getElementById('referencia');
     const formaPagamentoSelect = document.getElementById('forma_pagamento');
     const trocoContainer = document.getElementById('troco-container');
     const precisaTrocoCheckbox = document.getElementById('precisa_troco');
@@ -285,87 +264,95 @@ document.addEventListener('DOMContentLoaded', function() {
     const taxaEntregaSpan = document.getElementById('taxa-entrega');
     const subtotalSpan = document.getElementById('subtotal');
     const totalPedidoSpan = document.getElementById('total-pedido');
-    const formPedido = document.getElementById('form-pedido');
-    
-    // INÍCIO DAS ALTERAÇÕES - Variáveis para controle de tipo de entrega
-    const tipoEntregaSelect = document.getElementById('tipo-entrega');
-    const entregaSection = document.getElementById('entrega-section');
-    const retiradaSection = document.getElementById('retirada-section');
-    // FIM DAS ALTERAÇÕES
 
-    // Atualiza os valores quando a página carrega
-    updateTotals();
+    // Valores fixos para retirada
+    const ENDERECO_RETIRADA = "Retirada no local - setor d quadra 06 lote 26";
+    const REFERENCIA_RETIRADA = "Retirada no local";
+    const TEMPO_RETIRADA = "Retirada imediata";
+    const TAXA_RETIRADA = 0;
 
-    // Event listeners
-    bairroSelect.addEventListener('change', updateTotals);
-    formaPagamentoSelect.addEventListener('change', toggleTrocoFields);
-    precisaTrocoCheckbox.addEventListener('change', toggleValorTrocoField);
-    
-    // INÍCIO DAS ALTERAÇÕES - Listener para tipo de entrega
-    tipoEntregaSelect.addEventListener('change', function() {
-        if (this.value === 'entrega') {
-            entregaSection.style.display = 'block';
-            retiradaSection.style.display = 'none';
-            
-            // Tornar campos obrigatórios
-            bairroSelect.required = true;
-            document.getElementById('endereco').required = true;
-            
-            // Atualizar taxas
-            updateTotals();
-        } 
-        else if (this.value === 'retirada') {
-            entregaSection.style.display = 'none';
-            retiradaSection.style.display = 'block';
-            
-            // Remover obrigatoriedade dos campos de entrega
-            bairroSelect.required = false;
-            document.getElementById('endereco').required = false;
-            
-            // Definir taxa de entrega como grátis
-            taxaEntregaSpan.textContent = '0.00';
-            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-            totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        } 
-        else {
-            entregaSection.style.display = 'none';
-            retiradaSection.style.display = 'none';
-        }
-    });
-    // FIM DAS ALTERAÇÕES
-
-    function updateTotals() {
-        const selectedOption = bairroSelect.options[bairroSelect.selectedIndex];
-        
-        if (selectedOption.value && tipoEntregaSelect.value === 'entrega') {
-            const tempo = selectedOption.getAttribute('data-tempo') || "30-45 min";
-            tempoEntrega.textContent = tempo;
-            
-            const taxa = parseFloat(selectedOption.getAttribute('data-taxa')) || 0;
-            taxaEntregaSpan.textContent = taxa.toFixed(2);
-            
-            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-            const total = subtotal + taxa;
-            totalPedidoSpan.textContent = total.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        } else {
-            tempoEntrega.textContent = '---';
-            if (tipoEntregaSelect.value !== 'retirada') {
-                taxaEntregaSpan.textContent = '0.00';
+    // Encontra a opção de retirada no select de bairros
+    function encontrarOpcaoRetirada() {
+        const options = bairroSelect.options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].text.toLowerCase().includes('retirada')) {
+                return options[i];
             }
-            const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
-            totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
         }
+        return null;
     }
 
+    const retiradaOption = encontrarOpcaoRetirada();
+
+    // Ativa o modo de retirada no local
+    function ativarModoRetirada() {
+        if (retiradaOption) {
+            retiradaOption.selected = true;
+            // Dispara evento change para atualizar taxas e tempo
+            const event = new Event('change');
+            bairroSelect.dispatchEvent(event);
+        }
+        
+        enderecoInput.value = ENDERECO_RETIRADA;
+        referenciaInput.value = REFERENCIA_RETIRADA;
+        
+        // Aplica estilo de campo desabilitado
+        enderecoInput.classList.add('disabled-field');
+        referenciaInput.classList.add('disabled-field');
+        bairroSelect.classList.add('disabled-field');
+        
+        // Atualiza os totais
+        updateTotals();
+    }
+
+    // Desativa o modo de retirada no local
+    function desativarModoRetirada() {
+        if (retiradaOption) {
+            retiradaOption.selected = false;
+        }
+        
+        // Remove estilo de campo desabilitado
+        enderecoInput.classList.remove('disabled-field');
+        referenciaInput.classList.remove('disabled-field');
+        bairroSelect.classList.remove('disabled-field');
+        
+        // Limpa campos se contiverem valores de retirada
+        if (enderecoInput.value === ENDERECO_RETIRADA) {
+            enderecoInput.value = '';
+        }
+        if (referenciaInput.value === REFERENCIA_RETIRADA) {
+            referenciaInput.value = '';
+        }
+        
+        // Atualiza os totais
+        updateTotals();
+    }
+
+    // Atualiza totais do pedido
+    function updateTotals() {
+        const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
+        let taxa = 0;
+        
+        if (tipoRetiradaRadio.checked) {
+            taxa = TAXA_RETIRADA;
+            tempoEntrega.textContent = TEMPO_RETIRADA;
+        } else {
+            const selectedOption = bairroSelect.options[bairroSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                taxa = parseFloat(selectedOption.getAttribute('data-taxa')) || 0;
+                tempoEntrega.textContent = selectedOption.getAttribute('data-tempo') || "30-45 min";
+            }
+        }
+        
+        taxaEntregaSpan.textContent = taxa.toFixed(2);
+        const total = subtotal + taxa;
+        totalPedidoSpan.textContent = total.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    // Mostra/oculta campos de troco
     function toggleTrocoFields() {
         if (formaPagamentoSelect.value === 'DINHEIRO') {
             trocoContainer.style.display = 'block';
@@ -376,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Mostra/oculta campo de valor para troco
     function toggleValorTrocoField() {
         if (precisaTrocoCheckbox.checked) {
             valorTrocoField.style.display = 'block';
@@ -386,16 +374,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Event Listeners
+    tipoEntregaRadio.addEventListener('change', function() {
+        if (this.checked) {
+            desativarModoRetirada();
+        }
+    });
+
+    tipoRetiradaRadio.addEventListener('change', function() {
+        if (this.checked) {
+            ativarModoRetirada();
+        }
+    });
+
+    bairroSelect.addEventListener('change', updateTotals);
+    formaPagamentoSelect.addEventListener('change', toggleTrocoFields);
+    precisaTrocoCheckbox.addEventListener('change', toggleValorTrocoField);
+
+    // Validação do formulário
     formPedido.addEventListener('submit', function(e) {
-        // INÍCIO DAS ALTERAÇÕES - Validação do tipo de entrega
-        if (!tipoEntregaSelect.value) {
+        if (!tipoEntregaRadio.checked && !tipoRetiradaRadio.checked) {
             e.preventDefault();
-            alert('Por favor, selecione o tipo de entrega.');
-            tipoEntregaSelect.focus();
+            alert('Por favor, selecione o tipo de pedido (Entrega ou Retirar no local).');
             return;
         }
-        
-        if (tipoEntregaSelect.value === 'entrega') {
+
+        if (tipoEntregaRadio.checked) {
             if (!bairroSelect.value) {
                 e.preventDefault();
                 alert('Por favor, selecione um bairro para entrega.');
@@ -403,14 +407,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            if (!document.getElementById('endereco').value) {
+            if (!enderecoInput.value.trim()) {
                 e.preventDefault();
                 alert('Por favor, informe o endereço para entrega.');
-                document.getElementById('endereco').focus();
+                enderecoInput.focus();
                 return;
             }
         }
-        // FIM DAS ALTERAÇÕES
 
         if (!formaPagamentoSelect.value) {
             e.preventDefault();
@@ -427,67 +430,14 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('valor_troco_para').focus();
         }
     });
+
+    // Inicialização
+    toggleTrocoFields();
+    if (tipoRetiradaRadio.checked) {
+        ativarModoRetirada();
+    } else {
+        updateTotals();
+    }
 });
-
-// Funções para impressão (mantidas iguais)
-function copyToPrintApp() {
-    const content = document.getElementById('printContent');
-    content.select();
-    document.execCommand('copy');
-    alert('Conteúdo copiado! Agora cole no POSPrinter-BT');
-}
-
-function printWithPOSPrinter() {
-    const content = document.getElementById('printContent').value;
-    
-    if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-        try {
-            window.location.href = `intent://print?text=${encodeURIComponent(content)}#Intent;package=com.posprinter.bt;scheme=posprinter;end`;
-            return;
-        } catch (e) {
-            console.error("Erro ao tentar abrir o app via intent:", e);
-        }
-    }
-    
-    copyToPrintApp();
-}
 </script>
-
-<style>
-    /* Estilos específicos para a seção de pagamento */
-    #troco-container {
-        transition: all 0.3s ease;
-    }
-    
-    #valor_troco_field {
-        transition: all 0.3s ease;
-    }
-    
-    .card-header {
-        font-size: 1.1rem;
-    }
-
-    /* INÍCIO DAS ALTERAÇÕES - Estilos para seção de retirada */
-    #retirada-section .alert {
-        margin-bottom: 0;
-    }
-    /* FIM DAS ALTERAÇÕES */
-
-    @media (max-width: 768px) {
-        .container {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .img-thumbnail {
-            width: 40px !important;
-            height: 40px !important;
-        }
-    }
-</style>
 {% endblock %}
