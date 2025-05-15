@@ -90,7 +90,7 @@
 </div>
 </div>
 
-<!-- Seção de Retirada no Local -->
+<!-- No seu template, modifique a seção de retirada para: -->
 <div class="card mb-4" id="retirada-section" style="display: none;">
     <div class="card-header bg-primary text-white">
         <h5 class="mb-0"><i class="bi bi-shop me-2"></i>Informações para Retirada</h5>
@@ -101,13 +101,37 @@
             <strong>Setor D, Quadra 06, Lote 26</strong>
         </div>
         <p class="text-muted small">Taxa: <strong>Grátis</strong></p>
-        <!-- Campos ocultos com valores fixos para retirada -->
-        <input type="hidden" name="bairro_retirada" value="retirada">
-        <input type="hidden" name="endereco_retirada" value="Setor D, Quadra 06, Lote 26">
-        <input type="hidden" name="taxa_retirada" value="0">
+        
+        <!-- Preenche automaticamente os campos do formulário -->
+        <script>
+            // No listener do tipo_entrega
+tipoEntregaSelect.addEventListener('change', function() {
+    if (this.value === 'retirada') {
+        // Preenche automaticamente os campos
+        document.getElementById('bairro').value = "{{ bairro_retirada.id }}";
+        document.getElementById('endereco').value = "Retirada no Local - Setor D, Quadra 06, Lote 26";
+        
+        // Atualiza a exibição
+        entregaSection.style.display = 'none';
+        retiradaSection.style.display = 'block';
+        taxaEntregaSpan.textContent = '0.00';
+        
+        // Atualiza o total
+        const subtotal = parseFloat(subtotalSpan.textContent.replace('.', '').replace(',', '.')) || 0;
+        totalPedidoSpan.textContent = subtotal.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    } else {
+        entregaSection.style.display = 'block';
+        retiradaSection.style.display = 'none';
+        document.getElementById('endereco').value = '';
+        updateTotals();
+    }
+});
+        </script>
     </div>
 </div>
-
         <!-- Seção de Pagamento -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
